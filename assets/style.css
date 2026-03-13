@@ -1,0 +1,80 @@
+body{
+font-family:Arial, sans-serif;
+margin:0;
+background:#0c0c12;
+color:white;
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 20px;
+background:#111;
+}
+
+.logo{
+height:40px;
+}
+
+.menu-btn{
+font-size:26px;
+cursor:pointer;
+}
+
+/* MENU */
+
+.menu{
+display:none;
+background:#111;
+padding:20px;
+}
+
+.menu a{
+display:block;
+color:white;
+text-decoration:none;
+margin:12px 0;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+padding:50px 20px;
+}
+
+.hero h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.hero p{
+color:#bbb;
+}
+
+/* TOOLS */
+
+.tools{
+max-width:600px;
+margin:auto;
+padding:20px;
+}
+
+.tool{
+background:#1a1a22;
+padding:20px;
+margin:15px 0;
+border-radius:10px;
+text-align:center;
+text-decoration:none;
+display:block;
+color:white;
+border:1px solid #333;
+}
+
+.tool:hover{
+border-color:#d4a017;
+}
