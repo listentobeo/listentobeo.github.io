@@ -67,6 +67,12 @@ color:white;
 text-decoration:none;
 margin:12px 0;
 }
+.menu{
+display:none;
+background:#111;
+padding:20px;
+border-bottom:1px solid #222;
+}
 
 /* HERO */
 
@@ -91,7 +97,7 @@ margin:auto;
 
 .tool{
 background:#1a1a22;
-padding:22px;
+padding:18px;
 margin:20px 0;
 border-radius:12px;
 text-align:center;
@@ -99,8 +105,9 @@ text-decoration:none;
 display:block;
 color:white;
 border:1px solid #333;
-font-size:18px;
-transition:0.2s;
+max-width:600px;
+margin-left:auto;
+margin-right:auto;
 }
 
 .tool:hover{
@@ -155,18 +162,36 @@ color:#d4a017;
 color:#777;
 font-size:14px;
 }
-
-/* MOBILE */
+/* MOBILE FIX */
 
 @media (max-width:700px){
 
-.footer-inner{
-flex-direction:column;
-text-align:center;
+.hero{
+padding:50px 20px 20px;
 }
 
-.footer-links a{
-margin:0 8px;
+.hero h1{
+font-size:28px;
+}
+
+.hero p{
+font-size:15px;
+max-width:90%;
+}
+
+.container{
+padding:15px;
+}
+
+.content{
+max-width:95%;
+margin:20px auto;
+padding:10px;
+}
+
+.tool{
+padding:16px;
+font-size:16px;
 }
 
 }
