@@ -6,24 +6,33 @@ color:white;
 }
 
 /* HEADER */
-
 .header{
 display:flex;
 justify-content:space-between;
 align-items:center;
 padding:15px 20px;
 background:#111;
+position:sticky;
+top:0;
+z-index:100;
 }
 
-.logo{
-height:40px;
+.nav-right{
+display:flex;
+align-items:center;
+gap:20px;
+}
+
+.login-btn{
+color:#4da3ff;
+text-decoration:none;
+font-size:14px;
 }
 
 .menu-btn{
-font-size:26px;
+font-size:24px;
 cursor:pointer;
 }
-
 /* MENU */
 
 .menu{
