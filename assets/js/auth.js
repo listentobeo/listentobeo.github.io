@@ -24,7 +24,7 @@ return
 
 alert("Login successful")
 
-window.location.href="/"
+window.location.href="/dashboard"
 }
 
 /* SIGNUP */
@@ -60,5 +60,5 @@ credits: 2
 
 alert("Account created. You received 2 free credits.")
 
-window.location.href="/login/"
+window.location.href="/dashboard/"
 }
