@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js"
 
 const supabase = createClient(
 "https://wphqcccliiwdvwdjgrmc.supabase.co",
-"YOUR_PUBLISHABLE_KEY"
+"sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
 )
 
 async function loginUser(){
@@ -28,8 +28,8 @@ window.location.href = "/"
 
 async function signupUser(){
 
-const email = document.getElementById("email").value
-const password = document.getElementById("password").value
+const email = document.getElementById("signup-email").value
+const password = document.getElementById("signup-password").value
 
 const { error } = await supabase.auth.signUp({
 email: email,
@@ -41,6 +41,8 @@ alert(error.message)
 return
 }
 
-alert("Account created. Please login.")
+alert("Account created successfully. You can now login.")
+
+window.location.href="/login/"
 
 }
