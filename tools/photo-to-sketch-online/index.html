@@ -197,8 +197,27 @@ document.getElementById("result").innerHTML = `
 reader.readAsDataURL(file)
 
 }
-
 async function generateSketch(){
+
+const user = await getUser()
+
+if(!user){
+alert("Login to generate sketches")
+return
+}
+
+const credits = await checkCredits(user.id)
+
+if(credits <= 0){
+alert("You need credits to generate images")
+return
+}
+
+/* run AI generation here */
+
+  }
+  
+/*IMAGE CHECK*/
 
 if(!uploadedImage){
 alert("Please upload an image")
