@@ -1,3 +1,5 @@
+/* BASE */
+
 body{
 font-family:Arial, sans-serif;
 margin:0;
@@ -8,15 +10,21 @@ display:flex;
 flex-direction:column;
 min-height:100vh;
 }
+
 .main{
 flex:1;
 }
+
+/* CONTAINERS */
+
 .container{
 max-width:1000px;
 margin:auto;
 padding:20px;
 width:100%;
+box-sizing:border-box;
 }
+
 .content{
 max-width:700px;
 margin:40px auto;
@@ -24,8 +32,11 @@ padding:20px;
 line-height:1.7;
 color:#ccc;
 text-align:left;
+box-sizing:border-box;
 }
+
 /* HEADER */
+
 .header{
 display:flex;
 justify-content:space-between;
@@ -35,6 +46,10 @@ background:#111;
 position:sticky;
 top:0;
 z-index:100;
+}
+
+.logo{
+height:36px;
 }
 
 .nav-right{
@@ -53,12 +68,21 @@ font-size:14px;
 font-size:24px;
 cursor:pointer;
 }
+
 /* MENU */
 
 .menu{
 display:none;
+width:100%;
 background:#111;
+border-bottom:1px solid #222;
+}
+
+.menu-inner{
+max-width:1000px;
+margin:auto;
 padding:20px;
+box-sizing:border-box;
 }
 
 .menu a{
@@ -66,12 +90,7 @@ display:block;
 color:white;
 text-decoration:none;
 margin:12px 0;
-}
-.menu{
-display:none;
-background:#111;
-padding:20px;
-border-bottom:1px solid #222;
+font-size:16px;
 }
 
 /* HERO */
@@ -98,7 +117,7 @@ margin:auto;
 .tool{
 background:#1a1a22;
 padding:18px;
-margin:20px 0;
+margin:20px auto;
 border-radius:12px;
 text-align:center;
 text-decoration:none;
@@ -106,30 +125,14 @@ display:block;
 color:white;
 border:1px solid #333;
 max-width:600px;
-margin-left:auto;
-margin-right:auto;
+transition:0.2s ease;
 }
 
 .tool:hover{
 border-color:#d4a017;
 transform:translateY(-2px);
 }
-@media (max-width:700px){
 
-.hero h1{
-font-size:32px;
-}
-
-.hero p{
-font-size:16px;
-}
-
-.tool{
-font-size:16px;
-padding:18px;
-}
-
-}
 /* FOOTER */
 
 .footer{
@@ -140,6 +143,8 @@ border-top:1px solid #222;
 }
 
 .footer-inner{
+max-width:1000px;
+margin:auto;
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -162,12 +167,13 @@ color:#d4a017;
 color:#777;
 font-size:14px;
 }
-/* MOBILE FIX */
+
+/* MOBILE */
 
 @media (max-width:700px){
 
 .hero{
-padding:50px 20px 20px;
+padding:60px 20px 30px;
 }
 
 .hero h1{
@@ -190,8 +196,33 @@ padding:10px;
 }
 
 .tool{
-padding:16px;
 font-size:16px;
+padding:16px;
+}
+
+/* MENU FULL WIDTH */
+
+.menu{
+width:100%;
+}
+
+.menu-inner{
+padding:20px 15px;
+}
+
+/* FOOTER MOBILE */
+
+.footer-inner{
+flex-direction:column;
+text-align:center;
+}
+
+.footer-links{
+margin-top:10px;
+}
+
+.footer-links a{
+margin:0 8px;
 }
 
 }
