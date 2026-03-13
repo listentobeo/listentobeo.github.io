@@ -49,9 +49,9 @@ text-align:left;
 
 .header{
 display:flex;
-justify-content:space-between;
 align-items:center;
-padding:15px 20px;
+justify-content:space-between;
+padding:12px 16px;
 background:#111;
 position:sticky;
 top:0;
@@ -59,22 +59,33 @@ z-index:100;
 width:100%;
 }
 
+.logo{
+height:32px;
+max-width:120px;
+object-fit:contain;
+}
+
 .nav-right{
 display:flex;
 align-items:center;
-gap:18px;
+gap:12px;
+flex-shrink:0;
 }
 
 .login-btn{
 color:#4da3ff;
 text-decoration:none;
 font-size:14px;
+white-space:nowrap;
 }
 
 .menu-btn{
-font-size:24px;
+font-size:22px;
 cursor:pointer;
+line-height:1;
 }
+
+
 
 /* MENU */
 
@@ -213,6 +224,30 @@ margin-top:10px;
 
 .footer-links a{
 margin:0 8px;
+}
+
+}
+@media (max-width:700px){
+
+.header{
+padding:12px 14px;
+}
+
+.logo{
+height:28px;
+max-width:100px;
+}
+
+.nav-right{
+gap:10px;
+}
+
+.login-btn{
+font-size:13px;
+}
+
+.menu-btn{
+font-size:20px;
 }
 
 }
