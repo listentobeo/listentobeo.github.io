@@ -1,114 +1,56 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Beo AI Tools</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-
-body{
-font-family:Arial, sans-serif;
-margin:0;
-background:#0c0c12;
-color:white;
-}
-
-/* HEADER */
-
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 20px;
-background:#111;
-}
-
-.logo{
-height:40px;
-}
-
-.menu-btn{
-font-size:26px;
-cursor:pointer;
-}
-
-/* MENU */
-
-.menu{
-display:none;
-background:#111;
-padding:20px;
-}
-
-.menu a{
-display:block;
-color:white;
-text-decoration:none;
-margin:12px 0;
-}
-
-/* HERO */
-
-.hero{
-text-align:center;
-padding:50px 20px;
-}
-
-.hero h1{
-font-size:32px;
-margin-bottom:10px;
-}
-
-.hero p{
-color:#bbb;
-}
-
-/* TOOLS */
-
-.tools{
-max-width:600px;
-margin:auto;
-padding:20px;
-}
-
-.tool{
-background:#1a1a22;
-padding:20px;
-margin:15px 0;
-border-radius:10px;
-text-align:center;
-text-decoration:none;
-display:block;
-color:white;
-border:1px solid #333;
-}
-
-.tool:hover{
-border-color:#d4a017;
-}
-
-</style>
+<link rel="stylesheet" href="/assets/style.css">
 
 </head>
 
 <body>
 
-<!-- HEADER -->
+<div id="header"></div>
 
-<div class="header">
+<div class="hero">
 
-<img src="https://blogger.googleusercontent.com/img/a/AVvXsEjBee4eUGI6-rkC6O2watPnHvfgh9O1A2Y0at8JOAQpk0T5wF-tODApR-z3ZfRBWtDskB9VBlVPtA9W8wDOFrrYm9nxcXWfFpkZGi4dNLp4ZEn2tli2nwq4MGWiPSRnM_C9SlNMvxsvChmww133gdbKw2eTtnD-Q2ojtdZoLpyiVii2nIpkCz7zMy1O5DI=s300" class="logo">
+<h1>Beo AI Tools</h1>
 
-<div class="menu-btn" onclick="toggleMenu()">☰</div>
+<p>Create sketches, paintings, and AI artwork from your photos.</p>
 
 </div>
 
-<!-- MENU -->
+<div class="tools">
 
-<div class="menu" id="menu">
+<a class="tool" href="/tools/photo-to-sketch-online/">
+Photo to Sketch Tool
+</a>
 
+</div>
+
+<section style="max-width:700px;margin:40px auto;padding:20px;color:#ccc;line-height:1.6">
+
+<h2>AI Tools by Beo Art Studio</h2>
+
+<p>
+Beo AI Tools is a collection of simple creative tools designed to help artists, designers, and everyday users transform their photos into artwork.
+</p>
+
+<p>
+These tools are curated by <strong>Beo Art Studio</strong> to explore how artificial intelligence can support creativity.
+</p>
+
+</section>
+
+<div id="footer"></div>
+
+<script src="/assets/nav.js"></script>
+
+</body>
+</html>
 <a href="/">Home</a>
 
 <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
