@@ -66,24 +66,21 @@ color:#bbb;
 
 /* TOOLS */
 
-.tools{
-max-width:600px;
-margin:auto;
-padding:20px;
-}
-
 .tool{
 background:#1a1a22;
-padding:20px;
-margin:15px 0;
-border-radius:10px;
+padding:22px;
+margin:20px 0;
+border-radius:12px;
 text-align:center;
 text-decoration:none;
 display:block;
 color:white;
 border:1px solid #333;
+font-size:18px;
+transition:0.2s;
 }
 
 .tool:hover{
 border-color:#d4a017;
+transform:translateY(-2px);
 }
