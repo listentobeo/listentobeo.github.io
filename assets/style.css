@@ -251,3 +251,34 @@ font-size:20px;
 }
 
 }
+
+
+/* LOGIN */
+.login-box{
+max-width:420px;
+margin:auto;
+background:#1a1a22;
+padding:30px;
+border-radius:10px;
+border:1px solid #333;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.login-box input{
+padding:12px;
+border:none;
+border-radius:6px;
+background:#0c0c12;
+color:white;
+}
+
+.login-box button{
+padding:14px;
+background:#d4a017;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+}
