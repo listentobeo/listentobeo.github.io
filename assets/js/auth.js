@@ -1,10 +1,11 @@
-async function signUp(email,password){
+import { createClient } from "https://esm.sh/@supabase/supabase-js"
 
-const { data, error } = await supabase.auth.signUp({
+const supabase = createClient(
+"https://wphqcccliiwdvwdjgrmc.supabase.co",
+"sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+)
 
-email: email,
-password: password
-
-})
-
+async function getUser() {
+const { data } = await supabase.auth.getUser()
+return data.user
 }
