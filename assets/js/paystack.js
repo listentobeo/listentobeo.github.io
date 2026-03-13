@@ -1,17 +1,17 @@
-function payForCredits(){
+function buyCredits(email, amount){
 
 let handler = PaystackPop.setup({
+key: "YOUR_PAYSTACK_PUBLIC_KEY",
+email: email,
+amount: amount * 100,
+currency: "NGN",
 
-key: 'PAYSTACK_PUBLIC_KEY',
+callback: function(response){
+alert("Payment successful")
+},
 
-email: user.email,
-
-amount: 2000 * 100,
-
-callback: function(){
-
-addCredits()
-
+onClose: function(){
+alert("Transaction cancelled")
 }
 
 })
