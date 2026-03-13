@@ -5,7 +5,7 @@ const supabase = createClient(
 "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
 )
 
-async function loginUser(){
+window.loginUser = async function(){
 
 const email = document.getElementById("email").value
 const password = document.getElementById("password").value
@@ -21,12 +21,11 @@ return
 }
 
 alert("Login successful")
-
-window.location.href = "/"
+window.location.href="/"
 
 }
 
-async function signupUser(){
+window.signupUser = async function(){
 
 const email = document.getElementById("signup-email").value
 const password = document.getElementById("signup-password").value
@@ -41,8 +40,7 @@ alert(error.message)
 return
 }
 
-alert("Account created successfully. You can now login.")
-
+alert("Account created successfully")
 window.location.href="/login/"
 
 }
