@@ -1,8 +1,18 @@
-/* BASE */
+
+/* GLOBAL FIX */
+
+*{
+box-sizing:border-box;
+}
+
+html,body{
+margin:0;
+padding:0;
+overflow-x:hidden;
+}
 
 body{
 font-family:Arial, sans-serif;
-margin:0;
 background:#0c0c12;
 color:white;
 
@@ -11,18 +21,19 @@ flex-direction:column;
 min-height:100vh;
 }
 
+/* MAIN */
+
 .main{
 flex:1;
 }
 
-/* CONTAINERS */
+/* CONTAINER */
 
 .container{
 max-width:1000px;
 margin:auto;
 padding:20px;
 width:100%;
-box-sizing:border-box;
 }
 
 .content{
@@ -32,7 +43,6 @@ padding:20px;
 line-height:1.7;
 color:#ccc;
 text-align:left;
-box-sizing:border-box;
 }
 
 /* HEADER */
@@ -46,16 +56,13 @@ background:#111;
 position:sticky;
 top:0;
 z-index:100;
-}
-
-.logo{
-height:36px;
+width:100%;
 }
 
 .nav-right{
 display:flex;
 align-items:center;
-gap:20px;
+gap:18px;
 }
 
 .login-btn{
@@ -78,19 +85,11 @@ background:#111;
 border-bottom:1px solid #222;
 }
 
-.menu-inner{
-max-width:1000px;
-margin:auto;
-padding:20px;
-box-sizing:border-box;
-}
-
 .menu a{
 display:block;
 color:white;
 text-decoration:none;
-margin:12px 0;
-font-size:16px;
+padding:12px 20px;
 }
 
 /* HERO */
@@ -112,7 +111,7 @@ max-width:600px;
 margin:auto;
 }
 
-/* TOOLS */
+/* TOOL CARD */
 
 .tool{
 background:#1a1a22;
@@ -140,6 +139,7 @@ background:#111;
 margin-top:80px;
 padding:30px 20px;
 border-top:1px solid #222;
+width:100%;
 }
 
 .footer-inner{
@@ -196,21 +196,11 @@ padding:10px;
 }
 
 .tool{
-font-size:16px;
 padding:16px;
+font-size:16px;
 }
 
-/* MENU FULL WIDTH */
-
-.menu{
-width:100%;
-}
-
-.menu-inner{
-padding:20px 15px;
-}
-
-/* FOOTER MOBILE */
+/* footer mobile */
 
 .footer-inner{
 flex-direction:column;
