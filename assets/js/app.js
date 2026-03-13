@@ -20,3 +20,42 @@ menu.style.display === "block"
 : "block"
 
 }
+import { createClient } from "https://esm.sh/@supabase/supabase-js"
+
+const supabase = createClient(
+"https://wphqcccliiwdvwdjgrmc.supabase.co",
+"sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+)
+
+async function updateAuthUI(){
+
+const { data } = await supabase.auth.getUser()
+
+const link = document.getElementById("auth-link")
+
+if(!link) return
+
+if(data.user){
+
+link.innerText = "Logout"
+
+link.onclick = async function(e){
+
+e.preventDefault()
+
+await supabase.auth.signOut()
+
+window.location.href="/"
+
+}
+
+}else{
+
+link.innerText = "Login"
+link.href = "/login/"
+
+}
+
+}
+
+updateAuthUI()
