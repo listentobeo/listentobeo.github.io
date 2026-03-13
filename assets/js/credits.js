@@ -1,8 +1,13 @@
 async function checkCredits(userId){
 
-const res = await fetch("/api/user-credits")
+const response = await fetch(
+"/api/check-credits",
+{
+method:"POST",
+body:JSON.stringify({user:userId})
+})
 
-const data = await res.json()
+const data = await response.json()
 
 return data.credits
 
