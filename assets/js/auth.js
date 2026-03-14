@@ -5,6 +5,20 @@ const supabase = createClient(
 "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
 )
 
+window.supabase = supabase
+
+
+/* GET CURRENT USER */
+
+window.getUser = async function(){
+
+const { data } = await supabase.auth.getUser()
+
+return data.user
+
+}
+
+
 /* LOGIN */
 
 window.loginUser = async function(){
@@ -24,8 +38,10 @@ return
 
 alert("Login successful")
 
-window.location.href="/dashboard"
+window.location.href="/dashboard/"
+
 }
+
 
 /* SIGNUP */
 
@@ -44,9 +60,12 @@ alert(error.message)
 return
 }
 
-const user = data.user
+if(!data.user){
+alert("Please confirm your email before continuing.")
+return
+}
 
-/* create profile */
+const user = data.user
 
 await supabase
 .from("profiles")
@@ -61,4 +80,5 @@ credits: 2
 alert("Account created. You received 2 free credits.")
 
 window.location.href="/dashboard/"
+
 }
