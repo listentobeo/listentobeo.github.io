@@ -3,7 +3,9 @@
 <head>
 
 <title>Photo to Sketch Tool</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="/assets/style.css">
 
 <style>
@@ -109,10 +111,13 @@ border-radius:6px;
 </head>
 
 <body>
+
 <div id="header"></div>
+
 <div class="container tool-page">
 
 <h1>Photo to Sketch Tool</h1>
+
 <p class="subtitle">
 Turn your photos into pencil drawings, charcoal sketches, anime art and more.
 </p>
@@ -144,7 +149,11 @@ Turn your photos into pencil drawings, charcoal sketches, anime art and more.
 <div id="result"></div>
 
 </div>
+
+<div id="footer"></div>
+
 <script type="module" src="/assets/js/auth.js"></script>
+
 <script>
 
 let uploadedImage = null
@@ -153,7 +162,9 @@ const fileInput = document.getElementById("upload")
 
 fileInput.addEventListener("change", previewImage)
 
-window.selectStyle = function(style,el){
+/* STYLE SELECTOR */
+
+window.selectStyle = function(style, el){
 
 document.getElementById("style").value = style
 
@@ -165,9 +176,12 @@ el.classList.add("active")
 
 }
 
+/* IMAGE PREVIEW */
+
 function previewImage(){
 
 const file = fileInput.files[0]
+
 if(!file) return
 
 const reader = new FileReader()
@@ -195,19 +209,15 @@ reader.readAsDataURL(file)
 
 }
 
+/* GENERATE SKETCH */
+
 window.generateSketch = async function(){
 
 const user = await getUser()
 
 if(!user){
-alert("Login to generate sketches")
-return
-}
-
-const credits = await checkCredits(user.id)
-
-if(credits <= 0){
-alert("You need credits to generate images")
+alert("Please login to generate artwork.")
+window.location.href="/login/"
 return
 }
 
@@ -223,14 +233,18 @@ document.getElementById("result").innerHTML = `
 <p>Processing with AI...</p>
 
 <div class="preview-grid">
+
 <div class="preview-box">
 <p>Original Photo</p>
 <img src="${uploadedImage}">
 </div>
+
 </div>
 `
 
-const { data } = await supabase.auth.getSession()
+/* GET USER SESSION TOKEN */
+
+const { data: sessionData } = await supabase.auth.getSession()
 
 const response = await fetch(
 "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/generate-sketch",
@@ -238,7 +252,7 @@ const response = await fetch(
 method:"POST",
 headers:{
 "Content-Type":"application/json",
-"Authorization":"Bearer " + data.session.access_token
+"Authorization":"Bearer " + sessionData.session.access_token
 },
 body: JSON.stringify({
 image: uploadedImage,
@@ -247,7 +261,7 @@ prompt: prompt
 })
 })
 
-const data = await response.json()
+const result = await response.json()
 
 document.getElementById("result").innerHTML = `
 <h3>Result</h3>
@@ -261,7 +275,7 @@ document.getElementById("result").innerHTML = `
 
 <div class="preview-box">
 <p>Generated Art</p>
-<img src="${data.result}">
+<img src="${result.result}">
 </div>
 
 </div>
@@ -270,9 +284,6 @@ document.getElementById("result").innerHTML = `
 }
 
 </script>
-  
-<div id="footer"></div>
-
 
 </body>
 </html>
