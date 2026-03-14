@@ -1,430 +1,1008 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
-<title>Photo to Sketch Tool</title>
-
+<title>Photo to Sketch — Beo AI Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
 
 <style>
-
-.tool-page{
-text-align:center;
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --gold:       #d4a017;
+  --gold-dim:   #a07a10;
+  --gold-glow:  rgba(212,160,23,0.18);
+  --bg:         #0d0d12;
+  --surface:    #13131a;
+  --surface2:   #1a1a24;
+  --border:     rgba(255,255,255,0.07);
+  --border-gold:rgba(212,160,23,0.35);
+  --text:       #f0ede8;
+  --muted:      #888;
+  --danger:     #ff5c5c;
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --radius:     12px;
+  --radius-sm:  8px;
 }
 
-.container{
-max-width:900px;
-margin:auto;
-padding:30px 20px;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
 }
 
-h1{
-font-size:32px;
-margin-bottom:10px;
+/* ── PAGE LAYOUT ─────────────────────────────────────────── */
+.tool-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
 }
 
-.subtitle{
-color:#bbb;
-margin-bottom:25px;
+/* ── HERO ────────────────────────────────────────────────── */
+.tool-hero {
+  text-align: center;
+  margin-bottom: 48px;
 }
 
-.upload-box{
-border:2px dashed #444;
-padding:25px;
-border-radius:10px;
-margin-bottom:25px;
-background:#16161d;
+.tool-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #f0ede8 30%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
 }
 
-.style-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-margin-bottom:20px;
+.tool-hero p {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 300;
+  max-width: 460px;
+  margin: 0 auto 20px;
 }
 
-@media(min-width:700px){
-.style-grid{
-grid-template-columns:repeat(3,1fr);
-}
-}
-
-.style-card{
-background:#1a1a22;
-border:1px solid #333;
-padding:14px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.style-card.active{
-border:2px solid #d4a017;
+/* ── CREDITS BADGE ───────────────────────────────────────── */
+.credits-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border-gold);
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 100px;
 }
 
-textarea{
-width:100%;
-height:80px;
-margin-top:10px;
-padding:10px;
-border-radius:6px;
-border:none;
+.credits-badge::before {
+  content: '⚡';
+  font-size: 12px;
 }
 
-button{
-padding:14px 26px;
-margin-top:20px;
-background:#d4a017;
-border:none;
-border-radius:6px;
-font-weight:bold;
-cursor:pointer;
+/* ── TWO COLUMN LAYOUT ───────────────────────────────────── */
+.tool-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
-button:disabled{
-background:#666;
-cursor:not-allowed;
+@media (max-width: 720px) {
+  .tool-layout { grid-template-columns: 1fr; }
 }
 
-.preview-grid{
-display:grid;
-grid-template-columns:1fr;
-gap:20px;
-margin-top:25px;
+/* ── PANEL ───────────────────────────────────────────────── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
-@media(min-width:700px){
-.preview-grid{
-grid-template-columns:1fr 1fr;
-}
-}
-
-.preview-box{
-background:#1a1a22;
-padding:15px;
-border-radius:8px;
-}
-
-img{
-max-width:100%;
-border-radius:6px;
+.panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.credits-badge{
-display:inline-block;
-background:#1a1a22;
-border:1px solid #333;
-padding:6px 14px;
-border-radius:20px;
-font-size:14px;
-margin-bottom:20px;
-color:#d4a017;
+.panel-header .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
 }
 
-.error-msg{
-color:#ff6b6b;
-margin-top:15px;
+.panel-header .dot.active {
+  background: var(--gold);
+  box-shadow: 0 0 6px var(--gold);
 }
 
+.panel-body {
+  padding: 18px;
+}
+
+/* ── UPLOAD ZONE ─────────────────────────────────────────── */
+.upload-zone {
+  border: 2px dashed rgba(212,160,23,0.25);
+  border-radius: var(--radius-sm);
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+  background: var(--surface2);
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--gold);
+  background: var(--gold-glow);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  border: 2px solid rgba(212,160,23,0.3);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.upload-zone p {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.upload-zone strong {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.upload-zone small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #555;
+}
+
+/* ── PREVIEW IMAGE ───────────────────────────────────────── */
+.preview-img-wrap {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface2);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
+.preview-img-wrap .change-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+/* ── STYLE GRID ──────────────────────────────────────────── */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 400px) {
+  .style-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.style-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  user-select: none;
+}
+
+.style-card:hover {
+  border-color: rgba(212,160,23,0.4);
+  transform: translateY(-1px);
+}
+
+.style-card.active {
+  border-color: var(--gold);
+  background: var(--gold-glow);
+}
+
+.style-card .style-icon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.style-card .style-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  display: block;
+}
+
+.style-card.active .style-name {
+  color: var(--gold);
+}
+
+/* ── PROMPT INPUT ────────────────────────────────────────── */
+.prompt-wrap {
+  margin-bottom: 16px;
+}
+
+.prompt-wrap label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.prompt-wrap textarea {
+  width: 100%;
+  height: 72px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 10px 12px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.prompt-wrap textarea:focus {
+  border-color: rgba(212,160,23,0.4);
+}
+
+.prompt-wrap textarea::placeholder {
+  color: #444;
+}
+
+/* ── GENERATE BUTTON ─────────────────────────────────────── */
+.generate-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--gold);
+  color: #0d0d12;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.generate-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.generate-btn:disabled {
+  cursor: not-allowed;
+  background: #2a2a2a;
+  color: #555;
+}
+
+/* ── PROGRESS BAR ────────────────────────────────────────── */
+.progress-wrap {
+  margin-top: 16px;
+  display: none;
+}
+
+.progress-wrap.visible {
+  display: block;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.progress-label .status-text {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.progress-track {
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  border-radius: 1px;
+  width: 0%;
+  transition: width 0.4s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+}
+
+/* ── RESULT PANEL ────────────────────────────────────────── */
+.result-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: none;
+}
+
+.result-panel.visible {
+  display: block;
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.result-img-wrap {
+  position: relative;
+  background: var(--surface2);
+}
+
+.result-img-wrap img {
+  width: 100%;
+  display: block;
+  border-radius: 0;
+}
+
+/* ── SHIMMER (while loading) ─────────────────────────────── */
+.shimmer {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── SHARE BUTTONS ───────────────────────────────────────── */
+.share-row {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.share-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.share-btn:hover { border-color: rgba(255,255,255,0.2); background: #222230; }
+.share-btn.tw:hover  { border-color: #1da1f2; color: #1da1f2; }
+.share-btn.wa:hover  { border-color: #25d366; color: #25d366; }
+.share-btn.ig:hover  { border-color: #e1306c; color: #e1306c; }
+.share-btn.dl { border-color: var(--border-gold); color: var(--gold); }
+.share-btn.dl:hover  { background: var(--gold-glow); }
+
+/* ── PROCESSING OVERLAY on result panel ─────────────────── */
+.result-loading {
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.result-loading p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+.empty-result {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  color: #333;
+  font-size: 13px;
+  gap: 10px;
+}
+
+.empty-result .empty-icon { font-size: 32px; opacity: 0.3; }
+
+/* ── ERROR ───────────────────────────────────────────────── */
+.error-bar {
+  background: rgba(255,92,92,0.08);
+  border: 1px solid rgba(255,92,92,0.25);
+  border-radius: var(--radius-sm);
+  color: var(--danger);
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-top: 12px;
+  display: none;
+}
+
+.error-bar.visible { display: block; }
+.error-bar a { color: var(--gold); }
+
+/* ── NO CREDITS ──────────────────────────────────────────── */
+.no-credits-bar {
+  background: rgba(212,160,23,0.06);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-sm);
+  color: var(--gold);
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-top: 12px;
+  display: none;
+  text-align: center;
+}
+
+.no-credits-bar.visible { display: block; }
+.no-credits-bar a {
+  color: var(--gold);
+  font-weight: 600;
+  text-decoration: underline;
+}
 </style>
-
 </head>
 
 <body>
-
 <div id="header"></div>
 
-<div class="container tool-page">
+<div class="tool-wrap">
 
-<h1>Photo to Sketch Tool</h1>
+  <!-- HERO -->
+  <div class="tool-hero">
+    <h1>Photo to Sketch</h1>
+    <p>Transform your photos into pencil drawings, charcoal art, anime and more using AI.</p>
+    <div id="credits-display"></div>
+  </div>
 
-<p class="subtitle">
-Turn your photos into pencil drawings, charcoal sketches, anime art and more.
-</p>
+  <!-- MAIN LAYOUT -->
+  <div class="tool-layout">
 
-<!-- CREDITS DISPLAY -->
-<div id="credits-display"></div>
+    <!-- LEFT: CONTROLS -->
+    <div>
 
-<div class="upload-box">
-<p>Upload Your Photo</p>
-<input type="file" id="upload" accept="image/*">
-</div>
+      <!-- Upload Panel -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-header">
+          <span class="dot" id="upload-dot"></span>
+          Upload Photo
+        </div>
+        <div class="panel-body">
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="upload" accept="image/*">
+            <div class="upload-icon">📷</div>
+            <p><strong>Click to upload</strong> or drag & drop</p>
+            <small>JPG, PNG, WEBP — max 10MB</small>
+          </div>
+          <!-- Preview replaces upload zone after selection -->
+          <div id="preview-wrap" style="display:none">
+            <div class="preview-img-wrap">
+              <img id="preview-img" src="" alt="Your photo">
+              <button class="change-btn" onclick="resetUpload()">Change photo</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<input type="hidden" id="style" value="pencil">
+      <!-- Style Panel -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-header">
+          <span class="dot active"></span>
+          Choose Style
+        </div>
+        <div class="panel-body">
+          <input type="hidden" id="style" value="pencil">
+          <div class="style-grid">
+            <div class="style-card active" onclick="selectStyle('pencil',this)">
+              <span class="style-icon">✏️</span>
+              <span class="style-name">Pencil</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('charcoal',this)">
+              <span class="style-icon">🖤</span>
+              <span class="style-name">Charcoal</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('pen',this)">
+              <span class="style-icon">🖊️</span>
+              <span class="style-name">Pen &amp; Ink</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('doodle',this)">
+              <span class="style-icon">🎨</span>
+              <span class="style-name">Doodle</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('painting',this)">
+              <span class="style-icon">🖼️</span>
+              <span class="style-name">Painting</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('anime',this)">
+              <span class="style-icon">⛩️</span>
+              <span class="style-name">Anime</span>
+            </div>
+          </div>
 
-<div class="style-grid">
-<div class="style-card active" onclick="selectStyle('pencil',this)">Pencil Drawing</div>
-<div class="style-card" onclick="selectStyle('charcoal',this)">Charcoal Sketch</div>
-<div class="style-card" onclick="selectStyle('pen',this)">Pen Art</div>
-<div class="style-card" onclick="selectStyle('doodle',this)">Doodle Outline</div>
-<div class="style-card" onclick="selectStyle('painting',this)">Colored Painting</div>
-<div class="style-card" onclick="selectStyle('anime',this)">Anime Art</div>
-</div>
+          <div class="prompt-wrap">
+            <label>Custom Instructions (optional)</label>
+            <textarea id="prompt" placeholder="e.g. make it look dramatic, add more contrast..."></textarea>
+          </div>
 
-<textarea id="prompt" placeholder="Optional: add custom style instructions..."></textarea>
+          <button class="generate-btn" id="generate-btn" onclick="generateSketch()">
+            Generate Artwork
+          </button>
 
-<br>
+          <!-- Progress bar -->
+          <div class="progress-wrap" id="progress-wrap">
+            <div class="progress-label">
+              <span class="status-text" id="status-text">Sending to AI...</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+          </div>
 
-<button id="generate-btn" onclick="generateSketch()">Generate Sketch</button>
+          <!-- Error bar -->
+          <div class="error-bar" id="error-bar"></div>
+          <div class="no-credits-bar" id="no-credits-bar">
+            You have no credits left. <a href="/dashboard/">Buy more credits →</a>
+          </div>
+        </div>
+      </div>
 
-<div id="result"></div>
+    </div>
 
-</div>
+    <!-- RIGHT: RESULT -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="dot" id="result-dot"></span>
+          Generated Artwork
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-result" id="empty-state">
+          <span class="empty-icon">🎨</span>
+          <span>Your artwork will appear here</span>
+        </div>
+
+        <!-- Loading shimmer -->
+        <div class="shimmer" id="result-shimmer" style="display:none"></div>
+
+        <!-- Result image -->
+        <div class="result-img-wrap" id="result-img-wrap" style="display:none">
+          <img id="result-img" src="" alt="Generated artwork">
+        </div>
+
+        <!-- Share row -->
+        <div class="share-row" id="share-row" style="display:none">
+          <span class="share-label">Share</span>
+          <button class="share-btn tw" onclick="shareTwitter()">
+            𝕏 Twitter
+          </button>
+          <button class="share-btn wa" onclick="shareWhatsApp()">
+            💬 WhatsApp
+          </button>
+          <button class="share-btn dl" onclick="downloadImage()">
+            ↓ Download
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /tool-layout -->
+
+</div><!-- /tool-wrap -->
 
 <div id="footer"></div>
 
-<!-- app.js sets up supabase on window and loads header/footer -->
 <script type="module" src="/assets/js/app.js"></script>
 
 <script>
 
-let uploadedImage = null
+const EDGE_FUNCTION_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/generate-sketch"
 
+let uploadedImage   = null
+let generatedResult = null
+
+/* ── FILE INPUT ─────────────────────────────────────────── */
 const fileInput = document.getElementById("upload")
-fileInput.addEventListener("change", previewImage)
+fileInput.addEventListener("change", handleFileSelect)
 
+/* drag & drop */
+const zone = document.getElementById("upload-zone")
+zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over") })
+zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"))
+zone.addEventListener("drop", e => {
+  e.preventDefault()
+  zone.classList.remove("drag-over")
+  const file = e.dataTransfer.files[0]
+  if (file) loadFile(file)
+})
 
-/* ── STYLE SELECTOR ── */
+function handleFileSelect() {
+  const file = fileInput.files[0]
+  if (file) loadFile(file)
+}
 
-window.selectStyle = function(style, el){
+function loadFile(file) {
+  const reader = new FileReader()
+  reader.onload = function(e) {
+    uploadedImage = e.target.result
+    document.getElementById("upload-zone").style.display  = "none"
+    document.getElementById("preview-wrap").style.display = "block"
+    document.getElementById("preview-img").src            = uploadedImage
+    document.getElementById("upload-dot").classList.add("active")
+  }
+  reader.readAsDataURL(file)
+}
+
+function resetUpload() {
+  uploadedImage = null
+  fileInput.value = ""
+  document.getElementById("upload-zone").style.display  = "block"
+  document.getElementById("preview-wrap").style.display = "none"
+  document.getElementById("upload-dot").classList.remove("active")
+}
+
+/* ── STYLE SELECTOR ─────────────────────────────────────── */
+window.selectStyle = function(style, el) {
   document.getElementById("style").value = style
   document.querySelectorAll(".style-card").forEach(c => c.classList.remove("active"))
   el.classList.add("active")
 }
 
-
-/* ── IMAGE PREVIEW ── */
-
-function previewImage(){
-  const file = fileInput.files[0]
-  if(!file) return
-
-  const reader = new FileReader()
-  reader.onload = function(e){
-    uploadedImage = e.target.result
-    document.getElementById("result").innerHTML = `
-      <div class="preview-grid">
-        <div class="preview-box">
-          <p>Original Photo</p>
-          <img src="${uploadedImage}">
-        </div>
-      </div>
-    `
-  }
-  reader.readAsDataURL(file)
+/* ── SUPABASE WAIT ──────────────────────────────────────── */
+function waitForSupabase() {
+  return new Promise(resolve => {
+    if (window.supabase) return resolve()
+    const iv = setInterval(() => { if (window.supabase) { clearInterval(iv); resolve() } }, 50)
+    setTimeout(() => { clearInterval(iv); resolve() }, 3000)
+  })
 }
 
+/* ── LOAD CREDITS ───────────────────────────────────────── */
+async function loadCredits() {
+  await waitForSupabase()
+  const { data } = await window.supabase.auth.getUser()
+  if (!data.user) return
+  const { data: profile } = await window.supabase
+    .from("profiles").select("credits").eq("id", data.user.id).single()
+  if (profile) {
+    document.getElementById("credits-display").innerHTML =
+      `<div class="credits-badge">${profile.credits} credits remaining</div>`
+  }
+}
+document.addEventListener("DOMContentLoaded", loadCredits)
 
-/* ── IMAGE COMPRESSION ──
-   Vertex Imagen has a ~1MB base64 input limit.
-   Camera/phone photos are often 2-5MB and cause a silent empty {} response.
-   We resize + compress to JPEG before sending.
-*/
+/* ── PROGRESS ANIMATION ─────────────────────────────────── */
+let progressTimer = null
+let currentProgress = 0
 
-function compressImage(dataUrl, maxWidth = 1024, quality = 0.85){
-  return new Promise((resolve) => {
-    const img = new Image()
-    img.onload = function(){
-      let { width, height } = img
+const statusMessages = [
+  "Sending to AI...",
+  "Analysing photo...",
+  "Applying style...",
+  "Rendering details...",
+  "Almost ready...",
+]
 
-      // scale down if wider than maxWidth
-      if(width > maxWidth){
-        height = Math.round(height * maxWidth / width)
-        width = maxWidth
+function startProgress() {
+  currentProgress = 0
+  const fill   = document.getElementById("progress-fill")
+  const status = document.getElementById("status-text")
+  const wrap   = document.getElementById("progress-wrap")
+
+  wrap.classList.add("visible")
+  fill.style.width = "0%"
+
+  let msgIdx = 0
+  status.textContent = statusMessages[0]
+
+  // Fast 0→80 in ~8s with easing, then hold at 80 until done
+  progressTimer = setInterval(() => {
+    if (currentProgress < 80) {
+      // Ease: fast at start, slower near 80
+      const step = currentProgress < 40 ? 3.5 : currentProgress < 65 ? 1.8 : 0.6
+      currentProgress = Math.min(currentProgress + step, 80)
+      fill.style.width = currentProgress + "%"
+
+      // Cycle status messages
+      const newIdx = Math.floor((currentProgress / 80) * statusMessages.length)
+      if (newIdx !== msgIdx && newIdx < statusMessages.length) {
+        msgIdx = newIdx
+        status.textContent = statusMessages[msgIdx]
       }
+    }
+  }, 200)
+}
 
+function finishProgress() {
+  clearInterval(progressTimer)
+  const fill   = document.getElementById("progress-fill")
+  const status = document.getElementById("status-text")
+  fill.style.transition = "width 0.5s ease"
+  fill.style.width = "100%"
+  status.textContent = "Done!"
+  setTimeout(() => {
+    document.getElementById("progress-wrap").classList.remove("visible")
+    fill.style.width = "0%"
+    fill.style.transition = "width 0.4s ease"
+  }, 800)
+}
+
+function resetProgress() {
+  clearInterval(progressTimer)
+  document.getElementById("progress-wrap").classList.remove("visible")
+  document.getElementById("progress-fill").style.width = "0%"
+}
+
+/* ── IMAGE COMPRESSION ──────────────────────────────────── */
+function compressImage(dataUrl, maxWidth = 1024, quality = 0.85) {
+  return new Promise(resolve => {
+    const img = new Image()
+    img.onload = function() {
+      let { width, height } = img
+      if (width > maxWidth) { height = Math.round(height * maxWidth / width); width = maxWidth }
       const canvas = document.createElement("canvas")
       canvas.width  = width
       canvas.height = height
-      const ctx = canvas.getContext("2d")
-      ctx.drawImage(img, 0, 0, width, height)
-
-      // output as JPEG — much smaller than PNG for photos
-      const compressed = canvas.toDataURL("image/jpeg", quality)
-      console.log(
-        "Image compressed:",
-        Math.round(dataUrl.length / 1024) + "KB →",
-        Math.round(compressed.length / 1024) + "KB"
-      )
-      resolve(compressed)
+      canvas.getContext("2d").drawImage(img, 0, 0, width, height)
+      resolve(canvas.toDataURL("image/jpeg", quality))
     }
     img.src = dataUrl
   })
 }
 
-
-/* ── LOAD CREDITS ON PAGE READY ── */
-
-async function loadCredits(){
-  // wait for app.js module to expose supabase on window
-  await waitForSupabase()
-
-  const { data } = await window.supabase.auth.getUser()
-  if(!data.user) return
-
-  const { data: profile } = await window.supabase
-    .from("profiles")
-    .select("credits")
-    .eq("id", data.user.id)
-    .single()
-
-  if(profile){
-    document.getElementById("credits-display").innerHTML = `
-      <div class="credits-badge">⚡ ${profile.credits} credits remaining</div>
-    `
-  }
+/* ── HELPERS ────────────────────────────────────────────── */
+function showError(msg) {
+  const bar = document.getElementById("error-bar")
+  bar.innerHTML = msg
+  bar.classList.add("visible")
 }
 
-// app.js is a module — it sets window.supabase after it runs
-// poll briefly until it's available
-function waitForSupabase(){
-  return new Promise((resolve) => {
-    if(window.supabase) return resolve()
-    const interval = setInterval(() => {
-      if(window.supabase){
-        clearInterval(interval)
-        resolve()
-      }
-    }, 50)
-    // give up after 3s
-    setTimeout(() => { clearInterval(interval); resolve() }, 3000)
-  })
+function hideError() {
+  document.getElementById("error-bar").classList.remove("visible")
 }
 
-// load credits once DOM is ready
-document.addEventListener("DOMContentLoaded", loadCredits)
+function setResultLoading(on) {
+  document.getElementById("empty-state").style.display     = on ? "none"  : "none"
+  document.getElementById("result-shimmer").style.display  = on ? "block" : "none"
+  document.getElementById("result-img-wrap").style.display = on ? "none"  : "none"
+  document.getElementById("share-row").style.display       = "none"
+  document.getElementById("result-dot").classList.toggle("active", false)
+}
 
+function showResult(src) {
+  document.getElementById("result-shimmer").style.display  = "none"
+  document.getElementById("empty-state").style.display     = "none"
+  document.getElementById("result-img-wrap").style.display = "block"
+  document.getElementById("result-img").src                = src
+  document.getElementById("share-row").style.display       = "flex"
+  document.getElementById("result-dot").classList.add("active")
+}
 
-/* ── GENERATE SKETCH ── */
-
-window.generateSketch = async function(){
+/* ── GENERATE ───────────────────────────────────────────── */
+window.generateSketch = async function() {
 
   await waitForSupabase()
+  hideError()
 
-  // 1. Auth check
+  // Auth
   const { data: userData } = await window.supabase.auth.getUser()
-  if(!userData.user){
+  if (!userData.user) {
     alert("Please login to generate artwork.")
     window.location.href = "/login/"
     return
   }
 
-  // 2. Image check
-  if(!uploadedImage){
-    alert("Please upload an image first.")
+  // Image
+  if (!uploadedImage) {
+    showError("Please upload a photo first.")
     return
   }
 
-  // 3. Credits check
+  // Credits
   const { data: profile } = await window.supabase
-    .from("profiles")
-    .select("credits")
-    .eq("id", userData.user.id)
-    .single()
+    .from("profiles").select("credits, is_admin").eq("id", userData.user.id).single()
 
-  if(!profile || profile.credits < 1){
-    document.getElementById("result").innerHTML = `
-      <p class="error-msg">You have no credits left. <a href="/dashboard/">Buy more credits →</a></p>
-    `
+  if (!profile?.is_admin && (!profile || profile.credits < 1)) {
+    document.getElementById("no-credits-bar").classList.add("visible")
     return
   }
 
-  // 4. Lock button + show processing state
+  document.getElementById("no-credits-bar").classList.remove("visible")
+
+  // Lock UI
   const btn = document.getElementById("generate-btn")
-  btn.disabled = true
-  btn.innerText = "Generating..."
+  btn.disabled  = true
+  btn.textContent = "Generating..."
 
-  const style = document.getElementById("style").value
+  setResultLoading(true)
+  startProgress()
+
+  const style  = document.getElementById("style").value
   const prompt = document.getElementById("prompt").value
-
-  document.getElementById("result").innerHTML = `
-    <p>Processing with AI...</p>
-    <div class="preview-grid">
-      <div class="preview-box">
-        <p>Original Photo</p>
-        <img src="${uploadedImage}">
-      </div>
-    </div>
-  `
 
   try {
 
-    // 5. Get session token
     const { data: sessionData } = await window.supabase.auth.getSession()
-
-    if(!sessionData.session){
+    if (!sessionData.session) {
       alert("Session expired. Please login again.")
       window.location.href = "/login/"
       return
     }
 
-    // 6. Compress image before sending (Vertex has ~1MB base64 limit —
-    //    raw camera photos are often 2-5MB and cause a silent empty {} response)
     const compressedImage = await compressImage(uploadedImage)
 
-    // 7. Call edge function
-    const response = await fetch(
-      "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/generate-sketch",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + sessionData.session.access_token
-        },
-        body: JSON.stringify({
-          image: compressedImage,
-          style: style,
-          prompt: prompt
-        })
-      }
-    )
+    const response = await fetch(EDGE_FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type":  "application/json",
+        "Authorization": "Bearer " + sessionData.session.access_token
+      },
+      body: JSON.stringify({ image: compressedImage, style, prompt })
+    })
 
     const result = await response.json()
 
-    // 7. Check for error in response
-    if(!result.result){
-      throw new Error(result.error || "No image returned from AI.")
+    if (!result.result) throw new Error(result.error || "No image returned from AI.")
+
+    // Deduct credit
+    if (!profile?.is_admin) {
+      await window.supabase
+        .from("profiles")
+        .update({ credits: profile.credits - 1 })
+        .eq("id", userData.user.id)
+      document.getElementById("credits-display").innerHTML =
+        `<div class="credits-badge">${profile.credits - 1} credits remaining</div>`
     }
 
-    // 8. Deduct credit
-    await window.supabase
-      .from("profiles")
-      .update({ credits: profile.credits - 1 })
-      .eq("id", userData.user.id)
+    generatedResult = result.result
+    finishProgress()
+    setTimeout(() => showResult(generatedResult), 600)
 
-    // 9. Show result — both original AND generated side by side
-    document.getElementById("result").innerHTML = `
-      <h3>Result</h3>
-      <div class="preview-grid">
-        <div class="preview-box">
-          <p>Original</p>
-          <img src="${uploadedImage}">
-        </div>
-        <div class="preview-box">
-          <p>Generated Art</p>
-          <img src="${result.result}">
-        </div>
-      </div>
-    `
-
-    // 10. Update credits badge
-    document.getElementById("credits-display").innerHTML = `
-      <div class="credits-badge">⚡ ${profile.credits - 1} credits remaining</div>
-    `
-
-  } catch(err) {
-    document.getElementById("result").innerHTML = `
-      <p class="error-msg">Something went wrong: ${err.message}</p>
-    `
+  } catch (err) {
+    resetProgress()
+    setResultLoading(false)
+    document.getElementById("empty-state").style.display = "flex"
+    showError(`Something went wrong: ${err.message}`)
   } finally {
-    btn.disabled = false
-    btn.innerText = "Generate Sketch"
+    btn.disabled    = false
+    btn.textContent = "Generate Artwork"
   }
+}
 
+/* ── SHARE ──────────────────────────────────────────────── */
+window.shareTwitter = function() {
+  const text = encodeURIComponent("Just transformed my photo into artwork using Beo AI Tools 🎨✨")
+  const url  = encodeURIComponent("https://listentobeo.github.io/tools/photo-to-sketch-online/")
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank")
+}
+
+window.shareWhatsApp = function() {
+  const text = encodeURIComponent("Check out this AI art I made with Beo AI Tools! https://listentobeo.github.io/tools/photo-to-sketch-online/")
+  window.open(`https://wa.me/?text=${text}`, "_blank")
+}
+
+window.downloadImage = function() {
+  if (!generatedResult) return
+  const a    = document.createElement("a")
+  a.href     = generatedResult
+  a.download = `beo-ai-sketch-${Date.now()}.png`
+  a.click()
 }
 
 </script>
-
 </body>
 </html>
