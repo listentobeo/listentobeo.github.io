@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Mural Visualizer — See Your Mural Before You Paint | Beo AI Tools</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Upload a photo of your wall and see how a mural will look before you paint. Free AI mural visualizer by Beo Art Studio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{
+  --gold:#d4a017;--gold-dim:#a07a10;--gold-glow:rgba(212,160,23,0.13);
+  --bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;
+  --border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.35);
+  --text:#f0ede8;--muted:#777;--danger:#ff5c5c;--success:#2ecc71;
+  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6}
+
+.tool-wrap{width:100%;max-width:1100px;margin:0 auto;padding:48px 24px 80px}
+
+/* ── HERO ── */
+.tool-hero{text-align:center;margin-bottom:40px}
+.tool-hero .tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.25);
+  color:var(--gold);font-size:11px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px}
+.tool-hero h1{
+  font-family:var(--font-display);font-size:clamp(28px,5vw,52px);
+  font-weight:800;letter-spacing:-0.03em;line-height:1.1;
+  background:linear-gradient(135deg,#f0ede8 30%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px}
+.tool-hero p{color:var(--muted);font-size:15px;font-weight:300;max-width:500px;margin:0 auto 20px;line-height:1.7}
+.hero-meta{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:20px}
+.hero-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.hero-pill svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.credits-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--surface2);border:1px solid var(--border-gold);
+  color:var(--gold);font-size:13px;font-weight:500;padding:5px 14px;border-radius:100px}
+
+/* ── LAYOUT ── */
+.tool-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+@media(max-width:760px){.tool-layout{grid-template-columns:1fr}}
+.controls-col{display:flex;flex-direction:column;gap:0}
+.result-col{display:block !important}
+
+/* ── PANEL ── */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.panel:last-child{margin-bottom:0}
+.panel.result-panel{height:100%;margin-bottom:0;display:flex;flex-direction:column}
+.panel-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:8px;flex-shrink:0}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background 0.3s,box-shadow 0.3s}
+.dot.active{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.panel-body{padding:16px}
+.result-panel-body{padding:0;flex:1;display:flex;flex-direction:column}
+
+/* ── UPLOAD ── */
+.upload-zone{
+  border:2px dashed rgba(212,160,23,0.2);border-radius:var(--radius-sm);
+  padding:32px 20px;text-align:center;cursor:pointer;
+  transition:border-color 0.2s,background 0.2s;position:relative;background:var(--surface2)}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--gold);background:var(--gold-glow)}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{width:40px;height:40px;margin:0 auto 10px;border:1px solid rgba(212,160,23,0.25);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.upload-icon svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.upload-zone p{font-size:13px;color:var(--muted)}
+.upload-zone strong{color:var(--gold);font-weight:500}
+.upload-zone small{display:block;margin-top:3px;font-size:11px;color:#444}
+.upload-tip{font-size:11px;color:var(--muted);margin-top:10px;padding:8px 12px;background:rgba(212,160,23,0.05);border-radius:var(--radius-sm);border-left:2px solid var(--gold);line-height:1.5}
+
+/* ── PREVIEW ── */
+.preview-img-wrap{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2)}
+.preview-img-wrap img{width:100%;display:block;max-height:300px;object-fit:cover}
+.change-btn{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.75);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;backdrop-filter:blur(4px)}
+
+/* ── STYLE GRID ── */
+.style-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:480px){.style-grid{grid-template-columns:repeat(2,1fr)}}
+.style-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:10px 6px 9px;
+  text-align:center;cursor:pointer;
+  transition:border-color 0.15s,background 0.15s,transform 0.1s;
+  user-select:none;display:flex;flex-direction:column;align-items:center;gap:5px}
+.style-card:hover{border-color:rgba(212,160,23,0.3);transform:translateY(-1px)}
+.style-card.active{border-color:var(--gold);background:var(--gold-glow)}
+.style-card svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.15s}
+.style-card.active svg{stroke:var(--gold)}
+.style-card span{font-size:10px;font-weight:500;color:var(--muted);font-family:var(--font-display);letter-spacing:0.04em;transition:color 0.15s}
+.style-card.active span{color:var(--gold)}
+
+/* ── PROMPT ── */
+.prompt-wrap{margin-bottom:14px}
+.prompt-wrap label{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-family:var(--font-display);font-weight:700}
+.prompt-wrap textarea{width:100%;height:72px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);font-size:13px;padding:10px 12px;resize:none;outline:none;transition:border-color 0.2s}
+.prompt-wrap textarea:focus{border-color:rgba(212,160,23,0.4)}
+.prompt-wrap textarea::placeholder{color:#3a3a4a}
+
+/* ── GENERATE BTN ── */
+.generate-btn{width:100%;padding:14px;background:var(--gold);color:#0d0d12;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:opacity 0.2s,transform 0.1s}
+.generate-btn:hover:not(:disabled){opacity:0.88;transform:translateY(-1px)}
+.generate-btn:disabled{cursor:not-allowed;background:#222230;color:#444}
+
+/* ── BOOK CTA ── */
+.book-cta{
+  margin-top:12px;padding:12px 16px;
+  background:rgba(212,160,23,0.05);border:1px solid rgba(212,160,23,0.15);
+  border-radius:var(--radius-sm);text-align:center}
+.book-cta p{font-size:12px;color:var(--muted);margin-bottom:8px}
+.book-cta a{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--gold);font-size:12px;font-weight:600;
+  text-decoration:none;font-family:var(--font-display);letter-spacing:0.04em}
+.book-cta a svg{width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── PROGRESS ── */
+.progress-wrap{margin-top:14px;display:none}
+.progress-wrap.visible{display:block}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px}
+.status-text{color:var(--gold);font-weight:500}
+.progress-track{height:2px;background:rgba(255,255,255,0.06);border-radius:1px;overflow:visible;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:1px;width:0%;transition:width 0.35s ease;position:relative}
+.progress-fill::after{content:'';position:absolute;right:-3px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+
+/* ── EMPTY STATE ── */
+.empty-result{
+  flex:1;min-height:420px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;
+  background:var(--surface2);padding:40px 20px;text-align:center}
+.empty-icon-wrap{width:64px;height:64px;border-radius:16px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center}
+.empty-icon-wrap svg{width:28px;height:28px;stroke:rgba(212,160,23,0.3);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.empty-result h3{font-family:var(--font-display);font-size:15px;font-weight:700;color:rgba(255,255,255,0.15);letter-spacing:-0.01em}
+.empty-result p{font-size:12px;color:rgba(255,255,255,0.08);max-width:200px;line-height:1.5}
+.empty-hint{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(212,160,23,0.25);font-family:var(--font-display);letter-spacing:0.06em;text-transform:uppercase}
+.empty-hint svg{width:16px;height:16px;stroke:rgba(212,160,23,0.25);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){.empty-hint{display:none}}
+
+/* ── SHIMMER ── */
+.shimmer{flex:1;min-height:420px;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.6s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── RESULT ── */
+.result-img-wrap{position:relative;flex:1}
+.result-img-wrap img{width:100%;display:block}
+.render-overlay{position:absolute;inset:0;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity 0.35s ease;z-index:2}
+.render-overlay.hidden{opacity:0;pointer-events:none}
+.render-overlay p{font-size:12px;color:var(--muted);font-family:var(--font-display);letter-spacing:0.1em;text-transform:uppercase}
+.render-spinner{width:28px;height:28px;border:2px solid rgba(212,160,23,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SHARE ── */
+.share-row{padding:12px 14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.share-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:700;margin-right:2px}
+.share-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;text-decoration:none;transition:border-color 0.15s,color 0.15s,background 0.15s}
+.share-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.share-btn:hover{border-color:rgba(255,255,255,0.18);background:#1e1e2a}
+.share-btn.tw:hover{border-color:#1da1f2;color:#1da1f2}
+.share-btn.dl{border-color:var(--border-gold);color:var(--gold)}
+.share-btn.dl:hover{background:var(--gold-glow)}
+.share-btn.native{background:var(--gold);color:#0d0d12;border-color:var(--gold);font-weight:700}
+.share-btn.native:hover{opacity:0.88}
+.share-btn.native svg{stroke:#0d0d12}
+.share-hint{font-size:11px;color:var(--muted);padding:0 14px 12px;display:none;flex-shrink:0}
+.share-hint.visible{display:block}
+
+/* ── RESULT BOOK CTA ── */
+.result-book-cta{
+  padding:14px 16px;border-top:1px solid var(--border);
+  background:rgba(212,160,23,0.04);
+  display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;flex-shrink:0}
+.result-book-cta.visible{display:flex}
+.result-book-cta p{font-size:12px;color:var(--muted)}
+.result-book-cta a{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--gold);color:#0d0d12;
+  padding:8px 16px;border-radius:6px;
+  font-size:12px;font-weight:700;font-family:var(--font-display);
+  letter-spacing:0.06em;text-decoration:none;white-space:nowrap;
+  transition:opacity 0.2s}
+.result-book-cta a:hover{opacity:0.88}
+.result-book-cta a svg{width:12px;height:12px;stroke:#0d0d12;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── ERRORS ── */
+.error-bar{background:rgba(255,92,92,0.07);border:1px solid rgba(255,92,92,0.2);border-radius:var(--radius-sm);color:var(--danger);padding:10px 14px;font-size:13px;margin-top:10px;display:none}
+.error-bar.visible{display:block}
+.no-credits-bar{background:var(--gold-glow);border:1px solid var(--border-gold);border-radius:var(--radius-sm);color:var(--gold);padding:10px 14px;font-size:13px;margin-top:10px;text-align:center;display:none}
+.no-credits-bar.visible{display:block}
+.no-credits-bar a{color:var(--gold);font-weight:600;text-decoration:underline}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="header"></div>
+
+<div class="tool-wrap">
+
+  <!-- HERO -->
+  <div class="tool-hero">
+    <div class="tag">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Mural Visualizer
+    </div>
+    <h1>See Your Mural Before You Paint</h1>
+    <p>Upload a photo of your wall, choose a style, and see exactly how a mural will look — before spending a single naira on paint.</p>
+    <div class="hero-meta">
+      <div class="hero-pill">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Fast AI preview
+      </div>
+      <div class="hero-pill">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Realistic placement
+      </div>
+      <div class="hero-pill">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        No app needed
+      </div>
+    </div>
+    <div id="credits-display"></div>
+  </div>
+
+  <!-- TOOL LAYOUT -->
+  <div class="tool-layout">
+
+    <!-- LEFT — CONTROLS -->
+    <div class="controls-col">
+
+      <!-- Upload -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="dot" id="upload-dot"></span>
+          Upload Your Wall Photo
+        </div>
+        <div class="panel-body">
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="upload" accept="image/*">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <p><strong>Click to upload</strong> or drag &amp; drop</p>
+            <small>Photo of your wall — JPG, PNG, WEBP</small>
+          </div>
+          <div id="preview-wrap" style="display:none">
+            <div class="preview-img-wrap">
+              <img id="preview-img" src="" alt="Your wall">
+              <button class="change-btn" onclick="resetUpload()">Change photo</button>
+            </div>
+          </div>
+          <p class="upload-tip">
+            💡 <strong>Best results:</strong> Stand facing the wall, use good lighting, keep the full wall in frame including any furniture nearby.
+          </p>
+        </div>
+      </div>
+
+      <!-- Style + Generate -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="dot active"></span>
+          Choose Mural Style
+        </div>
+        <div class="panel-body">
+          <input type="hidden" id="style" value="botanical">
+
+          <div class="style-grid">
+            <div class="style-card active" onclick="selectStyle('botanical',this)">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Botanical</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('abstract',this)">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              <span>Abstract</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('minimal',this)">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              <span>Minimal</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('tribal',this)">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>Tribal</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('nature',this)">
+              <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22"/><path d="M9.25 14.5C9.25 14.5 7 17 7 20H21C21 12 16 8 17 8"/></svg>
+              <span>Nature</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('kids',this)">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              <span>Kids Room</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('urban',this)">
+              <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/></svg>
+              <span>Urban / Graffiti</span>
+            </div>
+            <div class="style-card" onclick="selectStyle('portrait',this)">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>Portrait</span>
+            </div>
+          </div>
+
+          <div class="prompt-wrap">
+            <label>Describe your vision (optional)</label>
+            <textarea id="prompt" placeholder="e.g. tropical forest with monkeys, blue and green tones, for a children's bedroom..."></textarea>
+          </div>
+
+          <button class="generate-btn" id="generate-btn" onclick="generateMural()">
+            Visualize Mural
+          </button>
+
+          <div class="progress-wrap" id="progress-wrap">
+            <div class="progress-label">
+              <span class="status-text" id="status-text">Preparing...</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+          </div>
+
+          <div class="error-bar" id="error-bar"></div>
+          <div class="no-credits-bar" id="no-credits-bar">
+            You have no credits left. <a href="/dashboard/">Buy more credits →</a>
+          </div>
+
+          <!-- Book real mural CTA -->
+          <div class="book-cta">
+            <p>Happy with a design? Get it painted for real.</p>
+            <a href="https://www.beoarts.com/p/contact-me.html" target="_blank">
+              Book Beo Art Studio
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /controls-col -->
+
+    <!-- RIGHT — RESULT -->
+    <div class="result-col" id="result-col">
+      <div class="panel result-panel">
+        <div class="panel-header">
+          <span class="dot" id="result-dot"></span>
+          Mural Preview
+        </div>
+
+        <div class="result-panel-body">
+
+          <!-- Empty state -->
+          <div class="empty-result" id="empty-state">
+            <div class="empty-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <h3>Your mural preview appears here</h3>
+            <p>Upload a wall photo and choose a style</p>
+            <div class="empty-hint">
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              Upload &amp; visualize
+            </div>
+          </div>
+
+          <!-- Shimmer -->
+          <div class="shimmer" id="result-shimmer" style="display:none"></div>
+
+          <!-- Result -->
+          <div class="result-img-wrap" id="result-img-wrap" style="display:none">
+            <div class="render-overlay" id="render-overlay">
+              <div class="render-spinner"></div>
+              <p>Rendering...</p>
+            </div>
+            <img id="result-img" src="" alt="Mural preview" onload="imageLoaded()">
+          </div>
+
+          <!-- Share row -->
+          <div class="share-row" id="share-row" style="display:none">
+            <span class="share-label">Share</span>
+            <button class="share-btn native" id="native-share-btn" onclick="nativeShare()" style="display:none">
+              <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              Share
+            </button>
+            <button class="share-btn tw" id="twitter-btn" onclick="shareTwitter()">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              Twitter
+            </button>
+            <button class="share-btn dl" onclick="downloadImage()">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+            </button>
+          </div>
+
+          <div class="share-hint" id="share-hint">
+            To share on Instagram or TikTok — download and open the app on your phone.
+          </div>
+
+          <!-- Book real mural CTA — shown after result -->
+          <div class="result-book-cta" id="result-book-cta">
+            <p>Love this design? Get it painted on your real wall.</p>
+            <a href="https://www.beoarts.com/p/contact-me.html" target="_blank">
+              Book Beo Art Studio
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- /result-col -->
+
+  </div><!-- /tool-layout -->
+</div><!-- /tool-wrap -->
+
+<div id="footer"></div>
+
+<script type="module" src="/assets/js/app.js"></script>
+<script>
+
+const EDGE_FUNCTION_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/mural-visualizer"
+
+let uploadedImage   = null
+let generatedResult = null
+
+/* ── FILE INPUT ── */
+const fileInput = document.getElementById("upload")
+fileInput.addEventListener("change", handleFileSelect)
+
+const zone = document.getElementById("upload-zone")
+zone.addEventListener("dragover",  e => { e.preventDefault(); zone.classList.add("drag-over") })
+zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"))
+zone.addEventListener("drop", e => {
+  e.preventDefault(); zone.classList.remove("drag-over")
+  const f = e.dataTransfer.files[0]; if(f) loadFile(f)
+})
+
+function handleFileSelect(){ const f = fileInput.files[0]; if(f) loadFile(f) }
+
+function loadFile(file){
+  const reader = new FileReader()
+  reader.onload = e => {
+    uploadedImage = e.target.result
+    document.getElementById("upload-zone").style.display  = "none"
+    document.getElementById("preview-wrap").style.display = "block"
+    document.getElementById("preview-img").src            = uploadedImage
+    document.getElementById("upload-dot").classList.add("active")
+  }
+  reader.readAsDataURL(file)
+}
+
+function resetUpload(){
+  uploadedImage = null; fileInput.value = ""
+  document.getElementById("upload-zone").style.display  = "block"
+  document.getElementById("preview-wrap").style.display = "none"
+  document.getElementById("upload-dot").classList.remove("active")
+}
+
+/* ── STYLE SELECTOR ── */
+window.selectStyle = function(style, el){
+  document.getElementById("style").value = style
+  document.querySelectorAll(".style-card").forEach(c => c.classList.remove("active"))
+  el.classList.add("active")
+}
+
+/* ── SUPABASE WAIT ── */
+function waitForSupabase(){
+  return new Promise(resolve => {
+    if(window.supabase) return resolve()
+    const iv = setInterval(() => { if(window.supabase){ clearInterval(iv); resolve() } }, 50)
+    setTimeout(() => { clearInterval(iv); resolve() }, 3000)
+  })
+}
+
+/* ── CREDITS ── */
+async function loadCredits(){
+  await waitForSupabase()
+  const { data } = await window.supabase.auth.getUser()
+  if(!data.user) return
+  const { data: profile } = await window.supabase
+    .from("profiles").select("credits").eq("id", data.user.id).single()
+  if(profile){
+    document.getElementById("credits-display").innerHTML =
+      `<div class="credits-badge">⚡ ${profile.credits} credits remaining</div>`
+  }
+}
+document.addEventListener("DOMContentLoaded", loadCredits)
+
+/* ── COMPRESSION ── */
+function compressImage(dataUrl, maxWidth=1024, quality=0.85){
+  return new Promise(resolve => {
+    const img = new Image()
+    img.onload = function(){
+      let {width,height} = img
+      if(width > maxWidth){ height = Math.round(height*maxWidth/width); width = maxWidth }
+      const c = document.createElement("canvas"); c.width=width; c.height=height
+      c.getContext("2d").drawImage(img,0,0,width,height)
+      resolve(c.toDataURL("image/jpeg", quality))
+    }
+    img.src = dataUrl
+  })
+}
+
+/* ── PROGRESS ── */
+let progressTimer = null, currentProgress = 0
+const statusMessages = [
+  "Analysing your wall...",
+  "Choosing composition...",
+  "Placing the mural...",
+  "Blending with room...",
+  "Almost ready..."
+]
+
+function startProgress(){
+  currentProgress = 0
+  const fill = document.getElementById("progress-fill")
+  const status = document.getElementById("status-text")
+  document.getElementById("progress-wrap").classList.add("visible")
+  fill.style.width = "0%"; let msgIdx = 0
+  status.textContent = statusMessages[0]
+  progressTimer = setInterval(() => {
+    if(currentProgress < 80){
+      const step = currentProgress < 40 ? 3.5 : currentProgress < 65 ? 1.8 : 0.5
+      currentProgress = Math.min(currentProgress + step, 80)
+      fill.style.width = currentProgress + "%"
+      const ni = Math.floor((currentProgress / 80) * statusMessages.length)
+      if(ni !== msgIdx && ni < statusMessages.length){ msgIdx = ni; status.textContent = statusMessages[msgIdx] }
+    }
+  }, 200)
+}
+
+function finishProgress(){
+  clearInterval(progressTimer)
+  const fill = document.getElementById("progress-fill")
+  fill.style.transition = "width 0.5s ease"; fill.style.width = "100%"
+  document.getElementById("status-text").textContent = "Done!"
+  setTimeout(() => {
+    document.getElementById("progress-wrap").classList.remove("visible")
+    fill.style.width = "0%"; fill.style.transition = "width 0.35s ease"
+  }, 300)
+}
+
+function resetProgress(){
+  clearInterval(progressTimer)
+  document.getElementById("progress-wrap").classList.remove("visible")
+  document.getElementById("progress-fill").style.width = "0%"
+}
+
+/* ── RESULT STATES ── */
+function showError(msg){ const b=document.getElementById("error-bar"); b.innerHTML=msg; b.classList.add("visible") }
+function hideError(){ document.getElementById("error-bar").classList.remove("visible") }
+
+function showResultLoading(){
+  document.getElementById("empty-state").style.display     = "none"
+  document.getElementById("result-shimmer").style.display  = "block"
+  document.getElementById("result-img-wrap").style.display = "none"
+  document.getElementById("share-row").style.display       = "none"
+  document.getElementById("result-book-cta").classList.remove("visible")
+}
+
+function showResult(src){
+  document.getElementById("empty-state").style.display    = "none"
+  document.getElementById("result-shimmer").style.display = "none"
+  document.getElementById("result-img-wrap").style.display = "block"
+  document.getElementById("share-row").style.display       = "none"
+  document.getElementById("result-dot").classList.add("active")
+  document.getElementById("render-overlay").classList.remove("hidden")
+  document.getElementById("result-img").src = src
+}
+
+window.imageLoaded = function(){
+  document.getElementById("render-overlay").classList.add("hidden")
+  document.getElementById("share-row").style.display = "flex"
+  document.getElementById("result-book-cta").classList.add("visible")
+  setupShareButtons()
+}
+
+/* ── GENERATE ── */
+window.generateMural = async function(){
+  await waitForSupabase()
+  hideError()
+  document.getElementById("no-credits-bar").classList.remove("visible")
+
+  const { data: userData } = await window.supabase.auth.getUser()
+  if(!userData.user){
+    alert("Please login to visualize a mural.")
+    window.location.href = "/login/"; return
+  }
+
+  if(!uploadedImage){ showError("Please upload a photo of your wall first."); return }
+
+  const { data: profile } = await window.supabase
+    .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
+
+  if(!profile || profile.credits < 1){
+    document.getElementById("no-credits-bar").classList.add("visible"); return
+  }
+
+  const btn = document.getElementById("generate-btn")
+  btn.disabled = true; btn.textContent = "Visualizing..."
+  showResultLoading()
+  startProgress()
+
+  const style  = document.getElementById("style").value
+  const prompt = document.getElementById("prompt").value
+
+  try {
+    const { data: sessionData } = await window.supabase.auth.getSession()
+    if(!sessionData.session){
+      alert("Session expired. Please login again.")
+      window.location.href = "/login/"; return
+    }
+
+    const compressedImage = await compressImage(uploadedImage)
+
+    const response = await fetch(EDGE_FUNCTION_URL, {
+      method: "POST",
+      headers:{
+        "Content-Type":  "application/json",
+        "Authorization": "Bearer " + sessionData.session.access_token
+      },
+      body: JSON.stringify({ image: compressedImage, style, prompt })
+    })
+
+    const result = await response.json()
+    if(!result.result) throw new Error(result.error || "No image returned from AI.")
+
+    generatedResult = result.result
+    showResult(generatedResult)
+    finishProgress()
+
+    // Deduct credit + update stats
+    const newCredits = profile.credits - 1
+    const { error: updateError } = await window.supabase
+      .from("profiles")
+      .update({
+        credits:          newCredits,
+        generations_used: (profile.generations_used ?? 0) + 1,
+        last_generation:  new Date().toISOString()
+      })
+      .eq("id", userData.user.id)
+
+    if(!updateError){
+      document.getElementById("credits-display").innerHTML =
+        `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
+    } else {
+      console.error("Credits update failed — check Supabase RLS policies:", updateError)
+    }
+
+  } catch(err){
+    resetProgress()
+    document.getElementById("result-shimmer").style.display  = "none"
+    document.getElementById("empty-state").style.display     = "flex"
+    showError("Something went wrong: " + err.message)
+  } finally {
+    btn.disabled = false; btn.textContent = "Visualize Mural"
+  }
+}
+
+/* ── SHARE ── */
+function setupShareButtons(){
+  const isMobile  = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  const canNative = isMobile && !!navigator.canShare
+  document.getElementById("native-share-btn").style.display = canNative ? "inline-flex" : "none"
+  document.getElementById("twitter-btn").style.display      = canNative ? "none" : "inline-flex"
+  if(!canNative) document.getElementById("share-hint").classList.add("visible")
+}
+
+window.nativeShare = async function(){
+  if(!generatedResult) return
+  try {
+    const [meta, b64] = generatedResult.split(",")
+    const mime = meta.match(/:(.*?);/)[1]
+    const bytes = atob(b64); const arr = new Uint8Array(bytes.length)
+    for(let i=0;i<bytes.length;i++) arr[i]=bytes.charCodeAt(i)
+    const file = new File([new Blob([arr],{type:mime})], "beo-mural-preview.png", {type:mime})
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({title:"My Mural Design", text:"See how this mural looks on my wall — designed with Beo AI Tools ✨", files:[file]})
+    } else { downloadImage() }
+  } catch(err){ if(err.name !== "AbortError") downloadImage() }
+}
+
+window.shareTwitter = function(){
+  const t = encodeURIComponent("Just visualized a mural on my wall using Beo AI Tools 🎨 — see how it looks before painting!")
+  const u = encodeURIComponent("https://listentobeo.github.io/tools/mural-visualizer/")
+  window.open("https://twitter.com/intent/tweet?text="+t+"&url="+u,"_blank")
+}
+
+window.downloadImage = function(){
+  if(!generatedResult) return
+  const a = document.createElement("a")
+  a.href = generatedResult; a.download = "beo-mural-preview-"+Date.now()+".png"; a.click()
+}
+
+</script>
+</body>
+</html>
