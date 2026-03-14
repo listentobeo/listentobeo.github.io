@@ -392,9 +392,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   </div><!-- /tool-layout -->
 </div><!-- /tool-wrap -->
 
+<div id="footer"></div>
 
-
-
+<script type="module" src="/assets/js/app.js"></script>
 <script>
 
 const EDGE_FUNCTION_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/generate-sketch"
@@ -456,6 +456,7 @@ async function loadCredits(){
   await waitForSupabase()
   const { data } = await window.supabase.auth.getUser()
   if(!data.user) return
+  // Always fetch fresh from Supabase — never use cached/localStorage value
   const { data: profile } = await window.supabase
     .from("profiles").select("credits").eq("id", data.user.id).single()
   if(profile){
@@ -463,6 +464,7 @@ async function loadCredits(){
       `<div class="credits-badge">⚡ ${profile.credits} credits remaining</div>`
   }
 }
+// Load fresh credits on every page load — source of truth is always Supabase
 document.addEventListener("DOMContentLoaded", loadCredits)
 
 /* ── PROGRESS ───────────────────────────────────── */
@@ -573,7 +575,7 @@ window.generateSketch = async function(){
 
   // Credits — only fetch credits column, no is_admin needed
   const { data: profile } = await window.supabase
-    .from("profiles").select("credits").eq("id", userData.user.id).single()
+    .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
 
   // 9999 = admin bypass set manually in Supabase
   if(!profile || profile.credits < 1){
@@ -610,18 +612,24 @@ window.generateSketch = async function(){
     const result = await response.json()
     if(!result.result) throw new Error(result.error || "No image returned from AI.")
 
-    // Deduct credit (9999 acts as admin bypass — won't reach 0 for a long time)
-    await window.supabase
-      .from("profiles")
-      .update({ credits: profile.credits - 1 })
-      .eq("id", userData.user.id)
-
-    document.getElementById("credits-display").innerHTML =
-      `<div class="credits-badge">⚡ ${profile.credits - 1} credits remaining</div>`
-
     generatedResult = result.result
     showResult(generatedResult)
     finishProgress()
+
+    // Deduct credit + increment generations_used — always write to Supabase
+    const newCredits = profile.credits - 1
+    await window.supabase
+      .from("profiles")
+      .update({
+        credits:          newCredits,
+        generations_used: (profile.generations_used ?? 0) + 1,
+        last_generation:  new Date().toISOString()
+      })
+      .eq("id", userData.user.id)
+
+    // Update badge from the value we just wrote — not a cached variable
+    document.getElementById("credits-display").innerHTML =
+      `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
 
   } catch(err){
     resetProgress()
@@ -688,7 +696,5 @@ window.downloadImage = function(){
 }
 
 </script>
-  <div id="footer"></div>
-  <script type="module" src="/assets/js/app.js"></script>
 </body>
 </html>
