@@ -230,20 +230,20 @@ document.getElementById("result").innerHTML = `
 </div>
 `
 
+const { data } = await supabase.auth.getSession()
+
 const response = await fetch(
 "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/generate-sketch",
 {
 method:"POST",
 headers:{
 "Content-Type":"application/json",
-"apikey":"sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo",
-"Authorization":"Bearer sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+"Authorization":"Bearer " + data.session.access_token
 },
 body: JSON.stringify({
 image: uploadedImage,
 style: style,
-prompt: prompt,
-user_id: user.id
+prompt: prompt
 })
 })
 
