@@ -1,37 +1,35 @@
 <header class="header">
+  <div class="header-inner">
 
-<div class="header-inner">
+    <a href="/" class="logo-link">
+      <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjBee4eUGI6-rkC6O2watPnHvfgh9O1A2Y0at8JOAQpk0T5wF-tODApR-z3ZfRBWtDskB9VBlVPtA9W8wDOFrrYm9nxcXWfFpkZGi4dNLp4ZEn2tli2nwq4MGWiPSRnM_C9SlNMvxsvChmww133gdbKw2eTtnD-Q2ojtdZoLpyiVii2nIpkCz7zMy1O5DI=s300" class="logo">
+    </a>
 
-<a href="/" class="logo-link">
-<img src="https://blogger.googleusercontent.com/img/a/AVvXsEjBee4eUGI6-rkC6O2watPnHvfgh9O1A2Y0at8JOAQpk0T5wF-tODApR-z3ZfRBWtDskB9VBlVPtA9W8wDOFrrYm9nxcXWfFpkZGi4dNLp4ZEn2tli2nwq4MGWiPSRnM_C9SlNMvxsvChmww133gdbKw2eTtnD-Q2ojtdZoLpyiVii2nIpkCz7zMy1O5DI=s300" class="logo">
-</a>
+    <nav class="desktop-nav">
+      <a href="/">Home</a>
+      <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
+      <a href="/tools/">All Tools</a>
+      <a href="https://www.beoarts.com">Main Website</a>
+      <!-- shown only when logged in by app.js -->
+      <a id="dashboard-nav-link" href="/dashboard/" style="display:none;color:#d4a017">Dashboard</a>
+    </nav>
 
-<nav class="desktop-nav">
+    <div class="nav-right">
+      <!-- Dashboard pill — shown when logged in -->
+      <a id="dashboard-btn" href="/dashboard/" style="display:none;background:#1a1a24;border:1px solid rgba(212,160,23,0.35);color:#d4a017;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;text-decoration:none;white-space:nowrap">
+        Dashboard
+      </a>
+      <a id="auth-link" class="login-btn" href="/login/">Login / Sign Up</a>
+      <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    </div>
 
-<a href="/">Home</a>
-<a href="/tools/photo-to-sketch/">Photo to Sketch</a>
-<a href="/tools/">All Tools</a>
-<a href="https://www.beoarts.com">Main Website</a>
-
-</nav>
-
-<div class="nav-right">
-
-<a id="auth-link" class="login-btn" href="/login/">Login/Sign Up</a>
-
-<div class="menu-btn" onclick="toggleMenu()">☰</div>
-
-</div>
-
-</div>
-
+  </div>
 </header>
 
 <nav id="menu" class="menu">
-
-<a href="/">Home</a>
-<a href="/tools/photo-to-sketch/">Photo to Sketch</a>
-<a href="/tools/">All Tools</a>
-<a href="https://www.beoarts.com">Main Website</a>
-
+  <a href="/">Home</a>
+  <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
+  <a href="/tools/">All Tools</a>
+  <a href="https://www.beoarts.com">Main Website</a>
+  <a id="dashboard-mobile-link" href="/dashboard/" style="display:none;color:#d4a017">Dashboard</a>
 </nav>
