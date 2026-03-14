@@ -7,34 +7,24 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
-<style>
-:root {
-  --gold:        #d4a017;
-  --gold-dim:    #a07a10;
-  --gold-glow:   rgba(212,160,23,0.15);
-  --bg:          #0d0d12;
-  --surface:     #13131a;
-  --surface2:    #1a1a24;
-  --border:      rgba(255,255,255,0.07);
-  --border-gold: rgba(212,160,23,0.35);
-  --text:        #f0ede8;
-  --muted:       #777;
-  --danger:      #ff5c5c;
-  --font-display:'Syne', sans-serif;
-  --font-body:   'DM Sans', sans-serif;
-  --radius:      12px;
-  --radius-sm:   8px;
+:root{
+  --gold:#d4a017;--gold-dim:#a07a10;--gold-glow:rgba(212,160,23,0.13);
+  --bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;
+  --border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.35);
+  --text:#f0ede8;--muted:#777;--danger:#ff5c5c;
+  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --radius:12px;--radius-sm:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6}
 
-/* PAGE */
-.tool-wrap{max-width:1020px;margin:0 auto;padding:48px 24px 80px}
+/* ── PAGE ── */
+.tool-wrap{width:100%;max-width:1100px;margin:0 auto;padding:48px 24px 80px}
 
-/* HERO */
+/* ── HERO ── */
 .tool-hero{text-align:center;margin-bottom:40px}
 .tool-hero h1{
-  font-family:var(--font-display);font-size:clamp(28px,5vw,48px);
+  font-family:var(--font-display);font-size:clamp(28px,5vw,52px);
   font-weight:800;letter-spacing:-0.03em;line-height:1.1;
   background:linear-gradient(135deg,#f0ede8 30%,var(--gold) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
@@ -43,30 +33,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .credits-badge{
   display:inline-flex;align-items:center;gap:6px;
   background:var(--surface2);border:1px solid var(--border-gold);
-  color:var(--gold);font-size:13px;font-weight:500;
-  padding:5px 14px;border-radius:100px}
+  color:var(--gold);font-size:13px;font-weight:500;padding:5px 14px;border-radius:100px}
 
-/* LAYOUT — 420px left controls, rest for result */
+/* ── MAIN LAYOUT ──
+   Desktop: two equal columns side by side, both always visible.
+   Before generation: right col shows empty state (art canvas placeholder).
+   After generation: right col shows the result image.
+   Mobile: stacks vertically.
+── */
 .tool-layout{
   display:grid;
-  grid-template-columns:420px 1fr;
+  grid-template-columns:1fr 1fr;
   gap:20px;
-  align-items:start}
-@media(max-width:780px){.tool-layout{grid-template-columns:1fr}}
+  align-items:stretch;         /* both columns same height */
+}
+@media(max-width:760px){
+  .tool-layout{grid-template-columns:1fr}
+}
 
-/* PANEL */
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+/* Left column — controls always visible */
+.controls-col{display:flex;flex-direction:column;gap:0}
+
+/* Right column — always visible (shows empty state until generated) */
+.result-col{display:block !important}
+
+/* ── PANEL ── */
+.panel{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
 .panel:last-child{margin-bottom:0}
+.panel.result-panel{
+  height:100%;margin-bottom:0;
+  display:flex;flex-direction:column}
 .panel-header{
   padding:12px 16px;border-bottom:1px solid var(--border);
   font-family:var(--font-display);font-size:10px;font-weight:700;
   letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);
-  display:flex;align-items:center;gap:8px}
+  display:flex;align-items:center;gap:8px;flex-shrink:0}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background 0.3s,box-shadow 0.3s}
 .dot.active{background:var(--gold);box-shadow:0 0 6px var(--gold)}
 .panel-body{padding:16px}
+.result-panel-body{padding:0;flex:1;display:flex;flex-direction:column}
 
-/* UPLOAD ZONE */
+/* ── UPLOAD ZONE ── */
 .upload-zone{
   border:2px dashed rgba(212,160,23,0.2);border-radius:var(--radius-sm);
   padding:32px 20px;text-align:center;cursor:pointer;
@@ -82,21 +91,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .upload-zone strong{color:var(--gold);font-weight:500}
 .upload-zone small{display:block;margin-top:3px;font-size:11px;color:#444}
 
-/* PREVIEW */
+/* ── PREVIEW ── */
 .preview-img-wrap{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2)}
-.preview-img-wrap img{width:100%;display:block;max-height:340px;object-fit:cover}
+.preview-img-wrap img{width:100%;display:block;max-height:300px;object-fit:cover}
 .change-btn{
   position:absolute;bottom:10px;right:10px;
   background:rgba(0,0,0,0.75);color:#fff;
   border:1px solid rgba(255,255,255,0.15);border-radius:6px;
   padding:5px 10px;font-size:11px;cursor:pointer;backdrop-filter:blur(4px)}
 
-/* STYLE GRID — 3 cols, equal width */
+/* ── STYLE GRID ── */
 .style-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-bottom:14px}
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:8px;margin-bottom:14px}
 .style-card{
   background:var(--surface2);border:1px solid var(--border);
   border-radius:var(--radius-sm);padding:12px 6px 10px;
@@ -110,7 +117,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .style-card span{font-size:11px;font-weight:500;color:var(--muted);font-family:var(--font-display);letter-spacing:0.04em;transition:color 0.15s}
 .style-card.active span{color:var(--gold)}
 
-/* PROMPT */
+/* ── PROMPT ── */
 .prompt-wrap{margin-bottom:14px}
 .prompt-wrap label{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-family:var(--font-display);font-weight:700}
 .prompt-wrap textarea{
@@ -120,7 +127,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .prompt-wrap textarea:focus{border-color:rgba(212,160,23,0.4)}
 .prompt-wrap textarea::placeholder{color:#3a3a4a}
 
-/* GENERATE BUTTON */
+/* ── GENERATE BUTTON ── */
 .generate-btn{
   width:100%;padding:14px;background:var(--gold);color:#0d0d12;
   font-family:var(--font-display);font-size:14px;font-weight:700;
@@ -130,7 +137,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .generate-btn:hover:not(:disabled){opacity:0.88;transform:translateY(-1px)}
 .generate-btn:disabled{cursor:not-allowed;background:#222230;color:#444}
 
-/* PROGRESS */
+/* ── PROGRESS BAR ── */
 .progress-wrap{margin-top:14px;display:none}
 .progress-wrap.visible{display:block}
 .progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px}
@@ -144,31 +151,61 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   width:8px;height:8px;border-radius:50%;background:var(--gold);
   box-shadow:0 0 10px var(--gold),0 0 20px rgba(212,160,23,0.4)}
 
-/* RESULT PANEL */
-.result-col .panel{height:100%}
-.result-panel-body{padding:0}
+/* ── RESULT PANEL BODY ──
+   Uses flex-grow so the content area fills the panel height.
+── */
+.result-panel .result-panel-body{flex:1;display:flex;flex-direction:column}
 
-/* EMPTY STATE */
+/* ── EMPTY STATE — shown before generation ── */
 .empty-result{
-  min-height:340px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:10px;
-  background:var(--surface2);color:#2a2a36;font-size:13px}
-.empty-result svg{width:32px;height:32px;stroke:#2a2a36;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:0.6}
+  flex:1;min-height:400px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;
+  background:var(--surface2);padding:40px 20px;text-align:center}
+.empty-icon-wrap{
+  width:64px;height:64px;border-radius:16px;
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center}
+.empty-icon-wrap svg{width:28px;height:28px;stroke:rgba(212,160,23,0.3);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.empty-result h3{font-family:var(--font-display);font-size:15px;font-weight:700;color:rgba(255,255,255,0.15);letter-spacing:-0.01em}
+.empty-result p{font-size:12px;color:rgba(255,255,255,0.08);max-width:200px;line-height:1.5}
+/* Arrow hint on desktop — points left to controls */
+.empty-hint-arrow{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;color:rgba(212,160,23,0.25);
+  font-family:var(--font-display);letter-spacing:0.06em;text-transform:uppercase}
+.empty-hint-arrow svg{width:16px;height:16px;stroke:rgba(212,160,23,0.25);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){.empty-hint-arrow{display:none}}
 
-/* SHIMMER */
+/* ── SHIMMER ── */
 .shimmer{
-  min-height:340px;
+  flex:1;min-height:400px;
   background:linear-gradient(90deg,var(--surface2) 25%,var(--surface) 50%,var(--surface2) 75%);
   background-size:200% 100%;animation:shimmer 1.6s infinite}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* RESULT IMG */
-.result-img-wrap img{width:100%;display:block}
+/* ── RESULT IMAGE ── */
+.result-img-wrap{position:relative;flex:1}
+.result-img-wrap img{width:100%;display:block;border-radius:0}
 
-/* SHARE ROW */
+/* ── RENDER OVERLAY ── */
+.render-overlay{
+  position:absolute;inset:0;
+  background:var(--surface);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;transition:opacity 0.35s ease;z-index:2}
+.render-overlay.hidden{opacity:0;pointer-events:none}
+.render-overlay p{font-size:12px;color:var(--muted);font-family:var(--font-display);letter-spacing:0.1em;text-transform:uppercase}
+.render-spinner{
+  width:28px;height:28px;border:2px solid rgba(212,160,23,0.15);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SHARE ROW ── */
 .share-row{
   padding:12px 14px;border-top:1px solid var(--border);
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}
 .share-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:700;margin-right:2px}
 .share-btn{
   display:inline-flex;align-items:center;gap:5px;
@@ -185,10 +222,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .share-btn.native{background:var(--gold);color:#0d0d12;border-color:var(--gold);font-weight:700}
 .share-btn.native:hover{opacity:0.88}
 .share-btn.native svg{stroke:#0d0d12}
-.share-hint{font-size:11px;color:var(--muted);margin-top:8px;padding:0 14px 12px;display:none}
+.share-hint{font-size:11px;color:var(--muted);padding:0 14px 12px;display:none;flex-shrink:0}
 .share-hint.visible{display:block}
 
-/* ERRORS */
+/* ── ERRORS ── */
 .error-bar{
   background:rgba(255,92,92,0.07);border:1px solid rgba(255,92,92,0.2);
   border-radius:var(--radius-sm);color:var(--danger);
@@ -202,24 +239,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .no-credits-bar.visible{display:block}
 .no-credits-bar a{color:var(--gold);font-weight:600;text-decoration:underline}
 
-/* DESKTOP RENDER OVERLAY */
-.result-img-wrap{position:relative}
-.render-overlay{
-  position:absolute;inset:0;
-  background:var(--surface);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:12px;transition:opacity 0.35s ease;z-index:2}
-.render-overlay.hidden{opacity:0;pointer-events:none}
-.render-overlay p{font-size:12px;color:var(--muted);font-family:var(--font-display);letter-spacing:0.1em;text-transform:uppercase}
-.render-spinner{
-  width:28px;height:28px;border:2px solid rgba(212,160,23,0.15);
-  border-top-color:var(--gold);border-radius:50%;
-  animation:spin 0.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* RESULT FADE IN */
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.result-reveal{animation:fadeUp 0.4s ease}
+/* ── FADE IN ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result-reveal{animation:fadeUp 0.35s ease}
 </style>
 </head>
 <body>
@@ -336,21 +358,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
     </div><!-- /controls-col -->
 
-    <!-- RIGHT RESULT — only shows after generation -->
-    <div class="result-col" id="result-col" style="display:none">
-      <div class="panel">
+    <!-- RIGHT — result column, always visible -->
+    <div class="result-col" id="result-col">
+      <div class="panel result-panel">
         <div class="panel-header">
-          <span class="dot active" id="result-dot"></span>
+          <span class="dot" id="result-dot"></span>
           Generated Artwork
         </div>
 
         <div class="result-panel-body">
-          <!-- Shimmer while loading -->
+
+          <!-- EMPTY STATE — shown before first generation -->
+          <div class="empty-result" id="empty-state">
+            <div class="empty-icon-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M3 9a2 2 0 0 1 2-2h1l2-3h8l2 3h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            </div>
+            <h3>Your artwork will appear here</h3>
+            <p>Upload a photo and choose a style to get started</p>
+            <div class="empty-hint-arrow">
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              Upload &amp; generate
+            </div>
+          </div>
+
+          <!-- SHIMMER — shown while AI is processing -->
           <div class="shimmer" id="result-shimmer" style="display:none"></div>
 
-          <!-- Result image -->
+          <!-- RESULT IMAGE — shown after generation -->
           <div class="result-img-wrap" id="result-img-wrap" style="display:none">
-            <!-- Overlay shown while image bitmap decodes on desktop -->
             <div class="render-overlay" id="render-overlay">
               <div class="render-spinner"></div>
               <p>Rendering...</p>
@@ -358,33 +393,27 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
             <img id="result-img" src="" alt="Generated artwork" onload="imageLoaded()">
           </div>
 
-          <!-- Share row — shown after result -->
+          <!-- SHARE ROW — shown after result -->
           <div class="share-row" id="share-row" style="display:none">
             <span class="share-label">Share</span>
-
-            <!-- MOBILE: native OS share sheet — Instagram, TikTok, Snapchat, anything installed -->
             <button class="share-btn native" id="native-share-btn" onclick="nativeShare()" style="display:none">
               <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
               Share to Apps
             </button>
-
-            <!-- DESKTOP: Twitter URL share -->
             <button class="share-btn tw" id="twitter-btn" onclick="shareTwitter()">
               <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               Twitter
             </button>
-
-            <!-- ALWAYS: Download -->
             <button class="share-btn dl" onclick="downloadImage()">
               <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download
             </button>
-
           </div>
-          <!-- Desktop hint — only shown on non-mobile -->
+
           <div class="share-hint" id="share-hint">
             To share on Instagram or TikTok — download the image, then open the app on your phone.
           </div>
+
         </div>
       </div>
     </div><!-- /result-col -->
@@ -527,17 +556,14 @@ function hideError(){ document.getElementById("error-bar").classList.remove("vis
 
 /* ── SHOW RESULT ────────────────────────────────── */
 function showResult(src){
-  const col = document.getElementById("result-col")
-  col.style.display = "block"
-  col.classList.add("result-reveal")
-
-  document.getElementById("result-shimmer").style.display  = "none"
+  // Hide empty state, show result image
+  document.getElementById("empty-state").style.display    = "none"
+  document.getElementById("result-shimmer").style.display = "none"
   document.getElementById("result-img-wrap").style.display = "block"
   document.getElementById("share-row").style.display       = "none"
+  document.getElementById("result-dot").classList.add("active")
 
-  // Show spinner overlay while browser decodes the base64 bitmap (noticeable on desktop)
   document.getElementById("render-overlay").classList.remove("hidden")
-  // Setting src triggers browser decode; onload fires when pixels are ready
   document.getElementById("result-img").src = src
 }
 
@@ -549,11 +575,10 @@ window.imageLoaded = function(){
 }
 
 function showResultLoading(){
-  document.getElementById("result-col").style.display      = "block"
+  document.getElementById("empty-state").style.display     = "none"
   document.getElementById("result-shimmer").style.display  = "block"
   document.getElementById("result-img-wrap").style.display = "none"
   document.getElementById("share-row").style.display       = "none"
-  document.getElementById("render-overlay").classList.remove("hidden")
 }
 
 /* ── GENERATE ───────────────────────────────────── */
@@ -639,7 +664,9 @@ window.generateSketch = async function(){
 
   } catch(err){
     resetProgress()
-    document.getElementById("result-col").style.display     = "none"
+    document.getElementById("result-shimmer").style.display  = "none"
+    document.getElementById("result-img-wrap").style.display = "none"
+    document.getElementById("empty-state").style.display     = "flex"
     showError("Something went wrong: " + err.message)
   } finally {
     btn.disabled = false; btn.textContent = "Generate Artwork"
