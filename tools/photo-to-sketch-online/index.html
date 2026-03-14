@@ -618,7 +618,7 @@ window.generateSketch = async function(){
 
     // Deduct credit + increment generations_used — always write to Supabase
     const newCredits = profile.credits - 1
-    await window.supabase
+    const { error: updateError } = await window.supabase
       .from("profiles")
       .update({
         credits:          newCredits,
@@ -627,9 +627,15 @@ window.generateSketch = async function(){
       })
       .eq("id", userData.user.id)
 
-    // Update badge from the value we just wrote — not a cached variable
-    document.getElementById("credits-display").innerHTML =
-      `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
+    if(updateError){
+      // Most likely cause: Supabase RLS policy blocking UPDATE
+      // Fix: run the SQL in Supabase SQL Editor (shown in console)
+      console.error("Credits update failed — check Supabase RLS policies:", updateError)
+    } else {
+      // Update badge only if write succeeded
+      document.getElementById("credits-display").innerHTML =
+        `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
+    }
 
   } catch(err){
     resetProgress()
