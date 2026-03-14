@@ -7,556 +7,203 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
-
 <style>
-/* ── TOKENS ─────────────────────────────────────────────── */
 :root {
-  --gold:       #d4a017;
-  --gold-dim:   #a07a10;
-  --gold-glow:  rgba(212,160,23,0.18);
-  --bg:         #0d0d12;
-  --surface:    #13131a;
-  --surface2:   #1a1a24;
-  --border:     rgba(255,255,255,0.07);
-  --border-gold:rgba(212,160,23,0.35);
-  --text:       #f0ede8;
-  --muted:      #888;
-  --danger:     #ff5c5c;
-  --font-display: 'Syne', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
-  --radius:     12px;
-  --radius-sm:  8px;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-/* ── PAGE LAYOUT ─────────────────────────────────────────── */
-.tool-wrap {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 48px 24px 80px;
-}
-
-/* ── HERO ────────────────────────────────────────────────── */
-.tool-hero {
-  text-align: center;
-  margin-bottom: 48px;
-}
-
-.tool-hero h1 {
-  font-family: var(--font-display);
-  font-size: clamp(32px, 6vw, 52px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  background: linear-gradient(135deg, #f0ede8 30%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 12px;
-}
-
-.tool-hero p {
-  color: var(--muted);
-  font-size: 15px;
-  font-weight: 300;
-  max-width: 460px;
-  margin: 0 auto 20px;
-}
-
-/* ── CREDITS BADGE ───────────────────────────────────────── */
-.credits-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--surface2);
-  border: 1px solid var(--border-gold);
-  color: var(--gold);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 5px 14px;
-  border-radius: 100px;
-}
-
-.credits-badge::before {
-  content: '⚡';
-  font-size: 12px;
-}
-
-/* ── TWO COLUMN LAYOUT ───────────────────────────────────── */
-.tool-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  align-items: start;
-}
-
-@media (max-width: 720px) {
-  .tool-layout { grid-template-columns: 1fr; }
-}
-
-/* ── PANEL ───────────────────────────────────────────────── */
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.panel-header {
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.panel-header .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border);
-}
-
-.panel-header .dot.active {
-  background: var(--gold);
-  box-shadow: 0 0 6px var(--gold);
-}
-
-.panel-body {
-  padding: 18px;
-}
-
-/* ── UPLOAD ZONE ─────────────────────────────────────────── */
-.upload-zone {
-  border: 2px dashed rgba(212,160,23,0.25);
-  border-radius: var(--radius-sm);
-  padding: 36px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  position: relative;
-  background: var(--surface2);
-}
-
-.upload-zone:hover,
-.upload-zone.drag-over {
-  border-color: var(--gold);
-  background: var(--gold-glow);
-}
-
-.upload-zone input[type="file"] {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-}
-
-.upload-icon {
-  width: 44px;
-  height: 44px;
-  margin: 0 auto 12px;
-  border: 2px solid rgba(212,160,23,0.3);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-
-.upload-zone p {
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.upload-zone strong {
-  color: var(--gold);
-  font-weight: 500;
-}
-
-.upload-zone small {
-  display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  color: #555;
-}
-
-/* ── PREVIEW IMAGE ───────────────────────────────────────── */
-.preview-img-wrap {
-  position: relative;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--surface2);
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.preview-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  display: block;
-}
-
-.preview-img-wrap .change-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
-}
-
-/* ── STYLE GRID ──────────────────────────────────────────── */
-.style-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-@media (max-width: 400px) {
-  .style-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-.style-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 8px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, transform 0.1s;
-  user-select: none;
-}
-
-.style-card:hover {
-  border-color: rgba(212,160,23,0.4);
-  transform: translateY(-1px);
-}
-
-.style-card.active {
-  border-color: var(--gold);
-  background: var(--gold-glow);
-}
-
-.style-card .style-icon {
-  font-size: 20px;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.style-card .style-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
-  display: block;
-}
-
-.style-card.active .style-name {
-  color: var(--gold);
-}
-
-/* ── PROMPT INPUT ────────────────────────────────────────── */
-.prompt-wrap {
-  margin-bottom: 16px;
-}
-
-.prompt-wrap label {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
-  font-family: var(--font-display);
-  font-weight: 700;
-}
-
-.prompt-wrap textarea {
-  width: 100%;
-  height: 72px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 13px;
-  padding: 10px 12px;
-  resize: none;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.prompt-wrap textarea:focus {
-  border-color: rgba(212,160,23,0.4);
-}
-
-.prompt-wrap textarea::placeholder {
-  color: #444;
-}
-
-/* ── GENERATE BUTTON ─────────────────────────────────────── */
-.generate-btn {
-  width: 100%;
-  padding: 15px;
-  background: var(--gold);
-  color: #0d0d12;
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-  position: relative;
-  overflow: hidden;
-}
-
-.generate-btn:hover:not(:disabled) {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.generate-btn:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.generate-btn:disabled {
-  cursor: not-allowed;
-  background: #2a2a2a;
-  color: #555;
-}
-
-/* ── PROGRESS BAR ────────────────────────────────────────── */
-.progress-wrap {
-  margin-top: 16px;
-  display: none;
-}
-
-.progress-wrap.visible {
-  display: block;
-}
-
-.progress-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.progress-label .status-text {
-  color: var(--gold);
-  font-weight: 500;
-}
-
-.progress-track {
-  height: 2px;
-  background: var(--border);
-  border-radius: 1px;
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
-  border-radius: 1px;
-  width: 0%;
-  transition: width 0.4s ease;
-  position: relative;
-}
-
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: -2px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 8px var(--gold);
-}
-
-/* ── RESULT PANEL ────────────────────────────────────────── */
-.result-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: none;
-}
-
-.result-panel.visible {
-  display: block;
-  animation: fadeUp 0.4s ease;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.result-img-wrap {
-  position: relative;
-  background: var(--surface2);
-}
-
-.result-img-wrap img {
-  width: 100%;
-  display: block;
-  border-radius: 0;
-}
-
-/* ── SHIMMER (while loading) ─────────────────────────────── */
-.shimmer {
-  width: 100%;
-  aspect-ratio: 1;
-  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ── SHARE BUTTONS ───────────────────────────────────────── */
-.share-row {
-  padding: 14px 16px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.share-label {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-family: var(--font-display);
-  font-weight: 700;
-  margin-right: 4px;
-}
-
-.share-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 13px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--text);
-  cursor: pointer;
-  text-decoration: none;
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.share-btn:hover { border-color: rgba(255,255,255,0.2); background: #222230; }
-.share-btn.tw:hover  { border-color: #1da1f2; color: #1da1f2; }
-.share-btn.wa:hover  { border-color: #25d366; color: #25d366; }
-.share-btn.ig:hover  { border-color: #e1306c; color: #e1306c; }
-.share-btn.dl { border-color: var(--border-gold); color: var(--gold); }
-.share-btn.dl:hover  { background: var(--gold-glow); }
-
-/* ── PROCESSING OVERLAY on result panel ─────────────────── */
-.result-loading {
-  padding: 48px 24px;
-  text-align: center;
-}
-
-.result-loading p {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 16px;
-}
-
-/* ── EMPTY STATE ─────────────────────────────────────────── */
-.empty-result {
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface2);
-  color: #333;
-  font-size: 13px;
-  gap: 10px;
-}
-
-.empty-result .empty-icon { font-size: 32px; opacity: 0.3; }
-
-/* ── ERROR ───────────────────────────────────────────────── */
-.error-bar {
-  background: rgba(255,92,92,0.08);
-  border: 1px solid rgba(255,92,92,0.25);
-  border-radius: var(--radius-sm);
-  color: var(--danger);
-  padding: 12px 16px;
-  font-size: 13px;
-  margin-top: 12px;
-  display: none;
-}
-
-.error-bar.visible { display: block; }
-.error-bar a { color: var(--gold); }
-
-/* ── NO CREDITS ──────────────────────────────────────────── */
-.no-credits-bar {
-  background: rgba(212,160,23,0.06);
-  border: 1px solid var(--border-gold);
-  border-radius: var(--radius-sm);
-  color: var(--gold);
-  padding: 12px 16px;
-  font-size: 13px;
-  margin-top: 12px;
-  display: none;
-  text-align: center;
-}
-
-.no-credits-bar.visible { display: block; }
-.no-credits-bar a {
-  color: var(--gold);
-  font-weight: 600;
-  text-decoration: underline;
-}
+  --gold:        #d4a017;
+  --gold-dim:    #a07a10;
+  --gold-glow:   rgba(212,160,23,0.15);
+  --bg:          #0d0d12;
+  --surface:     #13131a;
+  --surface2:    #1a1a24;
+  --border:      rgba(255,255,255,0.07);
+  --border-gold: rgba(212,160,23,0.35);
+  --text:        #f0ede8;
+  --muted:       #777;
+  --danger:      #ff5c5c;
+  --font-display:'Syne', sans-serif;
+  --font-body:   'DM Sans', sans-serif;
+  --radius:      12px;
+  --radius-sm:   8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6}
+
+/* PAGE */
+.tool-wrap{max-width:1020px;margin:0 auto;padding:48px 24px 80px}
+
+/* HERO */
+.tool-hero{text-align:center;margin-bottom:40px}
+.tool-hero h1{
+  font-family:var(--font-display);font-size:clamp(28px,5vw,48px);
+  font-weight:800;letter-spacing:-0.03em;line-height:1.1;
+  background:linear-gradient(135deg,#f0ede8 30%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px}
+.tool-hero p{color:var(--muted);font-size:14px;font-weight:300;max-width:420px;margin:0 auto 18px}
+.credits-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--surface2);border:1px solid var(--border-gold);
+  color:var(--gold);font-size:13px;font-weight:500;
+  padding:5px 14px;border-radius:100px}
+
+/* LAYOUT — 420px left controls, rest for result */
+.tool-layout{
+  display:grid;
+  grid-template-columns:420px 1fr;
+  gap:20px;
+  align-items:start}
+@media(max-width:780px){.tool-layout{grid-template-columns:1fr}}
+
+/* PANEL */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.panel:last-child{margin-bottom:0}
+.panel-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:center;gap:8px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background 0.3s,box-shadow 0.3s}
+.dot.active{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.panel-body{padding:16px}
+
+/* UPLOAD ZONE */
+.upload-zone{
+  border:2px dashed rgba(212,160,23,0.2);border-radius:var(--radius-sm);
+  padding:32px 20px;text-align:center;cursor:pointer;
+  transition:border-color 0.2s,background 0.2s;position:relative;background:var(--surface2)}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--gold);background:var(--gold-glow)}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{
+  width:40px;height:40px;margin:0 auto 10px;
+  border:1px solid rgba(212,160,23,0.25);border-radius:9px;
+  display:flex;align-items:center;justify-content:center}
+.upload-icon svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.upload-zone p{font-size:13px;color:var(--muted)}
+.upload-zone strong{color:var(--gold);font-weight:500}
+.upload-zone small{display:block;margin-top:3px;font-size:11px;color:#444}
+
+/* PREVIEW */
+.preview-img-wrap{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2)}
+.preview-img-wrap img{width:100%;display:block;max-height:340px;object-fit:cover}
+.change-btn{
+  position:absolute;bottom:10px;right:10px;
+  background:rgba(0,0,0,0.75);color:#fff;
+  border:1px solid rgba(255,255,255,0.15);border-radius:6px;
+  padding:5px 10px;font-size:11px;cursor:pointer;backdrop-filter:blur(4px)}
+
+/* STYLE GRID — 3 cols, equal width */
+.style-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:14px}
+.style-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 6px 10px;
+  text-align:center;cursor:pointer;
+  transition:border-color 0.15s,background 0.15s,transform 0.1s;
+  user-select:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.style-card:hover{border-color:rgba(212,160,23,0.3);transform:translateY(-1px)}
+.style-card.active{border-color:var(--gold);background:var(--gold-glow)}
+.style-card svg{width:22px;height:22px;stroke:var(--muted);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.15s}
+.style-card.active svg{stroke:var(--gold)}
+.style-card span{font-size:11px;font-weight:500;color:var(--muted);font-family:var(--font-display);letter-spacing:0.04em;transition:color 0.15s}
+.style-card.active span{color:var(--gold)}
+
+/* PROMPT */
+.prompt-wrap{margin-bottom:14px}
+.prompt-wrap label{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-family:var(--font-display);font-weight:700}
+.prompt-wrap textarea{
+  width:100%;height:68px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);
+  font-size:13px;padding:10px 12px;resize:none;outline:none;transition:border-color 0.2s}
+.prompt-wrap textarea:focus{border-color:rgba(212,160,23,0.4)}
+.prompt-wrap textarea::placeholder{color:#3a3a4a}
+
+/* GENERATE BUTTON */
+.generate-btn{
+  width:100%;padding:14px;background:var(--gold);color:#0d0d12;
+  font-family:var(--font-display);font-size:14px;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;
+  border:none;border-radius:var(--radius-sm);cursor:pointer;
+  transition:opacity 0.2s,transform 0.1s}
+.generate-btn:hover:not(:disabled){opacity:0.88;transform:translateY(-1px)}
+.generate-btn:disabled{cursor:not-allowed;background:#222230;color:#444}
+
+/* PROGRESS */
+.progress-wrap{margin-top:14px;display:none}
+.progress-wrap.visible{display:block}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px}
+.status-text{color:var(--gold);font-weight:500}
+.progress-track{height:2px;background:rgba(255,255,255,0.06);border-radius:1px;overflow:visible;position:relative}
+.progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));
+  border-radius:1px;width:0%;transition:width 0.35s ease;position:relative}
+.progress-fill::after{
+  content:'';position:absolute;right:-3px;top:-3px;
+  width:8px;height:8px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 10px var(--gold),0 0 20px rgba(212,160,23,0.4)}
+
+/* RESULT PANEL */
+.result-col .panel{height:100%}
+.result-panel-body{padding:0}
+
+/* EMPTY STATE */
+.empty-result{
+  min-height:340px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;
+  background:var(--surface2);color:#2a2a36;font-size:13px}
+.empty-result svg{width:32px;height:32px;stroke:#2a2a36;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:0.6}
+
+/* SHIMMER */
+.shimmer{
+  min-height:340px;
+  background:linear-gradient(90deg,var(--surface2) 25%,var(--surface) 50%,var(--surface2) 75%);
+  background-size:200% 100%;animation:shimmer 1.6s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* RESULT IMG */
+.result-img-wrap img{width:100%;display:block}
+
+/* SHARE ROW */
+.share-row{
+  padding:12px 14px;border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.share-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:700;margin-right:2px}
+.share-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;
+  border:1px solid var(--border);background:var(--surface2);
+  color:var(--text);cursor:pointer;text-decoration:none;
+  transition:border-color 0.15s,color 0.15s,background 0.15s}
+.share-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.share-btn:hover{border-color:rgba(255,255,255,0.18);background:#1e1e2a}
+.share-btn.tw:hover{border-color:#1da1f2;color:#1da1f2}
+.share-btn.wa:hover{border-color:#25d366;color:#25d366}
+.share-btn.dl{border-color:var(--border-gold);color:var(--gold)}
+.share-btn.dl:hover{background:var(--gold-glow)}
+
+/* ERRORS */
+.error-bar{
+  background:rgba(255,92,92,0.07);border:1px solid rgba(255,92,92,0.2);
+  border-radius:var(--radius-sm);color:var(--danger);
+  padding:10px 14px;font-size:13px;margin-top:10px;display:none}
+.error-bar.visible{display:block}
+.no-credits-bar{
+  background:var(--gold-glow);border:1px solid var(--border-gold);
+  border-radius:var(--radius-sm);color:var(--gold);
+  padding:10px 14px;font-size:13px;margin-top:10px;
+  text-align:center;display:none}
+.no-credits-bar.visible{display:block}
+.no-credits-bar a{color:var(--gold);font-weight:600;text-decoration:underline}
+
+/* RESULT FADE IN */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result-reveal{animation:fadeUp 0.4s ease}
 </style>
 </head>
-
 <body>
+
 <div id="header"></div>
 
 <div class="tool-wrap">
@@ -571,11 +218,11 @@ body {
   <!-- MAIN LAYOUT -->
   <div class="tool-layout">
 
-    <!-- LEFT: CONTROLS -->
-    <div>
+    <!-- LEFT CONTROLS -->
+    <div class="controls-col">
 
-      <!-- Upload Panel -->
-      <div class="panel" style="margin-bottom:16px">
+      <!-- Upload -->
+      <div class="panel">
         <div class="panel-header">
           <span class="dot" id="upload-dot"></span>
           Upload Photo
@@ -583,11 +230,12 @@ body {
         <div class="panel-body">
           <div class="upload-zone" id="upload-zone">
             <input type="file" id="upload" accept="image/*">
-            <div class="upload-icon">📷</div>
-            <p><strong>Click to upload</strong> or drag & drop</p>
-            <small>JPG, PNG, WEBP — max 10MB</small>
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <p><strong>Click to upload</strong> or drag &amp; drop</p>
+            <small>JPG, PNG, WEBP — auto compressed</small>
           </div>
-          <!-- Preview replaces upload zone after selection -->
           <div id="preview-wrap" style="display:none">
             <div class="preview-img-wrap">
               <img id="preview-img" src="" alt="Your photo">
@@ -597,39 +245,47 @@ body {
         </div>
       </div>
 
-      <!-- Style Panel -->
-      <div class="panel" style="margin-bottom:16px">
+      <!-- Style + Generate -->
+      <div class="panel">
         <div class="panel-header">
           <span class="dot active"></span>
           Choose Style
         </div>
         <div class="panel-body">
           <input type="hidden" id="style" value="pencil">
+
           <div class="style-grid">
+
             <div class="style-card active" onclick="selectStyle('pencil',this)">
-              <span class="style-icon">✏️</span>
-              <span class="style-name">Pencil</span>
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Pencil</span>
             </div>
+
             <div class="style-card" onclick="selectStyle('charcoal',this)">
-              <span class="style-icon">🖤</span>
-              <span class="style-name">Charcoal</span>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              <span>Charcoal</span>
             </div>
+
             <div class="style-card" onclick="selectStyle('pen',this)">
-              <span class="style-icon">🖊️</span>
-              <span class="style-name">Pen &amp; Ink</span>
+              <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+              <span>Pen &amp; Ink</span>
             </div>
+
             <div class="style-card" onclick="selectStyle('doodle',this)">
-              <span class="style-icon">🎨</span>
-              <span class="style-name">Doodle</span>
+              <svg viewBox="0 0 24 24"><path d="M3 3c1 5 3 7 6 9s4 4 3 9"/><path d="M10.5 3.5c.5 3 2 5 4.5 6.5S19 14 18 21"/><path d="M18 3c0 4-1 6-3 8s-3 4-2 10"/></svg>
+              <span>Doodle</span>
             </div>
+
             <div class="style-card" onclick="selectStyle('painting',this)">
-              <span class="style-icon">🖼️</span>
-              <span class="style-name">Painting</span>
+              <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+              <span>Painting</span>
             </div>
+
             <div class="style-card" onclick="selectStyle('anime',this)">
-              <span class="style-icon">⛩️</span>
-              <span class="style-name">Anime</span>
+              <svg viewBox="0 0 24 24"><path d="M12 2a9 9 0 0 1 9 9c0 3.18-1.65 5.97-4.13 7.6L12 22l-4.87-3.4A9 9 0 0 1 3 11a9 9 0 0 1 9-9z"/><path d="M9 10h.01M15 10h.01"/><path d="M9.5 14a3.5 3.5 0 0 0 5 0"/></svg>
+              <span>Anime</span>
             </div>
+
           </div>
 
           <div class="prompt-wrap">
@@ -641,73 +297,72 @@ body {
             Generate Artwork
           </button>
 
-          <!-- Progress bar -->
           <div class="progress-wrap" id="progress-wrap">
             <div class="progress-label">
-              <span class="status-text" id="status-text">Sending to AI...</span>
+              <span class="status-text" id="status-text">Preparing...</span>
             </div>
             <div class="progress-track">
               <div class="progress-fill" id="progress-fill"></div>
             </div>
           </div>
 
-          <!-- Error bar -->
           <div class="error-bar" id="error-bar"></div>
           <div class="no-credits-bar" id="no-credits-bar">
             You have no credits left. <a href="/dashboard/">Buy more credits →</a>
           </div>
+
         </div>
       </div>
 
-    </div>
+    </div><!-- /controls-col -->
 
-    <!-- RIGHT: RESULT -->
-    <div>
+    <!-- RIGHT RESULT — only shows after generation -->
+    <div class="result-col" id="result-col" style="display:none">
       <div class="panel">
         <div class="panel-header">
-          <span class="dot" id="result-dot"></span>
+          <span class="dot active" id="result-dot"></span>
           Generated Artwork
         </div>
 
-        <!-- Empty state -->
-        <div class="empty-result" id="empty-state">
-          <span class="empty-icon">🎨</span>
-          <span>Your artwork will appear here</span>
+        <div class="result-panel-body">
+          <!-- Shimmer while loading -->
+          <div class="shimmer" id="result-shimmer" style="display:none"></div>
+
+          <!-- Result image -->
+          <div class="result-img-wrap" id="result-img-wrap" style="display:none">
+            <img id="result-img" src="" alt="Generated artwork">
+          </div>
+
+          <!-- Share row — shown after result -->
+          <div class="share-row" id="share-row" style="display:none">
+            <span class="share-label">Share</span>
+
+            <button class="share-btn tw" onclick="shareTwitter()">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              Twitter
+            </button>
+
+            <button class="share-btn wa" onclick="shareWhatsApp()">
+              <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              WhatsApp
+            </button>
+
+            <button class="share-btn dl" onclick="downloadImage()">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+            </button>
+
+          </div>
         </div>
-
-        <!-- Loading shimmer -->
-        <div class="shimmer" id="result-shimmer" style="display:none"></div>
-
-        <!-- Result image -->
-        <div class="result-img-wrap" id="result-img-wrap" style="display:none">
-          <img id="result-img" src="" alt="Generated artwork">
-        </div>
-
-        <!-- Share row -->
-        <div class="share-row" id="share-row" style="display:none">
-          <span class="share-label">Share</span>
-          <button class="share-btn tw" onclick="shareTwitter()">
-            𝕏 Twitter
-          </button>
-          <button class="share-btn wa" onclick="shareWhatsApp()">
-            💬 WhatsApp
-          </button>
-          <button class="share-btn dl" onclick="downloadImage()">
-            ↓ Download
-          </button>
-        </div>
-
       </div>
-    </div>
+    </div><!-- /result-col -->
 
   </div><!-- /tool-layout -->
-
 </div><!-- /tool-wrap -->
 
 <div id="footer"></div>
 
 <script type="module" src="/assets/js/app.js"></script>
-
 <script>
 
 const EDGE_FUNCTION_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/generate-sketch"
@@ -715,29 +370,23 @@ const EDGE_FUNCTION_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1
 let uploadedImage   = null
 let generatedResult = null
 
-/* ── FILE INPUT ─────────────────────────────────────────── */
+/* ── FILE INPUT ─────────────────────────────────── */
 const fileInput = document.getElementById("upload")
 fileInput.addEventListener("change", handleFileSelect)
 
-/* drag & drop */
 const zone = document.getElementById("upload-zone")
-zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over") })
+zone.addEventListener("dragover",  e => { e.preventDefault(); zone.classList.add("drag-over") })
 zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"))
 zone.addEventListener("drop", e => {
-  e.preventDefault()
-  zone.classList.remove("drag-over")
-  const file = e.dataTransfer.files[0]
-  if (file) loadFile(file)
+  e.preventDefault(); zone.classList.remove("drag-over")
+  const f = e.dataTransfer.files[0]; if(f) loadFile(f)
 })
 
-function handleFileSelect() {
-  const file = fileInput.files[0]
-  if (file) loadFile(file)
-}
+function handleFileSelect(){ const f = fileInput.files[0]; if(f) loadFile(f) }
 
-function loadFile(file) {
+function loadFile(file){
   const reader = new FileReader()
-  reader.onload = function(e) {
+  reader.onload = e => {
     uploadedImage = e.target.result
     document.getElementById("upload-zone").style.display  = "none"
     document.getElementById("preview-wrap").style.display = "block"
@@ -747,207 +396,168 @@ function loadFile(file) {
   reader.readAsDataURL(file)
 }
 
-function resetUpload() {
-  uploadedImage = null
-  fileInput.value = ""
+function resetUpload(){
+  uploadedImage = null; fileInput.value = ""
   document.getElementById("upload-zone").style.display  = "block"
   document.getElementById("preview-wrap").style.display = "none"
   document.getElementById("upload-dot").classList.remove("active")
 }
 
-/* ── STYLE SELECTOR ─────────────────────────────────────── */
-window.selectStyle = function(style, el) {
+/* ── STYLE SELECTOR ─────────────────────────────── */
+window.selectStyle = function(style, el){
   document.getElementById("style").value = style
   document.querySelectorAll(".style-card").forEach(c => c.classList.remove("active"))
   el.classList.add("active")
 }
 
-/* ── SUPABASE WAIT ──────────────────────────────────────── */
-function waitForSupabase() {
+/* ── SUPABASE WAIT ──────────────────────────────── */
+function waitForSupabase(){
   return new Promise(resolve => {
-    if (window.supabase) return resolve()
-    const iv = setInterval(() => { if (window.supabase) { clearInterval(iv); resolve() } }, 50)
+    if(window.supabase) return resolve()
+    const iv = setInterval(() => { if(window.supabase){ clearInterval(iv); resolve() } }, 50)
     setTimeout(() => { clearInterval(iv); resolve() }, 3000)
   })
 }
 
-/* ── LOAD CREDITS ───────────────────────────────────────── */
-async function loadCredits() {
+/* ── CREDITS ────────────────────────────────────── */
+async function loadCredits(){
   await waitForSupabase()
   const { data } = await window.supabase.auth.getUser()
-  if (!data.user) return
+  if(!data.user) return
   const { data: profile } = await window.supabase
     .from("profiles").select("credits").eq("id", data.user.id).single()
-  if (profile) {
+  if(profile){
     document.getElementById("credits-display").innerHTML =
-      `<div class="credits-badge">${profile.credits} credits remaining</div>`
+      `<div class="credits-badge">⚡ ${profile.credits} credits remaining</div>`
   }
 }
 document.addEventListener("DOMContentLoaded", loadCredits)
 
-/* ── PROGRESS ANIMATION ─────────────────────────────────── */
-let progressTimer = null
-let currentProgress = 0
+/* ── PROGRESS ───────────────────────────────────── */
+let progressTimer = null, currentProgress = 0
+const statusMessages = ["Sending to AI...","Analysing photo...","Applying style...","Rendering details...","Almost ready..."]
 
-const statusMessages = [
-  "Sending to AI...",
-  "Analysing photo...",
-  "Applying style...",
-  "Rendering details...",
-  "Almost ready...",
-]
-
-function startProgress() {
+function startProgress(){
   currentProgress = 0
-  const fill   = document.getElementById("progress-fill")
+  const fill = document.getElementById("progress-fill")
   const status = document.getElementById("status-text")
-  const wrap   = document.getElementById("progress-wrap")
-
-  wrap.classList.add("visible")
-  fill.style.width = "0%"
-
-  let msgIdx = 0
+  document.getElementById("progress-wrap").classList.add("visible")
+  fill.style.width = "0%"; let msgIdx = 0
   status.textContent = statusMessages[0]
-
-  // Fast 0→80 in ~8s with easing, then hold at 80 until done
   progressTimer = setInterval(() => {
-    if (currentProgress < 80) {
-      // Ease: fast at start, slower near 80
-      const step = currentProgress < 40 ? 3.5 : currentProgress < 65 ? 1.8 : 0.6
+    if(currentProgress < 80){
+      const step = currentProgress < 40 ? 3.5 : currentProgress < 65 ? 1.8 : 0.5
       currentProgress = Math.min(currentProgress + step, 80)
       fill.style.width = currentProgress + "%"
-
-      // Cycle status messages
-      const newIdx = Math.floor((currentProgress / 80) * statusMessages.length)
-      if (newIdx !== msgIdx && newIdx < statusMessages.length) {
-        msgIdx = newIdx
-        status.textContent = statusMessages[msgIdx]
-      }
+      const ni = Math.floor((currentProgress / 80) * statusMessages.length)
+      if(ni !== msgIdx && ni < statusMessages.length){ msgIdx = ni; status.textContent = statusMessages[msgIdx] }
     }
   }, 200)
 }
 
-function finishProgress() {
+function finishProgress(){
   clearInterval(progressTimer)
-  const fill   = document.getElementById("progress-fill")
-  const status = document.getElementById("status-text")
-  fill.style.transition = "width 0.5s ease"
-  fill.style.width = "100%"
-  status.textContent = "Done!"
+  const fill = document.getElementById("progress-fill")
+  fill.style.transition = "width 0.5s ease"; fill.style.width = "100%"
+  document.getElementById("status-text").textContent = "Done!"
   setTimeout(() => {
     document.getElementById("progress-wrap").classList.remove("visible")
-    fill.style.width = "0%"
-    fill.style.transition = "width 0.4s ease"
-  }, 800)
+    fill.style.width = "0%"; fill.style.transition = "width 0.35s ease"
+  }, 700)
 }
 
-function resetProgress() {
+function resetProgress(){
   clearInterval(progressTimer)
   document.getElementById("progress-wrap").classList.remove("visible")
   document.getElementById("progress-fill").style.width = "0%"
 }
 
-/* ── IMAGE COMPRESSION ──────────────────────────────────── */
-function compressImage(dataUrl, maxWidth = 1024, quality = 0.85) {
+/* ── COMPRESSION ────────────────────────────────── */
+function compressImage(dataUrl, maxWidth=1024, quality=0.85){
   return new Promise(resolve => {
     const img = new Image()
-    img.onload = function() {
-      let { width, height } = img
-      if (width > maxWidth) { height = Math.round(height * maxWidth / width); width = maxWidth }
-      const canvas = document.createElement("canvas")
-      canvas.width  = width
-      canvas.height = height
-      canvas.getContext("2d").drawImage(img, 0, 0, width, height)
-      resolve(canvas.toDataURL("image/jpeg", quality))
+    img.onload = function(){
+      let {width,height} = img
+      if(width > maxWidth){ height = Math.round(height*maxWidth/width); width = maxWidth }
+      const c = document.createElement("canvas"); c.width=width; c.height=height
+      c.getContext("2d").drawImage(img,0,0,width,height)
+      resolve(c.toDataURL("image/jpeg", quality))
     }
     img.src = dataUrl
   })
 }
 
-/* ── HELPERS ────────────────────────────────────────────── */
-function showError(msg) {
-  const bar = document.getElementById("error-bar")
-  bar.innerHTML = msg
-  bar.classList.add("visible")
-}
+/* ── ERROR HELPERS ──────────────────────────────── */
+function showError(msg){ const b=document.getElementById("error-bar"); b.innerHTML=msg; b.classList.add("visible") }
+function hideError(){ document.getElementById("error-bar").classList.remove("visible") }
 
-function hideError() {
-  document.getElementById("error-bar").classList.remove("visible")
-}
+/* ── SHOW RESULT ────────────────────────────────── */
+function showResult(src){
+  // Reveal the result column (hidden until first generation)
+  const col = document.getElementById("result-col")
+  col.style.display = "block"
+  col.classList.add("result-reveal")
 
-function setResultLoading(on) {
-  document.getElementById("empty-state").style.display     = on ? "none"  : "none"
-  document.getElementById("result-shimmer").style.display  = on ? "block" : "none"
-  document.getElementById("result-img-wrap").style.display = on ? "none"  : "none"
-  document.getElementById("share-row").style.display       = "none"
-  document.getElementById("result-dot").classList.toggle("active", false)
-}
-
-function showResult(src) {
   document.getElementById("result-shimmer").style.display  = "none"
-  document.getElementById("empty-state").style.display     = "none"
   document.getElementById("result-img-wrap").style.display = "block"
   document.getElementById("result-img").src                = src
   document.getElementById("share-row").style.display       = "flex"
-  document.getElementById("result-dot").classList.add("active")
 }
 
-/* ── GENERATE ───────────────────────────────────────────── */
-window.generateSketch = async function() {
+function showResultLoading(){
+  document.getElementById("result-col").style.display      = "block"
+  document.getElementById("result-shimmer").style.display  = "block"
+  document.getElementById("result-img-wrap").style.display = "none"
+  document.getElementById("share-row").style.display       = "none"
+}
+
+/* ── GENERATE ───────────────────────────────────── */
+window.generateSketch = async function(){
 
   await waitForSupabase()
   hideError()
+  document.getElementById("no-credits-bar").classList.remove("visible")
 
   // Auth
   const { data: userData } = await window.supabase.auth.getUser()
-  if (!userData.user) {
+  if(!userData.user){
     alert("Please login to generate artwork.")
-    window.location.href = "/login/"
-    return
+    window.location.href = "/login/"; return
   }
 
   // Image
-  if (!uploadedImage) {
-    showError("Please upload a photo first.")
-    return
-  }
+  if(!uploadedImage){ showError("Please upload a photo first."); return }
 
-  // Credits
+  // Credits — only fetch credits column, no is_admin needed
   const { data: profile } = await window.supabase
-    .from("profiles").select("credits, is_admin").eq("id", userData.user.id).single()
+    .from("profiles").select("credits").eq("id", userData.user.id).single()
 
-  if (!profile?.is_admin && (!profile || profile.credits < 1)) {
-    document.getElementById("no-credits-bar").classList.add("visible")
-    return
+  // 9999 = admin bypass set manually in Supabase
+  if(!profile || profile.credits < 1){
+    document.getElementById("no-credits-bar").classList.add("visible"); return
   }
-
-  document.getElementById("no-credits-bar").classList.remove("visible")
 
   // Lock UI
   const btn = document.getElementById("generate-btn")
-  btn.disabled  = true
-  btn.textContent = "Generating..."
-
-  setResultLoading(true)
+  btn.disabled = true; btn.textContent = "Generating..."
+  showResultLoading()
   startProgress()
 
   const style  = document.getElementById("style").value
   const prompt = document.getElementById("prompt").value
 
   try {
-
     const { data: sessionData } = await window.supabase.auth.getSession()
-    if (!sessionData.session) {
+    if(!sessionData.session){
       alert("Session expired. Please login again.")
-      window.location.href = "/login/"
-      return
+      window.location.href = "/login/"; return
     }
 
     const compressedImage = await compressImage(uploadedImage)
 
     const response = await fetch(EDGE_FUNCTION_URL, {
       method: "POST",
-      headers: {
+      headers:{
         "Content-Type":  "application/json",
         "Authorization": "Bearer " + sessionData.session.access_token
       },
@@ -955,52 +565,46 @@ window.generateSketch = async function() {
     })
 
     const result = await response.json()
+    if(!result.result) throw new Error(result.error || "No image returned from AI.")
 
-    if (!result.result) throw new Error(result.error || "No image returned from AI.")
+    // Deduct credit (9999 acts as admin bypass — won't reach 0 for a long time)
+    await window.supabase
+      .from("profiles")
+      .update({ credits: profile.credits - 1 })
+      .eq("id", userData.user.id)
 
-    // Deduct credit
-    if (!profile?.is_admin) {
-      await window.supabase
-        .from("profiles")
-        .update({ credits: profile.credits - 1 })
-        .eq("id", userData.user.id)
-      document.getElementById("credits-display").innerHTML =
-        `<div class="credits-badge">${profile.credits - 1} credits remaining</div>`
-    }
+    document.getElementById("credits-display").innerHTML =
+      `<div class="credits-badge">⚡ ${profile.credits - 1} credits remaining</div>`
 
     generatedResult = result.result
     finishProgress()
     setTimeout(() => showResult(generatedResult), 600)
 
-  } catch (err) {
+  } catch(err){
     resetProgress()
-    setResultLoading(false)
-    document.getElementById("empty-state").style.display = "flex"
-    showError(`Something went wrong: ${err.message}`)
+    document.getElementById("result-col").style.display     = "none"
+    showError("Something went wrong: " + err.message)
   } finally {
-    btn.disabled    = false
-    btn.textContent = "Generate Artwork"
+    btn.disabled = false; btn.textContent = "Generate Artwork"
   }
 }
 
-/* ── SHARE ──────────────────────────────────────────────── */
-window.shareTwitter = function() {
-  const text = encodeURIComponent("Just transformed my photo into artwork using Beo AI Tools 🎨✨")
-  const url  = encodeURIComponent("https://listentobeo.github.io/tools/photo-to-sketch-online/")
-  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank")
+/* ── SHARE ──────────────────────────────────────── */
+window.shareTwitter = function(){
+  const t = encodeURIComponent("Just transformed my photo into AI art with Beo AI Tools 🎨")
+  const u = encodeURIComponent("https://listentobeo.github.io/tools/photo-to-sketch-online/")
+  window.open("https://twitter.com/intent/tweet?text="+t+"&url="+u, "_blank")
 }
 
-window.shareWhatsApp = function() {
-  const text = encodeURIComponent("Check out this AI art I made with Beo AI Tools! https://listentobeo.github.io/tools/photo-to-sketch-online/")
-  window.open(`https://wa.me/?text=${text}`, "_blank")
+window.shareWhatsApp = function(){
+  const t = encodeURIComponent("Check out this AI art I made → https://listentobeo.github.io/tools/photo-to-sketch-online/")
+  window.open("https://wa.me/?text="+t, "_blank")
 }
 
-window.downloadImage = function() {
-  if (!generatedResult) return
-  const a    = document.createElement("a")
-  a.href     = generatedResult
-  a.download = `beo-ai-sketch-${Date.now()}.png`
-  a.click()
+window.downloadImage = function(){
+  if(!generatedResult) return
+  const a = document.createElement("a")
+  a.href = generatedResult; a.download = "beo-ai-art-"+Date.now()+".png"; a.click()
 }
 
 </script>
