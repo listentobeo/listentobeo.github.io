@@ -28,21 +28,44 @@ window.toggleMenu = function(){
   menu.style.display = menu.style.display === "block" ? "none" : "block"
 }
 
-/* ── AUTH UI — updates header login/logout link ───────── */
+/* ── AUTH UI ──────────────────────────────────────────── */
+// Updates header every page load based on live Supabase session.
+// This is what controls the Dashboard link appearing/disappearing.
 async function updateAuthUI(){
   const { data } = await window.supabase.auth.getUser()
-  const link = document.getElementById("auth-link")
-  if(!link) return
-  if(data.user){
-    link.innerText = "Logout"
-    link.onclick = async function(e){
-      e.preventDefault()
-      await window.supabase.auth.signOut()
-      window.location.href = "/"
+  const user = data.user
+
+  const authLink       = document.getElementById("auth-link")
+  const dashBtn        = document.getElementById("dashboard-btn")
+  const dashNavLink    = document.getElementById("dashboard-nav-link")
+  const dashMobileLink = document.getElementById("dashboard-mobile-link")
+
+  if(user){
+    // Logged in — show Dashboard links, change auth link to Logout
+    if(dashBtn)        dashBtn.style.display        = "inline-flex"
+    if(dashNavLink)    dashNavLink.style.display     = "inline"
+    if(dashMobileLink) dashMobileLink.style.display  = "block"
+
+    if(authLink){
+      authLink.textContent = "Logout"
+      authLink.href        = "#"
+      authLink.onclick     = async function(e){
+        e.preventDefault()
+        await window.supabase.auth.signOut()
+        window.location.href = "/"
+      }
     }
+
   } else {
-    link.innerText = "Login / Sign Up"
-    link.href = "/login/"
-    link.onclick = null
+    // Logged out — hide Dashboard links, show Login
+    if(dashBtn)        dashBtn.style.display        = "none"
+    if(dashNavLink)    dashNavLink.style.display     = "none"
+    if(dashMobileLink) dashMobileLink.style.display  = "none"
+
+    if(authLink){
+      authLink.textContent = "Login / Sign Up"
+      authLink.href        = "/login/"
+      authLink.onclick     = null
+    }
   }
 }
