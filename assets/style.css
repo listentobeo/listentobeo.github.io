@@ -44,7 +44,6 @@ line-height:1.7;
 color:#ccc;
 text-align:left;
 }
-
 /* HEADER */
 
 .header{
@@ -59,11 +58,43 @@ z-index:100;
 width:100%;
 }
 
+/* inner wrapper so desktop nav aligns properly */
+
+.header-inner{
+display:flex;
+align-items:center;
+justify-content:space-between;
+width:100%;
+max-width:1200px;
+margin:auto;
+}
+
 .logo{
 height:32px;
 max-width:120px;
 object-fit:contain;
 }
+
+/* desktop navigation */
+
+.desktop-nav{
+display:flex;
+gap:26px;
+margin-left:40px;
+}
+
+.desktop-nav a{
+color:#fff;
+text-decoration:none;
+font-size:14px;
+white-space:nowrap;
+}
+
+.desktop-nav a:hover{
+color:#d4a017;
+}
+
+/* right section */
 
 .nav-right{
 display:flex;
@@ -72,6 +103,8 @@ gap:12px;
 flex-shrink:0;
 }
 
+/* login button */
+
 .login-btn{
 color:#4da3ff;
 text-decoration:none;
@@ -79,10 +112,49 @@ font-size:14px;
 white-space:nowrap;
 }
 
+/* hamburger */
+
 .menu-btn{
 font-size:22px;
 cursor:pointer;
-line-height:1;
+display:none;
+}
+
+/* mobile dropdown */
+
+.menu{
+display:none;
+background:#111;
+padding:15px 16px;
+}
+
+.menu a{
+display:block;
+padding:10px 0;
+color:#fff;
+text-decoration:none;
+}
+
+.menu a:hover{
+color:#d4a017;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.desktop-nav{
+display:none;
+}
+
+.menu-btn{
+display:block;
+}
+
+.login-btn{
+display:block;
+}
+
 }
 
 
