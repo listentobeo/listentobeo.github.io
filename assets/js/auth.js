@@ -82,3 +82,7 @@ alert("Account created. You received 2 free credits.")
 window.location.href="/dashboard/"
 
 }
+window.getSession = async function(){
+  const { data } = await supabase.auth.getSession()
+  return data.session
+}
