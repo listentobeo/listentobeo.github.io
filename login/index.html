@@ -1,53 +1,62 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
 <title>Login | Beo AI Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
-
+<style>
+:root{--gold:#d4a017;--bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;--border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.3);--text:#f0ede8;--muted:#777;--danger:#ff5c5c;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column}
+.auth-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:420px}
+.auth-card h1{font-family:var(--font-display);font-size:26px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em}
+.auth-card p{color:var(--muted);font-size:14px;margin-bottom:28px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:700;margin-bottom:7px}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:14px;padding:12px 14px;outline:none;transition:border-color 0.2s}
+.field input:focus{border-color:rgba(212,160,23,0.4)}
+.field input::placeholder{color:#333}
+.auth-btn{width:100%;padding:14px;background:var(--gold);color:#0d0d12;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:0.06em;border:none;border-radius:8px;cursor:pointer;margin-top:6px;transition:opacity 0.2s}
+.auth-btn:hover:not(:disabled){opacity:0.88}
+.auth-btn:disabled{background:#222;color:#444;cursor:not-allowed}
+.auth-error{background:rgba(255,92,92,0.07);border:1px solid rgba(255,92,92,0.2);border-radius:8px;color:var(--danger);padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
+.auth-footer{text-align:center;margin-top:22px;font-size:13px;color:var(--muted)}
+.auth-footer a{color:var(--gold);text-decoration:none;font-weight:500}
+</style>
 </head>
-
 <body>
-
 <div id="header"></div>
 
-<main class="main">
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1>Welcome back</h1>
+    <p>Login to access your AI tools and credits.</p>
 
-<section class="container">
+    <div class="auth-error" id="login-error"></div>
 
-<h1 style="text-align:center;margin-bottom:10px;">Login</h1>
+    <div class="field">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')loginUser()">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="password" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')loginUser()">
+    </div>
 
-<p style="text-align:center;color:#bbb;margin-bottom:30px;">
-Login to access AI tools and manage your credits.
-</p>
+    <button class="auth-btn" id="login-btn" onclick="loginUser()">Login</button>
 
-<div class="login-box">
-
-<input id="email" type="email" placeholder="Email address">
-
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="loginUser()">Login</button>
-
-<p style="margin-top:20px;color:#bbb;">
-Don't have an account?
-<a href="/signup" onclick="signupUser()">Create one</a>
-</p>
-
+    <p class="auth-footer">
+      Don't have an account? <a href="/signup/">Create one free</a>
+    </p>
+  </div>
 </div>
 
-</section>
-
-</main>
-
 <div id="footer"></div>
-
-<script src="/assets/js/app.js"></script>
-<script type="module" src="../assets/js/auth.js"></script>
-
+<script type="module" src="/assets/js/app.js"></script>
+<script type="module" src="/assets/js/auth.js"></script>
 </body>
-
 </html>
