@@ -156,9 +156,9 @@ const fileInput = document.getElementById("upload")
 
 fileInput.addEventListener("change", previewImage)
 
-function selectStyle(style,el){
 
-document.getElementById("style").value = style
+window.selectStyle = function(style,el){
+  document.getElementById("style").value = style
 
 document.querySelectorAll(".style-card").forEach(card=>{
 card.classList.remove("active")
@@ -279,6 +279,6 @@ document.getElementById("result").innerHTML = `
 </script>
   
 <div id="footer"></div>
-<script type="module" src="/assets/js/app.js"></script>
+<script src="/assets/js/app.js"></script>
 </body>
 </html>
