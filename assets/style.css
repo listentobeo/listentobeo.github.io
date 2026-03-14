@@ -106,10 +106,20 @@ flex-shrink:0;
 /* login button */
 
 .login-btn{
-color:#4da3ff;
+background:#d4a017;
+color:#000;
 text-decoration:none;
-font-size:14px;
+font-size:13px;
+font-weight:600;
+padding:6px 12px;
+border-radius:6px;
 white-space:nowrap;
+transition:all .2s ease;
+}
+
+.login-btn:hover{
+background:#e5b52a;
+color:#000;
 }
 
 /* hamburger */
