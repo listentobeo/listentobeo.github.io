@@ -1,3 +1,14 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js"
+
+/* SUPABASE CLIENT */
+
+const supabase = createClient(
+"https://wphqcccliiwdvwdjgrmc.supabase.co",
+"sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+)
+
+/* LOAD COMPONENTS */
+
 async function loadComponent(id, url){
 
 const res = await fetch(url)
@@ -5,14 +16,26 @@ const html = await res.text()
 
 document.getElementById(id).innerHTML = html
 
+/* after header loads we update auth UI */
+
+if(id === "header"){
+updateAuthUI()
 }
+
+}
+
+/* LOAD HEADER + FOOTER */
 
 loadComponent("header","/assets/components/header.html")
 loadComponent("footer","/assets/components/footer.html")
 
-function toggleMenu(){
+/* HAMBURGER MENU */
+
+window.toggleMenu = function(){
 
 const menu = document.getElementById("menu")
+
+if(!menu) return
 
 menu.style.display =
 menu.style.display === "block"
@@ -20,12 +43,8 @@ menu.style.display === "block"
 : "block"
 
 }
-import { createClient } from "https://esm.sh/@supabase/supabase-js"
 
-const supabase = createClient(
-"https://wphqcccliiwdvwdjgrmc.supabase.co",
-"sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
-)
+/* AUTH UI */
 
 async function updateAuthUI(){
 
@@ -57,5 +76,3 @@ link.href = "/login/"
 }
 
 }
-
-updateAuthUI()
