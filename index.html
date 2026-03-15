@@ -58,6 +58,7 @@ body{overflow-x:hidden}
 .hero-actions{
   display:flex;align-items:center;justify-content:center;
   gap:10px;flex-wrap:wrap;width:100%;padding:0 8px}
+.hero-start-btn{padding:16px 40px !important;font-size:15px !important;letter-spacing:0.05em !important}
 .hero-actions a{
   flex:1;min-width:140px;max-width:220px;
   justify-content:center;text-align:center}
@@ -102,7 +103,7 @@ body{overflow-x:hidden}
 /* ── TOOL CARDS ── */
 .tools-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(460px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(min(460px,100%),1fr));
   gap:20px}
 @media(max-width:560px){.tools-grid{grid-template-columns:1fr}}
 
@@ -176,7 +177,7 @@ body{overflow-x:hidden}
 .how-step p{font-size:13px;color:var(--muted);line-height:1.6}
 
 /* ── STUDIO STRIP ── */
-.studio-strip{
+.studio-strip{box-sizing:border-box;width:100%;
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius);padding:32px;
   display:flex;align-items:center;justify-content:space-between;
@@ -187,17 +188,17 @@ body{overflow-x:hidden}
 .studio-strip-text p{color:var(--muted);font-size:14px;max-width:420px;line-height:1.6}
 .studio-strip-actions{display:flex;gap:10px;flex-wrap:wrap;flex-shrink:0}
 @media(max-width:600px){
-  .studio-strip{padding:24px 20px;flex-direction:column;align-items:stretch}
+  .studio-strip{box-sizing:border-box;width:100%;padding:24px 20px;flex-direction:column;align-items:stretch}
   .studio-strip-actions{flex-direction:column}
   .studio-strip-actions .btn-primary,
   .studio-strip-actions .btn-secondary{justify-content:center;width:100%}
 }
 
 /* ── CREDITS CTA ── */
-.credits-cta{
+.credits-cta{box-sizing:border-box;width:100%;
   background:var(--gold-glow);border:1px solid var(--border-gold);
   border-radius:var(--radius);padding:40px 24px;text-align:center;margin-bottom:60px}
-@media(max-width:480px){.credits-cta{padding:28px 16px;margin-bottom:40px}}
+@media(max-width:480px){.credits-cta{box-sizing:border-box;width:100%;padding:28px 16px;margin-bottom:40px}}
 .credits-cta h2{
   font-family:var(--font-display);font-size:clamp(22px,4vw,34px);
   font-weight:800;letter-spacing:-0.02em;margin-bottom:10px}
@@ -211,7 +212,7 @@ body{overflow-x:hidden}
 @media(max-width:600px){
   .hero{padding:72px 0 56px}
   .section{padding:48px 0}
-  .studio-strip{padding:24px 16px;margin-bottom:40px}
+  .studio-strip{box-sizing:border-box;width:100%;padding:24px 16px;margin-bottom:40px}
   .tool-card-visual{height:160px}
   .tools-grid{grid-template-columns:1fr}
   .how-grid{grid-template-columns:1fr 1fr}
@@ -241,13 +242,13 @@ body{overflow-x:hidden}
 
 .hero-content{
   position:relative;z-index:2;
-  padding-top:120px;padding-bottom:100px;
+  padding-top:100px;padding-bottom:80px;
   text-align:center;
   overflow:hidden}
 
 .hero-h1{
   font-family:var(--font-display);
-  font-size:clamp(24px,6vw,68px);
+  font-size:clamp(22px,5vw,64px);
   font-weight:800;letter-spacing:-0.03em;line-height:1.1;
   margin-bottom:22px;color:#f0ede8;
   word-break:break-word;overflow-wrap:break-word}
@@ -261,6 +262,7 @@ body{overflow-x:hidden}
 .hero-word{
   display:inline-block;
   color:var(--gold);
+  white-space:nowrap;
   will-change:transform,opacity}
 
 .hero-word.exit{
@@ -286,9 +288,20 @@ body{overflow-x:hidden}
   .hero-h1{font-size:clamp(26px,8vw,42px);letter-spacing:-0.02em}
   .hero-sub{font-size:14px;padding:0 4px}
   .hero-actions{flex-direction:column;align-items:stretch;width:100%;max-width:320px;margin-left:auto;margin-right:auto}
-  .hero-actions .btn-primary,
   .hero-actions .btn-secondary{justify-content:center;width:100%}
 }
+
+@media(max-width:480px){
+  .hero-content{padding-top:90px;padding-bottom:60px}
+  .hero-h1{font-size:clamp(22px,8vw,38px) !important}
+  .hero-word{font-size:inherit}
+  .hero-sub{font-size:14px;padding:0 8px}
+  .hero-actions{flex-direction:column;align-items:stretch;padding:0 16px}
+  .hero-start-btn{padding:16px 40px !important;font-size:15px !important;letter-spacing:0.05em !important}
+.hero-actions a{text-align:center;justify-content:center}
+}
+
+.hero-start-btn{padding:16px 40px !important;font-size:15px !important;letter-spacing:0.05em !important}
 </style>
 </head>
 <body>
@@ -319,11 +332,7 @@ body{overflow-x:hidden}
     <p class="hero-sub">Upload any photo. Choose a style. Get stunning AI-generated artwork in seconds — built by Beo Art Studio, real artists who paint for real.</p>
 
     <div class="hero-actions">
-      <a class="btn-primary" href="/tools/photo-to-sketch-online/">
-        Try Photo to Sketch
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
-      <a class="btn-secondary" href="/signup/">
+      <a class="btn-secondary hero-start-btn" href="/signup/">
         Start Free
         <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
