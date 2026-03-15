@@ -73,7 +73,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   <!-- HERO -->
   <div class="dash-hero">
     <div>
-      <h1>Hello, <span id="user-name">Creator</span></h1>
+      <h1><span id="greeting">Hello,</span> <span id="user-name">Creator</span></h1>
       <p>Your AI creation workspace</p>
     </div>
   </div>
@@ -105,10 +105,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     </div>
 
     <div class="tool-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <h3>Mural Visualizer</h3>
+      <p>See how a mural looks on your wall before painting — homes, cafés, offices.</p>
+      <a class="tool-btn" href="/tools/mural-visualizer/">Open Tool</a>
+    </div>
+
+    <div class="tool-card">
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
       </svg>
-      <h3>AI Portrait</h3>
+      <h3>AI Portrait Generator</h3>
       <p>Create professional AI portraits from your photos.</p>
       <span class="tool-btn disabled">Coming Soon</span>
     </div>
@@ -120,16 +130,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       </svg>
       <h3>Background Remover</h3>
       <p>Instantly remove image backgrounds using AI.</p>
-      <span class="tool-btn disabled">Coming Soon</span>
-    </div>
-
-    <div class="tool-card">
-      <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-        <polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>
-      <h3>Interior Design AI</h3>
-      <p>Visualize interior design ideas for your room.</p>
       <span class="tool-btn disabled">Coming Soon</span>
     </div>
 
