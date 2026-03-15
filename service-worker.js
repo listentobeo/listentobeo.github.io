@@ -15,8 +15,8 @@ const SHELL_ASSETS = [
   "/assets/js/auth.js",
   "/assets/components/header.html",
   "/assets/components/footer.html",
-  "/assets/images/icon-192.png",
-  "/assets/images/icon-512.png",
+  "/assets/icon-192.png",
+  "/assets/icon-512.png",
   "/manifest.json",
   "/offline.html",
 ]
