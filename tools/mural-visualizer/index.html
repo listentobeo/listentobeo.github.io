@@ -994,7 +994,7 @@ window.generateMural = async function(){
     window.location.href = "/login/"; return
   }
 
-  if(!uploadedImage){ showError("Please upload a photo of your wall first."); return }
+  if(!uploadedImage && currentMode !== "blank"){ showError("Please upload a photo of your wall first."); return }
 
   const { data: profile } = await window.supabase
     .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
