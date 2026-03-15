@@ -9,6 +9,69 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
+
+<!-- Supabase UMD — loads synchronously so Google button works immediately -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var _supaClient = supabase.createClient(
+  "https://wphqcccliiwdvwdjgrmc.supabase.co",
+  "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+)
+
+function signInWithGoogle(){
+  var btn = document.getElementById("google-btn")
+  var err = document.getElementById("signup-error")
+  if(btn){ btn.disabled = true; btn.textContent = "Redirecting to Google..." }
+  if(err){ err.style.display = "none" }
+
+  _supaClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "https://listentobeo.github.io/dashboard/",
+      queryParams: { prompt: "select_account" }
+    }
+  }).then(function(res){
+    if(res.error){
+      if(err){ err.textContent = res.error.message; err.style.display = "block" }
+      if(btn){ btn.disabled = false; btn.textContent = "Continue with Google" }
+    }
+  })
+}
+
+function signupUser(){
+  var email    = document.getElementById("signup-email").value.trim()
+  var password = document.getElementById("signup-password").value
+  var btn      = document.getElementById("signup-btn")
+  var err      = document.getElementById("signup-error")
+
+  if(!email || !password){
+    err.textContent = "Please enter your email and password."
+    err.style.display = "block"; return
+  }
+  if(password.length < 6){
+    err.textContent = "Password must be at least 6 characters."
+    err.style.display = "block"; return
+  }
+  btn.disabled = true; btn.textContent = "Creating account..."
+  err.style.display = "none"
+
+  _supaClient.auth.signUp({ email: email, password: password })
+    .then(function(res){
+      if(res.error){
+        err.textContent = res.error.message; err.style.display = "block"
+        btn.disabled = false; btn.textContent = "Create Account"
+        return
+      }
+      if(res.data.user && !res.data.session){
+        document.getElementById("signup-form").style.display    = "none"
+        document.getElementById("signup-confirm").style.display = "block"
+        return
+      }
+      window.location.href = "/dashboard/"
+    })
+}
+</script>
+
 <style>
 :root{--gold:#d4a017;--bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;--border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.3);--text:#f0ede8;--muted:#777;--danger:#ff5c5c;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -47,13 +110,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 <div class="auth-wrap">
   <div class="auth-card">
-
     <div id="signup-form">
       <h1>Create account</h1>
       <p class="sub">Join Beo AI Tools and start creating.</p>
       <div class="free-badge">⚡ 2 free credits on signup</div>
 
-      <!-- Google Sign Up — fastest path -->
       <button class="google-btn" id="google-btn" onclick="signInWithGoogle()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -65,20 +126,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       </button>
 
       <div class="divider"><span>or sign up with email</span></div>
-
       <div class="auth-error" id="signup-error"></div>
 
       <div class="field">
         <label>Email</label>
-        <input id="signup-email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')signupUser()">
+        <input id="signup-email" type="email" placeholder="you@example.com">
       </div>
       <div class="field">
         <label>Password</label>
-        <input id="signup-password" type="password" placeholder="Minimum 6 characters" onkeydown="if(event.key==='Enter')signupUser()">
+        <input id="signup-password" type="password" placeholder="Minimum 6 characters">
       </div>
 
       <button class="auth-btn" id="signup-btn" onclick="signupUser()">Create Account</button>
-
       <p class="auth-footer">Already have an account? <a href="/login/">Login</a></p>
     </div>
 
@@ -87,33 +146,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       <h2>Check your email</h2>
       <p>We sent a confirmation link to your email. Click it to activate your account, then <a href="/login/" style="color:var(--gold)">login here</a>.</p>
     </div>
-
   </div>
 </div>
 
 <div id="footer"></div>
-<script>
-// Inline wrapper — called immediately when button clicked.
-// Delegates to the real function once auth.js module has loaded.
-function signInWithGoogle(){
-  const btn = document.getElementById("google-btn")
-  if(btn){ btn.disabled = true; btn.textContent = "Loading..." }
-  // Poll until auth.js module has set window._googleSignIn
-  let attempts = 0
-  const iv = setInterval(() => {
-    attempts++
-    if(window._googleSignIn){
-      clearInterval(iv)
-      window._googleSignIn()
-    } else if(attempts > 40){
-      clearInterval(iv)
-      alert("Please try again — page is still loading.")
-      if(btn){ btn.disabled = false; btn.textContent = "Continue with Google" }
-    }
-  }, 100)
-}
-</script>
 <script type="module" src="/assets/js/app.js"></script>
-<script type="module" src="/assets/js/auth.js"></script>
 </body>
 </html>
