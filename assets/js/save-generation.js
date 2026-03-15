@@ -1,50 +1,43 @@
 // BEO AI TOOLS — Generation Saver
-// Deliberately simple — no IIFE, no CDN dependency
-// Runs after page load, uses window.supabase set by app.js module
+// Waits for window.supabase to be ready before saving
 
 window.saveGeneration = function(base64DataUrl, toolName) {
-  // Delay slightly to ensure app.js module has set window.supabase
-  setTimeout(function() {
-    _doSave(base64DataUrl, toolName)
-  }, 500)
+  _waitForSupabase(function(client) {
+    _doSave(client, base64DataUrl, toolName)
+  })
 }
 
-async function _doSave(base64DataUrl, toolName) {
-  console.log("[BEO SAVE] starting save for:", toolName)
-
-  // Try window.supabase first (set by app.js module)
-  var client = window.supabase
-
-  // If not available, try creating one from UMD global
-  if (!client || !client.from) {
-    if (typeof supabase !== "undefined" && supabase.createClient) {
-      client = supabase.createClient(
-        "https://wphqcccliiwdvwdjgrmc.supabase.co",
-        "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
-      )
-      console.log("[BEO SAVE] created new client from UMD")
-    } else {
-      console.error("[BEO SAVE] no Supabase client available at all")
-      return
+function _waitForSupabase(callback) {
+  var attempts = 0
+  var iv = setInterval(function() {
+    attempts++
+    var client = window.supabase
+    if (client && client.from && client.auth) {
+      clearInterval(iv)
+      callback(client)
+    } else if (attempts > 40) {
+      clearInterval(iv)
+      console.error("[BEO SAVE] window.supabase never became available")
     }
-  }
+  }, 100)
+}
 
+async function _doSave(client, base64DataUrl, toolName) {
+  console.log("[BEO SAVE] starting save, tool:", toolName)
   try {
-    // Get session
     var sr = await client.auth.getSession()
     if (!sr.data || !sr.data.session) {
-      console.warn("[BEO SAVE] no session found")
+      console.warn("[BEO SAVE] no session")
       return
     }
-    var session = sr.data.session
-    var userId  = session.user.id
-    console.log("[BEO SAVE] user:", userId)
+    var user = sr.data.session.user
+    console.log("[BEO SAVE] user id:", user.id)
 
-    // Test DB insert first with minimal data to confirm RLS works
-    var testInsert = await client
+    // Insert row first
+    var ins = await client
       .from("generations")
       .insert({
-        user_id:       userId,
+        user_id:       user.id,
         tool:          toolName,
         result_url:    "uploading",
         thumbnail_url: "uploading"
@@ -52,53 +45,38 @@ async function _doSave(base64DataUrl, toolName) {
       .select("id")
       .single()
 
-    if (testInsert.error) {
-      console.error("[BEO SAVE] DB insert failed:", testInsert.error.message, "code:", testInsert.error.code)
+    if (ins.error) {
+      console.error("[BEO SAVE] insert failed:", ins.error.message, ins.error.code)
       return
     }
+    var rowId = ins.data.id
+    console.log("[BEO SAVE] row inserted:", rowId)
 
-    var rowId = testInsert.data.id
-    console.log("[BEO SAVE] row created with id:", rowId)
-
-    // Now upload the image
+    // Upload image to storage
     var parts  = base64DataUrl.split(",")
     var binary = atob(parts[1])
     var bytes  = new Uint8Array(binary.length)
     for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
-    var blob = new Blob([bytes], { type: "image/jpeg" })
+    var blob     = new Blob([bytes], { type: "image/jpeg" })
+    var filename = user.id + "/" + Date.now() + ".jpg"
 
-    var filename = userId + "/" + Date.now() + ".jpg"
     var up = await client.storage
       .from("generations")
       .upload(filename, blob, { contentType: "image/jpeg", upsert: false })
 
     if (up.error) {
-      console.error("[BEO SAVE] storage upload failed:", up.error.message)
-      // Row already created — update with error state
-      await client.from("generations")
-        .update({ result_url: "upload-failed", thumbnail_url: "upload-failed" })
-        .eq("id", rowId)
+      console.error("[BEO SAVE] storage failed:", up.error.message)
+      await client.from("generations").update({ result_url: "storage-failed", thumbnail_url: "storage-failed" }).eq("id", rowId)
       return
     }
 
-    var publicUrl = client.storage
-      .from("generations")
-      .getPublicUrl(filename).data.publicUrl
+    var url = client.storage.from("generations").getPublicUrl(filename).data.publicUrl
+    console.log("[BEO SAVE] uploaded:", url)
 
-    console.log("[BEO SAVE] image uploaded:", publicUrl)
+    await client.from("generations").update({ result_url: url, thumbnail_url: url }).eq("id", rowId)
+    console.log("[BEO SAVE] done!")
 
-    // Update row with real URL
-    var upd = await client.from("generations")
-      .update({ result_url: publicUrl, thumbnail_url: publicUrl })
-      .eq("id", rowId)
-
-    if (upd.error) {
-      console.error("[BEO SAVE] update failed:", upd.error.message)
-    } else {
-      console.log("[BEO SAVE] complete! saved as:", publicUrl)
-    }
-
-  } catch (err) {
-    console.error("[BEO SAVE] exception:", err.message)
+  } catch(e) {
+    console.error("[BEO SAVE] exception:", e.message)
   }
 }
