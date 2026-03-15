@@ -78,7 +78,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     </div>
     <div class="stat-card">
       <div class="stat-label">Total Generations</div>
-      <div class="stat-value" id="generations-used">—</div>
+      <a href="/generations/" style="text-decoration:none;display:block">
+        <div class="stat-value" id="generations-used" style="color:var(--gold)">—</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--font-display);letter-spacing:0.08em;text-transform:uppercase">View all →</div>
+      </a>
     </div>
   </div>
 
@@ -127,7 +130,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   </div>
 
   <!-- BUY CREDITS -->
-  <div class="section-title">Buy Credits</div>
+  <div class="section-title" id="buy">Buy Credits</div>
   <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Each generation costs 1 credit. Credits never expire.</p>
   <div class="packages-grid" id="packages-grid">
     <!-- Rendered by JS below -->
