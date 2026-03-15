@@ -1097,8 +1097,7 @@ window.generateMural = async function(){
     if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "mural-visualizer")
     // Mark guest trial used and show soft badge
     if(window._beoGuest && window._beoGuest.isGuest) window.markTrialUsed(generatedResult)
-    // Save generation thumbnail async
-    saveGeneration("mural-visualizer", style, generatedResult)
+    // Generation saved by save-generation.js above
 
     // Deduct credit + update stats
     const newCredits = profile.credits - 1
