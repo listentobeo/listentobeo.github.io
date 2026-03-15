@@ -576,6 +576,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 <div id="footer"></div>
 
 <script src="/assets/js/guest-trial.js"></script>
+<script src="/assets/js/save-generation.js"></script>
 <script type="module" src="/assets/js/app.js"></script>
 <script>
 
@@ -1091,6 +1092,8 @@ window.generateMural = async function(){
     showResult(generatedResult)
     finishProgress()
     if(isGuestUser) window.markTrialUsed(generatedResult)
+    // Save in background — never blocks the UI
+    if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "mural-visualizer")
     // Mark guest trial used and show soft badge
     if(window._beoGuest && window._beoGuest.isGuest) window.markTrialUsed(generatedResult)
     // Save generation thumbnail async
