@@ -1,80 +1,72 @@
-// BEO AI TOOLS — Generation Saver
-// Waits for window.supabase to be ready before saving
-
 window.saveGeneration = function(base64DataUrl, toolName) {
-  _waitForSupabase(function(client) {
+  _waitForClient(function(client) {
     _doSave(client, base64DataUrl, toolName)
   })
 }
 
-function _waitForSupabase(callback) {
-  var attempts = 0
+function _waitForClient(cb) {
+  var tries = 0
   var iv = setInterval(function() {
-    attempts++
-    var client = window.supabase
-    if (client && client.from && client.auth) {
+    tries++
+    if (window.supabase && window.supabase.from && window.supabase.auth) {
+      clearInterval(iv); cb(window.supabase)
+    } else if (tries > 50) {
       clearInterval(iv)
-      callback(client)
-    } else if (attempts > 40) {
-      clearInterval(iv)
-      console.error("[BEO SAVE] window.supabase never became available")
+      console.error("[BEO SAVE] supabase client never ready")
     }
   }, 100)
 }
 
 async function _doSave(client, base64DataUrl, toolName) {
-  console.log("[BEO SAVE] starting save, tool:", toolName)
   try {
-    var sr = await client.auth.getSession()
-    if (!sr.data || !sr.data.session) {
-      console.warn("[BEO SAVE] no session")
-      return
-    }
-    var user = sr.data.session.user
-    console.log("[BEO SAVE] user id:", user.id)
+    var sr   = await client.auth.getSession()
+    var sess = sr.data && sr.data.session
+    if (!sess) { console.warn("[BEO SAVE] no session"); return }
+    var userId = sess.user.id
+    console.log("[BEO SAVE] user:", userId, "tool:", toolName)
 
-    // Insert row first
-    var ins = await client
-      .from("generations")
-      .insert({
-        user_id:       user.id,
-        tool:          toolName,
-        result_url:    "uploading",
-        thumbnail_url: "uploading"
-      })
-      .select("id")
-      .single()
-
-    if (ins.error) {
-      console.error("[BEO SAVE] insert failed:", ins.error.message, ins.error.code)
-      return
-    }
-    var rowId = ins.data.id
-    console.log("[BEO SAVE] row inserted:", rowId)
-
-    // Upload image to storage
+    // Upload image first — get real URL before touching DB
     var parts  = base64DataUrl.split(",")
     var binary = atob(parts[1])
     var bytes  = new Uint8Array(binary.length)
     for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
     var blob     = new Blob([bytes], { type: "image/jpeg" })
-    var filename = user.id + "/" + Date.now() + ".jpg"
+    var filename = userId + "/" + Date.now() + ".jpg"
 
+    console.log("[BEO SAVE] uploading to storage:", filename)
     var up = await client.storage
       .from("generations")
       .upload(filename, blob, { contentType: "image/jpeg", upsert: false })
 
     if (up.error) {
-      console.error("[BEO SAVE] storage failed:", up.error.message)
-      await client.from("generations").update({ result_url: "storage-failed", thumbnail_url: "storage-failed" }).eq("id", rowId)
+      console.error("[BEO SAVE] storage upload failed:", up.error.message)
       return
     }
 
-    var url = client.storage.from("generations").getPublicUrl(filename).data.publicUrl
-    console.log("[BEO SAVE] uploaded:", url)
+    var urlData  = client.storage.from("generations").getPublicUrl(filename)
+    var imageUrl = urlData.data.publicUrl
+    console.log("[BEO SAVE] image url:", imageUrl)
 
-    await client.from("generations").update({ result_url: url, thumbnail_url: url }).eq("id", rowId)
-    console.log("[BEO SAVE] done!")
+    if (!imageUrl || imageUrl.indexOf("http") !== 0) {
+      console.error("[BEO SAVE] invalid public URL:", imageUrl)
+      return
+    }
+
+    // Now insert DB row with real URL
+    var ins = await client
+      .from("generations")
+      .insert({
+        user_id:       userId,
+        tool:          toolName,
+        result_url:    imageUrl,
+        thumbnail_url: imageUrl
+      })
+
+    if (ins.error) {
+      console.error("[BEO SAVE] DB insert failed:", ins.error.message, "| code:", ins.error.code, "| hint:", ins.error.hint)
+    } else {
+      console.log("[BEO SAVE] saved successfully!")
+    }
 
   } catch(e) {
     console.error("[BEO SAVE] exception:", e.message)
