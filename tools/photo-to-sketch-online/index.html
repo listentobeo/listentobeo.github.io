@@ -688,8 +688,7 @@ window.generateSketch = async function(){
     if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "photo-to-sketch")
     // Mark guest trial used and show soft badge
     if(window._beoGuest && window._beoGuest.isGuest) window.markTrialUsed(generatedResult)
-    // Save generation thumbnail async (don't block UI)
-    saveGeneration("photo-to-sketch", style, generatedResult)
+    // Generation saved by save-generation.js above
 
     // Deduct credit + increment generations_used — always write to Supabase
     const newCredits = profile.credits - 1
