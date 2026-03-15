@@ -198,12 +198,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .placement-wrap{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2);display:none}
 .placement-wrap.visible{display:block}
 .placement-canvas-container{position:relative;width:100%;cursor:default}
-.placement-canvas-container img#preview-img{width:100%;display:block;max-height:300px;object-fit:cover;border-radius:var(--radius-sm)}
+.placement-canvas-container img#preview-img{width:100%;display:block;max-height:300px;object-fit:cover;border-radius:var(--radius-sm);user-select:none;-webkit-user-drag:none}
 #placement-canvas{
   position:absolute;top:0;left:0;width:100%;height:100%;
-  border-radius:var(--radius-sm);touch-action:none;display:none}
-#placement-canvas.draw-active{cursor:crosshair;display:block;pointer-events:all}
-#placement-canvas{pointer-events:none}
+  border-radius:var(--radius-sm);touch-action:none;
+  pointer-events:none;opacity:0;transition:opacity 0.2s}
+#placement-canvas.draw-active{cursor:crosshair;pointer-events:all;opacity:1}
 .placement-tools{
   display:flex;align-items:center;gap:8px;padding:10px 0 4px;flex-wrap:wrap}
 .ptool-btn{
@@ -303,7 +303,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
             <!-- Wall photo with canvas overlay for drawing -->
             <div class="placement-canvas-container" id="placement-container">
-              <img id="preview-img" src="" alt="Your wall">
+              <img id="preview-img" src="" alt="Your wall" draggable="false">
               <img id="placement-bg" src="" alt="" style="display:none">
               <!-- Canvas only visible when draw mode is on -->
               <canvas id="placement-canvas" style="display:none"></canvas>
@@ -612,91 +612,107 @@ function resetDesign(){
   document.querySelectorAll(".style-card").forEach(c => c.style.opacity = "1")
 }
 
-let placementCanvas    = null
-let placementCtx       = null
-let isDrawing          = false
-let currentTool        = "draw"
-let brushSize          = 30
-let hasPlacementMask   = false
-let drawModeActive     = false
+var placementCanvas  = null
+var placementCtx     = null
+var isDrawing        = false
+var currentTool      = "draw"
+var brushSize        = 30
+var hasPlacementMask = false
+var drawModeActive   = false
 
 window.toggleDrawMode = function(){
   drawModeActive = !drawModeActive
-  const canvas = document.getElementById("placement-canvas")
-  const tools  = document.getElementById("draw-tools")
-  const hint   = document.getElementById("placement-hint")
-  const tog    = document.getElementById("draw-toggle")
+  var canvas = document.getElementById("placement-canvas")
+  var tools  = document.getElementById("draw-tools")
+  var hint   = document.getElementById("placement-hint")
+  var tog    = document.getElementById("draw-toggle")
+  if(!canvas || !tools || !hint || !tog) return
   if(drawModeActive){
     canvas.classList.add("draw-active")
     tools.style.display = "flex"
     hint.style.display  = "block"
     tog.classList.add("active")
-    tog.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg> Drawing on'
+    tog.textContent = "✏ Drawing on"
+    // Size canvas now that it's visible
+    sizeCanvasToImage()
   } else {
     canvas.classList.remove("draw-active")
     tools.style.display = "none"
     hint.style.display  = "none"
     tog.classList.remove("active")
-    tog.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg> Mark placement'
+    tog.textContent = "Mark placement"
   }
+}
+
+function sizeCanvasToImage(){
+  if(!placementCanvas) return
+  var img = document.getElementById("preview-img")
+  if(!img) return
+  placementCanvas.width  = img.offsetWidth  || img.clientWidth  || 300
+  placementCanvas.height = img.offsetHeight || img.clientHeight || 300
 }
 
 function initPlacementCanvas(){
   placementCanvas = document.getElementById("placement-canvas")
-  placementCtx    = placementCanvas.getContext("2d")
+  if(!placementCanvas) return
+  placementCtx = placementCanvas.getContext("2d")
+  // Don't size yet — canvas is hidden. Size happens when draw mode toggles on.
 
-  // Size canvas to match the wall photo
-  const img = document.getElementById("preview-img")
-
-  function sizeCanvas(){
-    placementCanvas.width  = img.offsetWidth
-    placementCanvas.height = img.offsetHeight
-  }
-
-  if(img.complete && img.offsetWidth > 0) sizeCanvas()
-  else img.addEventListener("load", sizeCanvas, {once:true})
-  window.addEventListener("resize", sizeCanvas)
-
-  // Mouse events
-  placementCanvas.addEventListener("mousedown",  startDraw)
-  placementCanvas.addEventListener("mousemove",  draw)
-  placementCanvas.addEventListener("mouseup",    stopDraw)
-  placementCanvas.addEventListener("mouseleave", stopDraw)
+  // Mouse events — only fire when draw-active
+  placementCanvas.addEventListener("mousedown", function(e){
+    if(!drawModeActive) return
+    e.preventDefault()
+    isDrawing = true; doDraw(e.clientX, e.clientY)
+  })
+  placementCanvas.addEventListener("mousemove", function(e){
+    if(!isDrawing || !drawModeActive) return
+    e.preventDefault()
+    doDraw(e.clientX, e.clientY)
+  })
+  placementCanvas.addEventListener("mouseup",    function(){ isDrawing = false })
+  placementCanvas.addEventListener("mouseleave", function(){ isDrawing = false })
 
   // Touch events
-  placementCanvas.addEventListener("touchstart", e => { e.preventDefault(); startDraw(e.touches[0]) }, { passive:false })
-  placementCanvas.addEventListener("touchmove",  e => { e.preventDefault(); draw(e.touches[0]) },      { passive:false })
-  placementCanvas.addEventListener("touchend",   stopDraw)
+  placementCanvas.addEventListener("touchstart", function(e){
+    if(!drawModeActive) return
+    e.preventDefault()
+    isDrawing = true
+    var t = e.touches[0]
+    doDraw(t.clientX, t.clientY)
+  }, { passive: false })
+  placementCanvas.addEventListener("touchmove", function(e){
+    if(!isDrawing || !drawModeActive) return
+    e.preventDefault()
+    var t = e.touches[0]
+    doDraw(t.clientX, t.clientY)
+  }, { passive: false })
+  placementCanvas.addEventListener("touchend", function(){ isDrawing = false })
+
+  window.addEventListener("resize", function(){
+    if(drawModeActive) sizeCanvasToImage()
+  })
 }
 
-function getCanvasPos(e){
-  const rect = placementCanvas.getBoundingClientRect()
-  return {
-    x: (e.clientX - rect.left) * (placementCanvas.width  / rect.width),
-    y: (e.clientY - rect.top)  * (placementCanvas.height / rect.height)
-  }
-}
-
-function startDraw(e){ isDrawing = true; draw(e) }
-
-function draw(e){
-  if(!isDrawing || !placementCtx) return
-  const { x, y } = getCanvasPos(e)
+function doDraw(clientX, clientY){
+  if(!placementCtx) return
+  var rect = placementCanvas.getBoundingClientRect()
+  var scaleX = placementCanvas.width  / rect.width
+  var scaleY = placementCanvas.height / rect.height
+  var x = (clientX - rect.left) * scaleX
+  var y = (clientY - rect.top)  * scaleY
   placementCtx.beginPath()
   if(currentTool === "draw"){
     placementCtx.globalCompositeOperation = "source-over"
-    placementCtx.fillStyle = "rgba(212, 160, 23, 0.45)"
+    placementCtx.fillStyle = "rgba(212,160,23,0.5)"
     placementCtx.arc(x, y, brushSize, 0, Math.PI * 2)
     placementCtx.fill()
     hasPlacementMask = true
   } else {
     placementCtx.globalCompositeOperation = "destination-out"
-    placementCtx.arc(x, y, brushSize * 1.2, 0, Math.PI * 2)
+    placementCtx.arc(x, y, brushSize * 1.5, 0, Math.PI * 2)
     placementCtx.fill()
   }
 }
-
-function stopDraw(){ isDrawing = false }
 
 window.setTool = function(tool){
   currentTool = tool
