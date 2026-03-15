@@ -195,38 +195,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .result-book-cta a:hover{opacity:0.88}
 .result-book-cta a svg{width:12px;height:12px;stroke:#0d0d12;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-/* ── PHOTO TOOLBAR ── */
-.photo-toolbar{
-  display:flex;align-items:center;gap:8px;padding:8px 0 4px;flex-wrap:wrap}
-.change-btn-flat{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;
-  border:1px solid var(--border);background:var(--surface2);
-  color:var(--muted);cursor:pointer;font-family:var(--font-display);
-  letter-spacing:0.04em;transition:border-color 0.15s,color 0.15s}
-.change-btn-flat:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
-.ptool-toggle{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;
-  border:1px solid var(--border);background:var(--surface2);
-  color:var(--muted);cursor:pointer;font-family:var(--font-display);
-  letter-spacing:0.04em;transition:all 0.15s;margin-left:auto}
-.ptool-toggle:hover{border-color:rgba(212,160,23,0.4);color:var(--gold)}
-.ptool-toggle.active{border-color:var(--gold);color:var(--gold);background:var(--gold-glow)}
-
-/* ── DESIGN ROW ── */
-.design-row{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;margin-top:10px;
-  background:var(--surface2);border-radius:var(--radius-sm);
-  border:1px solid var(--border);flex-wrap:wrap}
-.design-row-label{
-  display:flex;align-items:center;gap:5px;
-  font-size:11px;color:var(--muted);font-family:var(--font-display);
-  font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-  white-space:nowrap}
-
-/* ── PLACEMENT CANVAS ── */
 .placement-wrap{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface2);display:none}
 .placement-wrap.visible{display:block}
 .placement-canvas-container{position:relative;width:100%;cursor:default}
@@ -262,6 +230,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .no-credits-bar a{color:var(--gold);font-weight:600;text-decoration:underline}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PHOTO TOOLBAR ── */
+.photo-toolbar{display:flex;align-items:center;gap:8px;padding:8px 0 4px;flex-wrap:wrap}
+.change-btn-flat{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-family:var(--font-display);letter-spacing:0.04em;transition:border-color 0.15s,color 0.15s}
+.change-btn-flat:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
+.ptool-toggle{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-family:var(--font-display);letter-spacing:0.04em;transition:all 0.15s;margin-left:auto}
+.ptool-toggle:hover{border-color:rgba(212,160,23,0.4);color:var(--gold)}
+.ptool-toggle.active{border-color:var(--gold);color:var(--gold);background:var(--gold-glow)}
+
+/* ── DESIGN ROW ── */
+.design-row{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:10px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);flex-wrap:wrap}
+.design-row-label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-family:var(--font-display);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -571,10 +551,6 @@ function loadFile(file){
     document.getElementById("preview-wrap").style.display = "block"
     document.getElementById("preview-img").src            = uploadedImage
     document.getElementById("upload-dot").classList.add("active")
-
-    // Show placement canvas synced to the wall photo
-    document.getElementById("placement-bg").src = uploadedImage
-    document.getElementById("placement-wrap").classList.add("visible")
     setTimeout(initPlacementCanvas, 150)
   }
   reader.readAsDataURL(file)
@@ -597,8 +573,11 @@ function resetUpload(){
 
 /* ── DESIGN UPLOAD ── */
 let uploadedDesign = null
-const designInput  = document.getElementById("design-upload")
-if(designInput) designInput.addEventListener("change", handleDesignSelect)
+var designInput = null
+document.addEventListener("DOMContentLoaded", function(){
+  designInput = document.getElementById("design-upload")
+  if(designInput) designInput.addEventListener("change", handleDesignSelect)
+})
 
 // Drag & drop for design zone
 // Design drag/drop on the upload wrap
@@ -633,38 +612,6 @@ function resetDesign(){
   document.querySelectorAll(".style-card").forEach(c => c.style.opacity = "1")
 }
 
-/* ── PHOTO TOOLBAR ── */
-.photo-toolbar{
-  display:flex;align-items:center;gap:8px;padding:8px 0 4px;flex-wrap:wrap}
-.change-btn-flat{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;
-  border:1px solid var(--border);background:var(--surface2);
-  color:var(--muted);cursor:pointer;font-family:var(--font-display);
-  letter-spacing:0.04em;transition:border-color 0.15s,color 0.15s}
-.change-btn-flat:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
-.ptool-toggle{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;
-  border:1px solid var(--border);background:var(--surface2);
-  color:var(--muted);cursor:pointer;font-family:var(--font-display);
-  letter-spacing:0.04em;transition:all 0.15s;margin-left:auto}
-.ptool-toggle:hover{border-color:rgba(212,160,23,0.4);color:var(--gold)}
-.ptool-toggle.active{border-color:var(--gold);color:var(--gold);background:var(--gold-glow)}
-
-/* ── DESIGN ROW ── */
-.design-row{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;margin-top:10px;
-  background:var(--surface2);border-radius:var(--radius-sm);
-  border:1px solid var(--border);flex-wrap:wrap}
-.design-row-label{
-  display:flex;align-items:center;gap:5px;
-  font-size:11px;color:var(--muted);font-family:var(--font-display);
-  font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-  white-space:nowrap}
-
-/* ── PLACEMENT CANVAS ── */
 let placementCanvas    = null
 let placementCtx       = null
 let isDrawing          = false
