@@ -202,28 +202,107 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   .credits-cta{padding:32px 24px}
   .tool-card-visual{height:160px}
 }
+
+/* ── ANIMATED HERO SECTION ── */
+.hero-section{
+  position:relative;
+  min-height:90vh;
+  display:flex;align-items:center;
+  overflow:hidden;
+  background:#0d0d12}
+
+.hero-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  opacity:0.55}
+
+.hero-overlay{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(13,13,18,0) 0%, rgba(13,13,18,0.6) 100%),
+    linear-gradient(to bottom, rgba(13,13,18,0) 60%, rgba(13,13,18,1) 100%);
+  pointer-events:none}
+
+.hero-content{
+  position:relative;z-index:2;
+  padding-top:120px;padding-bottom:100px;
+  text-align:center}
+
+.hero-h1{
+  font-family:var(--font-display);
+  font-size:clamp(36px,7vw,72px);
+  font-weight:800;letter-spacing:-0.04em;line-height:1.05;
+  margin-bottom:22px;color:#f0ede8}
+
+.hero-word-wrap{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--gold) 0%,#f5c842 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  overflow:hidden;vertical-align:bottom}
+
+.hero-word{
+  display:inline-block;
+  animation:none;
+  will-change:transform,opacity}
+
+.hero-word.exit{
+  animation:wordExit 0.4s cubic-bezier(0.4,0,1,1) forwards}
+
+.hero-word.enter{
+  animation:wordEnter 0.4s cubic-bezier(0,0,0.2,1) forwards}
+
+@keyframes wordExit{
+  0%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-32px)}}
+
+@keyframes wordEnter{
+  0%{opacity:0;transform:translateY(32px)}
+  100%{opacity:1;transform:translateY(0)}}
+
+.hero-sub{
+  font-size:clamp(15px,2vw,18px);color:#888;font-weight:300;
+  max-width:520px;margin:0 auto 36px;line-height:1.7}
+
+@media(max-width:600px){
+  .hero-content{padding-top:100px;padding-bottom:80px}
+}
 </style>
 </head>
 <body>
 
 <div id="header"></div>
 
-<!-- ── HERO ── -->
-<section class="page">
-  <div class="hero">
+<!-- ── ANIMATED HERO ── -->
+<section class="hero-section">
+  <!-- Wave canvas background -->
+  <canvas id="hero-canvas" class="hero-canvas"></canvas>
+  <!-- Overlay gradient to fade canvas into page bg -->
+  <div class="hero-overlay"></div>
+
+  <div class="page hero-content">
     <div class="hero-eyebrow">
       <span></span>
       By Beo Art Studio
     </div>
-    <h1>Turn Your Photos<br>Into <em>Art</em></h1>
-    <p>AI-powered creative tools built by real artists. Transform photos into sketches, visualize murals on your wall, and more — no design skills needed.</p>
+
+    <!-- Animated cycling words -->
+    <h1 class="hero-h1">
+      Turn Your Photos Into
+      <span class="hero-word-wrap">
+        <span class="hero-word" id="hero-word">Sketches</span>
+      </span>
+    </h1>
+
+    <p class="hero-sub">AI-powered creative tools built by real artists. Transform photos into sketches, visualize murals on your wall, and more — no design skills needed.</p>
+
     <div class="hero-actions">
       <a class="btn-primary" href="/tools/photo-to-sketch-online/">
         Try Photo to Sketch
         <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
-      <a class="btn-secondary" href="https://www.beoarts.com" target="_blank">
-        Visit Beo Art Studio
+      <a class="btn-secondary" href="/signup/">
+        Start Free
         <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
     </div>
@@ -466,5 +545,117 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
 <script type="module" src="/assets/js/app.js"></script>
 
+
+<script>
+/* ── WAVE CANVAS BACKGROUND ── */
+;(function(){
+  var canvas = document.getElementById("hero-canvas")
+  if(!canvas) return
+  var ctx    = canvas.getContext("2d")
+  var width, height, imageData, data
+  var SCALE  = 3  // lower = better perf on mobile
+
+  function resizeCanvas(){
+    canvas.width  = window.innerWidth
+    canvas.height = window.innerHeight
+    width         = Math.floor(canvas.width  / SCALE)
+    height        = Math.floor(canvas.height / SCALE)
+    imageData     = ctx.createImageData(width, height)
+    data          = imageData.data
+  }
+  window.addEventListener("resize", resizeCanvas)
+  resizeCanvas()
+
+  // Pre-computed trig tables for performance
+  var SIN_TABLE = new Float32Array(1024)
+  var COS_TABLE = new Float32Array(1024)
+  for(var i = 0; i < 1024; i++){
+    var angle = (i / 1024) * Math.PI * 2
+    SIN_TABLE[i] = Math.sin(angle)
+    COS_TABLE[i] = Math.cos(angle)
+  }
+  function fsin(x){
+    var idx = Math.floor(((x % (Math.PI*2)) / (Math.PI*2)) * 1024) & 1023
+    if(idx < 0) idx += 1024
+    return SIN_TABLE[idx]
+  }
+  function fcos(x){
+    var idx = Math.floor(((x % (Math.PI*2)) / (Math.PI*2)) * 1024) & 1023
+    if(idx < 0) idx += 1024
+    return COS_TABLE[idx]
+  }
+
+  var startTime = Date.now()
+  var raf
+
+  function render(){
+    var time = (Date.now() - startTime) * 0.001
+    for(var y = 0; y < height; y++){
+      for(var x = 0; x < width; x++){
+        var ux = (2*x - width)  / height
+        var uy = (2*y - height) / height
+        var a  = 0, d = 0
+        for(var k = 0; k < 4; k++){
+          a += fcos(k - d + time * 0.5 - a * ux)
+          d += fsin(k * uy + a)
+        }
+        var wave      = (fsin(a) + fcos(d)) * 0.5
+        var intensity = 0.3 + 0.4 * wave
+        var base      = 0.1 + 0.15 * fcos(ux + uy + time * 0.3)
+        var blue      = 0.2  * fsin(a * 1.5 + time * 0.2)
+        var purple    = 0.15 * fcos(d * 2   + time * 0.1)
+
+        var r = Math.max(0, Math.min(1, base + purple * 0.8)) * intensity
+        var g = Math.max(0, Math.min(1, base + blue   * 0.6)) * intensity
+        var b = Math.max(0, Math.min(1, base + blue   * 1.2 + purple * 0.4)) * intensity
+
+        var idx = (y * width + x) * 4
+        data[idx]   = r * 255
+        data[idx+1] = g * 255
+        data[idx+2] = b * 255
+        data[idx+3] = 255
+      }
+    }
+    ctx.putImageData(imageData, 0, 0)
+    // Scale up with pixelation disabled for smooth look
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = "high"
+    ctx.drawImage(canvas, 0, 0, width, height, 0, 0, canvas.width, canvas.height)
+    raf = requestAnimationFrame(render)
+  }
+
+  // Pause when tab not visible (saves battery)
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden){ cancelAnimationFrame(raf) }
+    else { startTime = Date.now() - (Date.now() - startTime); render() }
+  })
+
+  render()
+})()
+
+/* ── ANIMATED CYCLING WORDS ── */
+;(function(){
+  var words   = ["Sketches", "Murals", "Paintings", "Portraits", "Art"]
+  var current = 0
+  var el      = document.getElementById("hero-word")
+  if(!el) return
+
+  function cycleWord(){
+    // Exit animation
+    el.classList.add("exit")
+    setTimeout(function(){
+      current = (current + 1) % words.length
+      el.textContent = words[current]
+      el.classList.remove("exit")
+      el.classList.add("enter")
+      setTimeout(function(){
+        el.classList.remove("enter")
+      }, 400)
+    }, 380)
+  }
+
+  setInterval(cycleWord, 2800)
+})()
+</script>
 </body>
 </html>
