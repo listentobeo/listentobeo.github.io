@@ -75,7 +75,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   padding:32px 20px;text-align:center;cursor:pointer;
   transition:border-color 0.2s,background 0.2s;position:relative;background:var(--surface2)}
 .upload-zone:hover,.upload-zone.drag-over{border-color:var(--gold);background:var(--gold-glow)}
-.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:3}
 .upload-icon{width:40px;height:40px;margin:0 auto 10px;border:1px solid rgba(212,160,23,0.25);border-radius:9px;display:flex;align-items:center;justify-content:center}
 .upload-icon svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .upload-zone p{font-size:13px;color:var(--muted)}
@@ -234,7 +234,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 #placement-canvas{
   position:absolute;top:0;left:0;width:100%;height:100%;
   border-radius:var(--radius-sm);touch-action:none;display:none}
-#placement-canvas.draw-active{cursor:crosshair;display:block}
+#placement-canvas.draw-active{cursor:crosshair;display:block;pointer-events:all}
+#placement-canvas{pointer-events:none}
 .placement-tools{
   display:flex;align-items:center;gap:8px;padding:10px 0 4px;flex-wrap:wrap}
 .ptool-btn{
@@ -683,13 +684,13 @@ window.toggleDrawMode = function(){
     tools.style.display = "flex"
     hint.style.display  = "block"
     tog.classList.add("active")
-    tog.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg> Drawing on`
+    tog.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg> Drawing on'
   } else {
     canvas.classList.remove("draw-active")
     tools.style.display = "none"
     hint.style.display  = "none"
     tog.classList.remove("active")
-    tog.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg> Mark placement`
+    tog.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg> Mark placement'
   }
 }
 
@@ -814,7 +815,7 @@ async function loadCredits(){
     .from("profiles").select("credits").eq("id", data.user.id).single()
   if(profile){
     document.getElementById("credits-display").innerHTML =
-      `<div class="credits-badge">⚡ ${profile.credits} credits remaining</div>`
+      "<div class=\"credits-badge\">⚡ " + profile.credits + " credits remaining</div>"
   }
 }
 document.addEventListener("DOMContentLoaded", loadCredits)
@@ -983,14 +984,14 @@ window.generateMural = async function(){
       .from("profiles")
       .update({
         credits:          newCredits,
-        generations_used: (profile.generations_used ?? 0) + 1,
+        generations_used: (profile.generations_used !== undefined && profile.generations_used !== null ? profile.generations_used : 0) + 1,
         last_generation:  new Date().toISOString()
       })
       .eq("id", userData.user.id)
 
     if(!updateError){
       document.getElementById("credits-display").innerHTML =
-        `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
+        "<div class=\"credits-badge\">⚡ " + newCredits + " credits remaining</div>"
     } else {
       console.error("Credits update failed — check Supabase RLS policies:", updateError)
     }
