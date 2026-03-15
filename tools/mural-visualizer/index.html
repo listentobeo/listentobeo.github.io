@@ -268,6 +268,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
         </div>
       </div>
 
+      <!-- Custom Design Upload (optional) -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="dot" id="design-dot"></span>
+          Upload Your Own Design <span style="font-size:9px;color:#444;margin-left:6px;letter-spacing:0">(optional)</span>
+        </div>
+        <div class="panel-body" style="padding:12px 16px">
+          <div class="upload-zone" id="design-zone" style="padding:18px 16px">
+            <input type="file" id="design-upload" accept="image/*">
+            <div class="upload-icon" style="width:32px;height:32px;margin:0 auto 8px">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <p style="font-size:12px"><strong>Upload your artwork</strong> or logo</p>
+            <small>We'll place it on your wall as a mural</small>
+          </div>
+          <div id="design-preview-wrap" style="display:none;position:relative">
+            <img id="design-preview-img" src="" alt="Your design" style="width:100%;border-radius:8px;display:block;max-height:140px;object-fit:contain;background:#1a1a24">
+            <button onclick="resetDesign()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">Remove</button>
+          </div>
+          <p style="font-size:11px;color:#444;margin-top:8px;line-height:1.5">When a design is uploaded, the style selector below is ignored — the AI will place your exact design on the wall.</p>
+        </div>
+      </div>
+
       <!-- Style + Generate -->
       <div class="panel">
         <div class="panel-header">
@@ -464,6 +487,44 @@ function resetUpload(){
   document.getElementById("upload-dot").classList.remove("active")
 }
 
+/* ── DESIGN UPLOAD ── */
+let uploadedDesign = null
+const designInput  = document.getElementById("design-upload")
+designInput.addEventListener("change", handleDesignSelect)
+
+// Drag & drop for design zone
+const dzone = document.getElementById("design-zone")
+dzone.addEventListener("dragover",  e => { e.preventDefault(); dzone.classList.add("drag-over") })
+dzone.addEventListener("dragleave", () => dzone.classList.remove("drag-over"))
+dzone.addEventListener("drop", e => {
+  e.preventDefault(); dzone.classList.remove("drag-over")
+  const f = e.dataTransfer.files[0]; if(f) loadDesignFile(f)
+})
+
+function handleDesignSelect(){ const f = designInput.files[0]; if(f) loadDesignFile(f) }
+
+function loadDesignFile(file){
+  const reader = new FileReader()
+  reader.onload = e => {
+    uploadedDesign = e.target.result
+    document.getElementById("design-zone").style.display         = "none"
+    document.getElementById("design-preview-wrap").style.display = "block"
+    document.getElementById("design-preview-img").src            = uploadedDesign
+    document.getElementById("design-dot").classList.add("active")
+    // Dim style cards to signal they are overridden
+    document.querySelectorAll(".style-card").forEach(c => c.style.opacity = "0.4")
+  }
+  reader.readAsDataURL(file)
+}
+
+function resetDesign(){
+  uploadedDesign = null; designInput.value = ""
+  document.getElementById("design-zone").style.display         = "block"
+  document.getElementById("design-preview-wrap").style.display = "none"
+  document.getElementById("design-dot").classList.remove("active")
+  document.querySelectorAll(".style-card").forEach(c => c.style.opacity = "1")
+}
+
 /* ── STYLE SELECTOR ── */
 window.selectStyle = function(style, el){
   document.getElementById("style").value = style
@@ -621,13 +682,24 @@ window.generateMural = async function(){
 
     const compressedImage = await compressImage(uploadedImage)
 
+    // Compress design image too if provided
+    let compressedDesign = null
+    if(uploadedDesign){
+      compressedDesign = await compressImage(uploadedDesign, 1024, 0.85)
+    }
+
     const response = await fetch(EDGE_FUNCTION_URL, {
       method: "POST",
       headers:{
         "Content-Type":  "application/json",
         "Authorization": "Bearer " + sessionData.session.access_token
       },
-      body: JSON.stringify({ image: compressedImage, style, prompt })
+      body: JSON.stringify({
+        image:  compressedImage,
+        design: compressedDesign,  // null if no custom design uploaded
+        style,
+        prompt
+      })
     })
 
     const result = await response.json()
