@@ -13,7 +13,7 @@ const PACKAGES = [
   { id: "studio",  label: "Studio",   credits: 50, price: 12000, display: "₦12,000" },
 ]
 
-const PAYSTACK_KEY = "pk_live_REPLACE_WITH_YOUR_PAYSTACK_PUBLIC_KEY"
+const PAYSTACK_KEY = "pk_live_2d3dff6f69fb6093c1df177517a802e0de68a731"
 
 /* ── TIME-BASED GREETING ──────────────────────────────── */
 function getGreeting(){
