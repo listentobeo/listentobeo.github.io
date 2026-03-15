@@ -151,24 +151,41 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 <div id="footer"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-var _sb = supabase.createClient(
-  "https://wphqcccliiwdvwdjgrmc.supabase.co",
-  "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
-)
-
 var allGenerations = []
 var currentFilter  = "all"
 var currentLbUrl   = ""
 
+// Wait for app.js to set window.supabase then load
+function waitForClientThenLoad() {
+  var tries = 0
+  var iv = setInterval(function() {
+    tries++
+    if (window.supabase && window.supabase.from && window.supabase.auth) {
+      clearInterval(iv)
+      loadGenerations(window.supabase)
+    } else if (tries > 60) {
+      clearInterval(iv)
+      document.getElementById("gen-grid").innerHTML =
+        '<div class="loading-state">Could not connect. Please refresh.</div>'
+    }
+  }, 100)
+}
+
 // ── LOAD GENERATIONS ──────────────────────────────────────
-async function loadGenerations() {
+async function loadGenerations(client) {
   var grid = document.getElementById("gen-grid")
 
-  // Get session — required for RLS to recognise the user
-  var sessionResult = await _sb.auth.getSession()
+  // Refresh session to ensure token is current
+  var sessionResult = await client.auth.getSession()
   var session = sessionResult.data.session
+
+  // If no session try refreshing once
+  if (!session) {
+    var refreshResult = await client.auth.refreshSession()
+    session = refreshResult.data.session
+  }
+
   if (!session) {
     window.location.href = "/login/"
     return
@@ -176,7 +193,7 @@ async function loadGenerations() {
 
   var user = session.user
 
-  var result = await _sb
+  var result = await client
     .from("generations")
     .select("id, tool, result_url, thumbnail_url, created_at")
     .eq("user_id", user.id)
@@ -248,6 +265,11 @@ window.filterGens = function(filter, btn) {
   document.querySelectorAll(".filter-tab").forEach(function(t) { t.classList.remove("active") })
   btn.classList.add("active")
   renderGrid(filter)
+}
+
+// Reload generations (e.g. pull to refresh)
+window.reloadGenerations = function() {
+  if (window.supabase) loadGenerations(window.supabase)
 }
 
 // ── LIGHTBOX ──────────────────────────────────────────────
@@ -335,9 +357,9 @@ function escHtml(str) {
 
 // ── INIT ──────────────────────────────────────────────────
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", loadGenerations)
+  document.addEventListener("DOMContentLoaded", waitForClientThenLoad)
 } else {
-  loadGenerations()
+  waitForClientThenLoad()
 }
 </script>
 
