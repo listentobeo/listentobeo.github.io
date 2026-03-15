@@ -16,7 +16,12 @@ const PACKAGES = [
 const PAYSTACK_KEY = "pk_live_REPLACE_WITH_YOUR_PAYSTACK_PUBLIC_KEY"
 
 /* ── LOAD DASHBOARD ───────────────────────────────────── */
-async function loadDashboard(){
+async function // Wait for DOM before running — elements like #greeting must exist first
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', loadDashboard)
+} else {
+  loadDashboard()
+}{
 
   // Auth guard — redirect if not logged in
   const { data: authData } = await supabase.auth.getUser()
@@ -155,4 +160,9 @@ function showToast(msg){
   setTimeout(() => toast.classList.remove("visible"), 4000)
 }
 
-loadDashboard()
+// Wait for DOM before running — elements like #greeting must exist first
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', loadDashboard)
+} else {
+  loadDashboard()
+}
