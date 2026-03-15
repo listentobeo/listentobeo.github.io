@@ -997,7 +997,17 @@ window.generateMural = async function(){
     .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
 
   if(!profile || profile.credits < 1){
-    document.getElementById("no-credits-bar").classList.add("visible"); return
+    var bar = document.getElementById("no-credits-bar")
+    bar.classList.add("visible")
+    bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
+    var secs = 3
+    var iv = setInterval(function(){
+      secs--
+      var cd = document.getElementById("countdown")
+      if(cd) cd.textContent = secs
+      if(secs <= 0){ clearInterval(iv); window.location.href = "/dashboard/#packages" }
+    }, 1000)
+    return
   }
 
   const btn = document.getElementById("generate-btn")
@@ -1056,6 +1066,8 @@ window.generateMural = async function(){
     generatedResult = result.result
     showResult(generatedResult)
     finishProgress()
+    // Save generation thumbnail async
+    saveGeneration("mural-visualizer", style, generatedResult)
 
     // Deduct credit + update stats
     const newCredits = profile.credits - 1
@@ -1120,6 +1132,36 @@ window.downloadImage = function(){
   a.href = generatedResult; a.download = "beo-mural-preview-"+Date.now()+".png"; a.click()
 }
 
+
+/* ── SAVE GENERATION ── */
+async function saveGeneration(tool, style, dataUrl) {
+  try {
+    var authData = await window.supabase.auth.getUser()
+    if(!authData.data.user) return
+    var userId = authData.data.user.id
+
+    var fetchRes = await fetch(dataUrl)
+    var blob     = await fetchRes.blob()
+    var ext      = blob.type === "image/png" ? "png" : "jpg"
+    var path     = userId + "/" + Date.now() + "." + ext
+
+    var upResult = await window.supabase
+      .storage.from("generations").upload(path, blob, { contentType: blob.type })
+
+    if(upResult.error){ console.warn("Save failed:", upResult.error.message); return }
+
+    var urlData = window.supabase.storage.from("generations").getPublicUrl(path)
+
+    await window.supabase.from("generations").insert({
+      user_id:   userId,
+      tool:      tool,
+      style:     style || "custom",
+      thumb_url: urlData.data.publicUrl
+    })
+  } catch(e) {
+    console.warn("Could not save generation:", e.message)
+  }
+}
 </script>
 </body>
-</html>
+                  </html>
