@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="overflow-x:hidden;max-width:100%">
 <head>
 <title>Dashboard | Beo AI Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,72 +10,59 @@
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d0d12">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="/assets/icon-192.png">
-<!-- Paystack SDK -->
+<!-- Paystack SDK must load before everything else -->
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
-:root{--gold:#d4a017;--gold-glow:rgba(212,160,23,0.12);--bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;--border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.3);--text:#f0ede8;--muted:#666;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--radius:12px}
+:root{
+  --gold:#d4a017;--gold-glow:rgba(212,160,23,0.12);
+  --bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;
+  --border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.3);
+  --text:#f0ede8;--muted:#666;
+  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --radius:12px}
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;max-width:100%;width:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column}
 .main{flex:1}
-.container{max-width:960px;margin:0 auto;padding:40px 24px 80px}
-
-/* HERO ROW */
+.container{max-width:960px;margin:0 auto;padding:40px 20px 80px;width:100%}
 .dash-hero{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:40px}
-.dash-hero h1{font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+.dash-hero h1{font-family:var(--font-display);font-size:clamp(22px,5vw,32px);font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
 .dash-hero p{color:var(--muted);font-size:14px}
-
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:40px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px}
-.stat-card.gold{border-color:var(--border-gold);background:var(--gold-glow)}
-.stat-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:700;margin-bottom:8px}
-.stat-value{font-family:var(--font-display);font-size:32px;font-weight:800;color:var(--gold)}
-.stat-value.normal{color:var(--text)}
-
-/* SECTION TITLE */
-.section-title{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px;letter-spacing:-0.01em}
-
-/* TOOL GRID */
-.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:40px}
-.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color 0.2s,transform 0.15s}
-.tool-card:hover{border-color:rgba(212,160,23,0.4);transform:translateY(-2px)}
-.tool-card svg{width:36px;height:36px;margin-bottom:12px}
-.tool-card h3{font-family:var(--font-display);font-size:15px;font-weight:700;margin-bottom:6px}
-.tool-card p{color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.5}
-.tool-btn{display:inline-block;background:var(--gold);color:#0d0d12;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:700;font-family:var(--font-display);letter-spacing:0.04em}
-.tool-btn.disabled{opacity:0.4;pointer-events:none;background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
-
-/* CREDIT PACKAGES */
-.packages-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:40px}
-.package-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 18px;text-align:center;transition:border-color 0.2s}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:40px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.stat-card.gold{background:rgba(212,160,23,0.08);border-color:var(--border-gold)}
+.stat-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);margin-bottom:8px}
+.stat-value{font-family:var(--font-display);font-size:clamp(28px,6vw,40px);font-weight:800;color:var(--gold)}
+.stat-card:last-child .stat-value{color:var(--text)}
+.section-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:16px;letter-spacing:-0.01em}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:16px;margin-bottom:40px}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px}
+.tool-card svg{width:28px;height:28px}
+.tool-card h3{font-family:var(--font-display);font-size:15px;font-weight:700}
+.tool-card p{color:var(--muted);font-size:13px;flex:1;line-height:1.5}
+.tool-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 16px;background:var(--gold);color:#0d0d12;border:none;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;text-decoration:none;transition:opacity 0.2s;align-self:flex-start}
+.tool-btn:hover{opacity:0.88}
+.tool-btn.disabled{background:var(--surface2);color:var(--muted);border:1px solid var(--border);pointer-events:none}
+.packages-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(180px,100%),1fr));gap:14px;margin-bottom:40px}
+.package-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:8px;transition:border-color 0.2s}
 .package-card:hover{border-color:var(--border-gold)}
-.pkg-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:700;margin-bottom:10px}
-.pkg-credits{font-family:var(--font-display);font-size:36px;font-weight:800;color:var(--gold);line-height:1}
-.pkg-credits span{font-size:13px;color:var(--muted);font-weight:400;display:block;margin-top:4px}
-.pkg-price{font-size:16px;font-weight:600;color:var(--text);margin:12px 0 16px;font-family:var(--font-display)}
-.pkg-btn{width:100%;padding:10px;background:var(--gold);color:#0d0d12;border:none;border-radius:6px;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s}
+.pkg-label{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.pkg-credits{font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--gold);line-height:1}
+.pkg-credits span{font-size:12px;font-weight:400;color:var(--muted);margin-left:3px}
+.pkg-price{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
+.pkg-btn{width:100%;padding:10px;background:var(--gold);color:#0d0d12;border:none;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s}
 .pkg-btn:hover{opacity:0.88}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border-gold);color:var(--gold);padding:12px 22px;border-radius:100px;font-size:13px;font-weight:500;white-space:nowrap;transition:transform 0.35s ease,opacity 0.35s ease;opacity:0;z-index:999;pointer-events:none}
-.toast.visible{transform:translateX(-50%) translateY(0);opacity:1}
-
-@media(max-width:600px){
-  .dash-hero{flex-direction:column;align-items:flex-start}
-  .stat-value{font-size:26px}
-}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border-gold);color:var(--gold);padding:12px 20px;border-radius:100px;font-size:13px;font-weight:500;opacity:0;transition:transform 0.3s,opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:999}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 <div id="header"></div>
-
 <main class="main">
 <div class="container">
 
-  <!-- HERO -->
+  <!-- GREETING -->
   <div class="dash-hero">
     <div>
       <h1><span id="greeting">Hello,</span> <span id="user-name">Creator</span></h1>
@@ -86,16 +73,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   <!-- STATS -->
   <div class="stats-row">
     <div class="stat-card gold">
-      <div class="stat-label">Credits remaining</div>
+      <div class="stat-label">Credits Remaining</div>
       <div class="stat-value" id="credits">—</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Total generations</div>
-      <div class="stat-value normal" id="generations-used">—</div>
+      <div class="stat-label">Total Generations</div>
+      <div class="stat-value" id="generations-used">—</div>
     </div>
   </div>
 
-  <!-- YOUR TOOLS -->
+  <!-- TOOLS -->
   <div class="section-title">Your Tools</div>
   <div class="tool-grid">
 
@@ -115,7 +102,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
         <polyline points="9 22 9 12 15 12 15 22"/>
       </svg>
       <h3>Mural Visualizer</h3>
-      <p>See how a mural looks on your wall before painting — homes, cafés, offices.</p>
+      <p>See how a mural looks on your wall before painting.</p>
       <a class="tool-btn" href="/tools/mural-visualizer/">Open Tool</a>
     </div>
 
@@ -130,8 +117,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
     <div class="tool-card">
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 9 4-4 4 4 4-4 4 4"/>
-        <path d="M3 15h18"/>
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 9 4-4 4 4 4-4 4 4"/><path d="M3 15h18"/>
       </svg>
       <h3>Background Remover</h3>
       <p>Instantly remove image backgrounds using AI.</p>
@@ -144,103 +130,173 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   <div class="section-title">Buy Credits</div>
   <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Each generation costs 1 credit. Credits never expire.</p>
   <div class="packages-grid" id="packages-grid">
-    <!-- Rendered by dashboard.js -->
+    <!-- Rendered by JS below -->
   </div>
 
 </div>
 </main>
 
 <div id="footer"></div>
-
-<!-- Toast notification -->
 <div class="toast" id="toast"></div>
 
 <script type="module" src="/assets/js/app.js"></script>
-<script type="module" src="/assets/js/dashboard.js"></script>
 
-<!-- Paystack initPayment defined as plain script so onclick works immediately -->
+<!-- Single self-contained dashboard script — no modules, no timing issues -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-var PAYSTACK_KEY = "pk_live_2d3dff6f69fb6093c1df177517a802e0de68a731";
+;(function(){
 
-var CREDIT_PACKAGES = [
-  { id: "starter", credits: 5,  price: 2000  },
-  { id: "creator", credits: 20, price: 6000  },
-  { id: "studio",  credits: 50, price: 12000 }
-];
+  /* ── CONFIG ── */
+  var SUPABASE_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo";
+  var PAYSTACK_KEY = "pk_live_2d3dff6f69fb6093c1df177517a802e0de68a731";
 
-window.initPayment = function(packageId, email, amount, credits) {
-  if(typeof PaystackPop === "undefined") {
-    alert("Payment is still loading. Please wait a moment and try again.");
-    return;
+  var PACKAGES = [
+    { id:"starter", label:"Starter",  credits:5,  price:2000,  display:"₦2,000"  },
+    { id:"creator", label:"Creator",  credits:20, price:6000,  display:"₦6,000"  },
+    { id:"studio",  label:"Studio",   credits:50, price:12000, display:"₦12,000" }
+  ];
+
+  /* ── SUPABASE CLIENT ── */
+  var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // Share with app.js for auth header/logout
+  window.supabase = db;
+
+  /* ── GREETING ── */
+  function getGreeting(){
+    var h = new Date().getHours();
+    if(h >= 5  && h < 12) return "Good morning,";
+    if(h >= 12 && h < 17) return "Good afternoon,";
+    if(h >= 17 && h < 21) return "Good evening,";
+    return "Good night,";
   }
 
-  var handler = PaystackPop.setup({
-    key:      PAYSTACK_KEY,
-    email:    email,
-    amount:   amount * 100,
-    currency: "NGN",
-    ref:      "beo_" + Date.now() + "_" + packageId,
-    channels: ["card", "bank", "ussd", "qr", "bank_transfer"],
-    metadata: {
-      custom_fields: [
-        { display_name: "Package", variable_name: "package", value: packageId },
-        { display_name: "Credits", variable_name: "credits", value: credits   }
-      ]
-    },
-    callback: function(response) {
-      // Payment successful — update credits via Supabase
-      addCreditsAfterPayment(credits, response.reference);
-    },
-    onClose: function() {}
-  });
+  /* ── LOAD DASHBOARD ── */
+  async function init(){
+    var auth = await db.auth.getUser();
+    if(!auth.data.user){
+      window.location.href = "/login/";
+      return;
+    }
 
-  handler.openIframe();
-};
+    var user = auth.data.user;
+    var meta = user.user_metadata || {};
+    var name = meta.full_name || meta.name || user.email.split("@")[0];
 
-async function addCreditsAfterPayment(creditsToAdd, reference) {
-  var client = window.supabase;
-  if(!client) {
-    alert("Session error. Please refresh and contact support with ref: " + reference);
-    return;
+    var gEl = document.getElementById("greeting");
+    var nEl = document.getElementById("user-name");
+    if(gEl) gEl.textContent = getGreeting();
+    if(nEl) nEl.textContent = name;
+
+    /* Fetch profile */
+    var res = await db.from("profiles")
+      .select("credits, generations_used")
+      .eq("id", user.id)
+      .single();
+
+    if(res.error || !res.data){
+      console.error("Profile error:", res.error);
+      var cEl = document.getElementById("credits");
+      if(cEl) cEl.textContent = "Error";
+      return;
+    }
+
+    var cEl = document.getElementById("credits");
+    var gUsedEl = document.getElementById("generations-used");
+    if(cEl) cEl.textContent = res.data.credits;
+    if(gUsedEl) gUsedEl.textContent = res.data.generations_used || 0;
+
+    /* Render buy buttons */
+    renderPackages(user.email);
   }
 
-  var authResult = await client.auth.getUser();
-  var user = authResult.data.user;
-  if(!user) return;
-
-  var profileResult = await client.from("profiles")
-    .select("credits")
-    .eq("id", user.id)
-    .single();
-
-  if(!profileResult.data) {
-    alert("Could not fetch your balance. Contact support with ref: " + reference);
-    return;
+  /* ── RENDER PACKAGES ── */
+  function renderPackages(email){
+    var grid = document.getElementById("packages-grid");
+    if(!grid) return;
+    var html = "";
+    for(var i = 0; i < PACKAGES.length; i++){
+      var p = PACKAGES[i];
+      html += '<div class="package-card">';
+      html += '<div class="pkg-label">' + p.label + '</div>';
+      html += '<div class="pkg-credits">' + p.credits + '<span>credits</span></div>';
+      html += '<div class="pkg-price">' + p.display + '</div>';
+      html += '<button class="pkg-btn" onclick="doPay(\'' + p.id + '\',\'' + email + '\',' + p.price + ',' + p.credits + ')">Buy Now</button>';
+      html += '</div>';
+    }
+    grid.innerHTML = html;
   }
 
-  var newTotal = profileResult.data.credits + creditsToAdd;
+  /* ── PAYSTACK ── */
+  window.doPay = function(packageId, email, amount, credits){
+    if(typeof PaystackPop === "undefined"){
+      alert("Payment is still loading — please try again in a moment.");
+      return;
+    }
+    var handler = PaystackPop.setup({
+      key:      PAYSTACK_KEY,
+      email:    email,
+      amount:   amount * 100,
+      currency: "NGN",
+      ref:      "beo_" + Date.now() + "_" + packageId,
+      channels: ["card","bank","ussd","qr","bank_transfer"],
+      metadata: {
+        custom_fields:[
+          {display_name:"Package", variable_name:"package", value:packageId},
+          {display_name:"Credits", variable_name:"credits", value:credits}
+        ]
+      },
+      callback: function(response){
+        addCredits(credits, response.reference);
+      },
+      onClose: function(){}
+    });
+    handler.openIframe();
+  };
 
-  var updateResult = await client.from("profiles")
-    .update({ credits: newTotal })
-    .eq("id", user.id);
+  /* ── ADD CREDITS AFTER PAYMENT ── */
+  async function addCredits(creditsToAdd, reference){
+    var auth = await db.auth.getUser();
+    if(!auth.data.user) return;
+    var uid = auth.data.user.id;
 
-  if(updateResult.error) {
-    alert("Payment received but credits failed to update. Contact support with ref: " + reference);
-    return;
+    var res = await db.from("profiles").select("credits").eq("id", uid).single();
+    if(!res.data){
+      alert("Payment received but balance fetch failed. Contact support. Ref: " + reference);
+      return;
+    }
+
+    var newTotal = res.data.credits + creditsToAdd;
+    var upd = await db.from("profiles").update({credits: newTotal}).eq("id", uid);
+
+    if(upd.error){
+      alert("Payment received but update failed. Contact support. Ref: " + reference);
+      return;
+    }
+
+    var cEl = document.getElementById("credits");
+    if(cEl) cEl.textContent = newTotal;
+    showToast("+" + creditsToAdd + " credits added! New balance: " + newTotal);
   }
 
-  // Update UI
-  var credEl = document.getElementById("credits");
-  if(credEl) credEl.textContent = newTotal;
-
-  // Show toast
-  var toast = document.getElementById("toast");
-  if(toast) {
-    toast.textContent = "+" + creditsToAdd + " credits added! Balance: " + newTotal;
-    toast.classList.add("visible");
-    setTimeout(function() { toast.classList.remove("visible"); }, 4000);
+  /* ── TOAST ── */
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add("visible");
+    setTimeout(function(){ t.classList.remove("visible"); }, 4000);
   }
-}
+
+  /* ── INIT ── */
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+})();
 </script>
+
 </body>
 </html>
