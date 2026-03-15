@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>My Generations | Beo AI Tools</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d0d12">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{--gold:#d4a017;--gold-glow:rgba(212,160,23,0.12);--bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;--border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.3);--text:#f0ede8;--muted:#666;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--radius:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{max-width:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column}
+.main{flex:1}
+.container{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:32px}
+.page-header h1{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:-0.02em}
+.page-header p{color:var(--muted);font-size:14px;margin-top:4px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;font-family:var(--font-display);font-weight:600;letter-spacing:0.04em;padding:6px 12px;border:1px solid var(--border);border-radius:6px;transition:color 0.15s,border-color 0.15s}
+.back-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+.back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.filter-tab{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;font-family:var(--font-display);letter-spacing:0.04em;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.filter-tab.active{background:var(--gold);color:#0d0d12;border-color:var(--gold)}
+.filter-tab:hover:not(.active){color:var(--text);border-color:rgba(255,255,255,0.15)}
+
+/* GRID */
+.gen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+@media(max-width:480px){.gen-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+
+/* CARD */
+.gen-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform 0.15s,border-color 0.2s;position:relative}
+.gen-card:hover{transform:translateY(-2px);border-color:rgba(212,160,23,0.3)}
+.gen-card:active{transform:scale(0.98)}
+.gen-thumb{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:var(--surface2)}
+.gen-thumb-skeleton{width:100%;aspect-ratio:1;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.gen-meta{padding:10px 12px}
+.gen-tool{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);font-family:var(--font-display);margin-bottom:4px}
+.gen-tool svg{width:10px;height:10px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gen-time{font-size:11px;color:var(--muted)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:80px 24px}
+.empty-icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.empty-icon svg{width:28px;height:28px;stroke:var(--muted);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.empty-state h3{font-family:var(--font-display);font-size:18px;font-weight:800;margin-bottom:8px}
+.empty-state p{color:var(--muted);font-size:14px;margin-bottom:24px;max-width:320px;margin-left:auto;margin-right:auto;line-height:1.6}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#0d0d12;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:12px 22px;border-radius:8px;text-decoration:none;transition:opacity 0.2s}
+.btn-gold:hover{opacity:0.88}
+
+/* LOADING */
+.loading-state{text-align:center;padding:60px 24px;color:var(--muted)}
+
+/* LIGHTBOX */
+#lightbox{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.92);
+  z-index:10000;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  animation:lbIn 0.25s ease}
+#lightbox.open{display:flex}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+#lightbox img{
+  max-width:100%;max-height:80vh;
+  object-fit:contain;border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.lb-toolbar{
+  display:flex;align-items:center;gap:12px;
+  margin-top:16px;flex-wrap:wrap;justify-content:center}
+.lb-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 18px;border-radius:8px;
+  font-family:var(--font-display);font-size:12px;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;
+  cursor:pointer;transition:opacity 0.15s;text-decoration:none}
+.lb-btn-primary{background:var(--gold);color:#0d0d12;border:none}
+.lb-btn-secondary{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.15)}
+.lb-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lb-btn-primary svg{stroke:#0d0d12}
+.lb-close{
+  position:fixed;top:20px;right:20px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,0.1);border:none;
+  color:var(--text);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.lb-meta{color:var(--muted);font-size:12px;margin-top:8px;text-align:center}
+</style>
+</head>
+<body>
+<div id="header"></div>
+
+<main class="main">
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <a class="back-btn" href="/dashboard/">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Dashboard
+        </a>
+        <h1 style="margin-top:16px">My Generations</h1>
+        <p id="gen-count-label">Loading...</p>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterGens('all', this)">All</button>
+      <button class="filter-tab" onclick="filterGens('photo-to-sketch', this)">Photo to Sketch</button>
+      <button class="filter-tab" onclick="filterGens('mural-visualizer', this)">Mural Visualizer</button>
+    </div>
+
+    <!-- Grid -->
+    <div id="gen-grid" class="gen-grid">
+      <div class="loading-state">Loading your generations...</div>
+    </div>
+  </div>
+</main>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <img id="lb-img" src="" alt="Generated artwork">
+  <div class="lb-meta" id="lb-meta"></div>
+  <div class="lb-toolbar">
+    <a class="lb-btn lb-btn-primary" id="lb-download" href="#" download="beo-art.jpg">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download
+    </a>
+    <button class="lb-btn lb-btn-secondary" onclick="shareGeneration()">
+      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share
+    </button>
+    <button class="lb-btn lb-btn-secondary" onclick="closeLightbox()">
+      Close
+    </button>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var _sb = supabase.createClient(
+  "https://wphqcccliiwdvwdjgrmc.supabase.co",
+  "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+)
+
+var allGenerations = []
+var currentFilter  = "all"
+var currentLbUrl   = ""
+
+// ── LOAD GENERATIONS ──────────────────────────────────────
+async function loadGenerations() {
+  var grid = document.getElementById("gen-grid")
+
+  var authResult = await _sb.auth.getUser()
+  var user = authResult.data.user
+  if (!user) {
+    window.location.href = "/login/"
+    return
+  }
+
+  var result = await _sb
+    .from("generations")
+    .select("id, tool, result_url, thumbnail_url, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+
+  if (result.error || !result.data) {
+    grid.innerHTML = '<div class="loading-state">Could not load generations.</div>'
+    return
+  }
+
+  allGenerations = result.data
+  var label = document.getElementById("gen-count-label")
+  if (label) label.textContent = allGenerations.length + " generation" + (allGenerations.length !== 1 ? "s" : "")
+
+  renderGrid("all")
+}
+
+// ── RENDER GRID ────────────────────────────────────────────
+function renderGrid(filter) {
+  var grid  = document.getElementById("gen-grid")
+  var items = filter === "all"
+    ? allGenerations
+    : allGenerations.filter(function(g) { return g.tool === filter })
+
+  if (items.length === 0) {
+    var toolName = filter === "all" ? "any tool" : filter.replace(/-/g, " ")
+    grid.innerHTML =
+      '<div class="empty-state" style="grid-column:1/-1">' +
+        '<div class="empty-icon">' +
+          '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' +
+        '</div>' +
+        '<h3>No generations yet</h3>' +
+        '<p>Use ' + toolName + ' to create your first AI artwork. It appears here automatically.</p>' +
+        '<a class="btn-gold" href="/tools/photo-to-sketch-online/">Try Photo to Sketch</a>' +
+      '</div>'
+    return
+  }
+
+  grid.innerHTML = items.map(function(gen) {
+    var toolLabel = gen.tool === "photo-to-sketch" ? "Photo to Sketch" : "Mural Visualizer"
+    var toolIcon  = gen.tool === "photo-to-sketch"
+      ? '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>'
+    var timeStr = formatTime(gen.created_at)
+    var url     = gen.thumbnail_url || gen.result_url
+
+    return (
+      '<div class="gen-card" onclick="openLightbox(\'' + escHtml(gen.result_url) + '\',\'' + escHtml(toolLabel) + '\',\'' + escHtml(timeStr) + '\')" data-tool="' + gen.tool + '">' +
+        '<img class="gen-thumb" src="' + escHtml(url) + '" alt="' + escHtml(toolLabel) + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+        '<div class="gen-meta">' +
+          '<div class="gen-tool">' + toolIcon + toolLabel + '</div>' +
+          '<div class="gen-time">' + timeStr + '</div>' +
+        '</div>' +
+      '</div>'
+    )
+  }).join("")
+}
+
+// ── FILTER ────────────────────────────────────────────────
+window.filterGens = function(filter, btn) {
+  currentFilter = filter
+  document.querySelectorAll(".filter-tab").forEach(function(t) { t.classList.remove("active") })
+  btn.classList.add("active")
+  renderGrid(filter)
+}
+
+// ── LIGHTBOX ──────────────────────────────────────────────
+window.openLightbox = function(url, tool, time) {
+  currentLbUrl = url
+  var lb    = document.getElementById("lightbox")
+  var img   = document.getElementById("lb-img")
+  var meta  = document.getElementById("lb-meta")
+  var dlBtn = document.getElementById("lb-download")
+
+  img.src      = url
+  meta.textContent = tool + " · " + time
+  dlBtn.href   = url
+  dlBtn.download = "beo-art-" + Date.now() + ".jpg"
+  lb.classList.add("open")
+
+  // Push state so back button closes lightbox
+  history.pushState({ lightbox: true, url: url }, "", window.location.pathname + "#view")
+}
+
+window.closeLightbox = function() {
+  var lb = document.getElementById("lightbox")
+  lb.classList.remove("open")
+  if (history.state && history.state.lightbox) {
+    history.back()
+  }
+}
+
+// Handle browser back button
+window.addEventListener("popstate", function(e) {
+  var lb = document.getElementById("lightbox")
+  if (lb.classList.contains("open")) {
+    lb.classList.remove("open")
+  }
+})
+
+// Close lightbox on backdrop click
+document.getElementById("lightbox").addEventListener("click", function(e) {
+  if (e.target === this) closeLightbox()
+})
+
+// ── SHARE ─────────────────────────────────────────────────
+window.shareGeneration = function() {
+  if (!currentLbUrl) return
+  if (navigator.share) {
+    fetch(currentLbUrl)
+      .then(function(r) { return r.blob() })
+      .then(function(blob) {
+        var file = new File([blob], "beo-art.jpg", { type: "image/jpeg" })
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: "My AI Art — Beo AI Tools" })
+        } else {
+          navigator.share({ url: currentLbUrl, title: "My AI Art — Beo AI Tools" })
+        }
+      })
+      .catch(function() {
+        navigator.share({ url: currentLbUrl, title: "My AI Art — Beo AI Tools" })
+      })
+  } else {
+    // Desktop fallback — copy URL
+    navigator.clipboard.writeText(currentLbUrl)
+      .then(function() { alert("Image URL copied to clipboard") })
+  }
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+function formatTime(isoStr) {
+  var d = new Date(isoStr)
+  var now = new Date()
+  var diffMs = now - d
+  var diffMins = Math.floor(diffMs / 60000)
+  var diffHours = Math.floor(diffMins / 60)
+  var diffDays = Math.floor(diffHours / 24)
+  if (diffMins < 1)   return "Just now"
+  if (diffMins < 60)  return diffMins + "m ago"
+  if (diffHours < 24) return diffHours + "h ago"
+  if (diffDays < 7)   return diffDays + "d ago"
+  return d.toLocaleDateString("en-GB", { day:"numeric", month:"short" })
+}
+
+function escHtml(str) {
+  if (!str) return ""
+  return str.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+}
+
+// ── INIT ──────────────────────────────────────────────────
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadGenerations)
+} else {
+  loadGenerations()
+}
+</script>
+
+<script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>
