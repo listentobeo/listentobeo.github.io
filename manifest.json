@@ -1,0 +1,52 @@
+{
+  "name": "Beo AI Tools",
+  "short_name": "Beo AI",
+  "description": "AI-powered creative tools by Beo Art Studio. Turn photos into art, visualize murals and more.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d0d12",
+  "theme_color": "#0d0d12",
+  "categories": ["productivity", "photo", "art"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Photo to Sketch",
+      "short_name": "Sketch",
+      "description": "Transform photos into pencil drawings and art",
+      "url": "/tools/photo-to-sketch-online/",
+      "icons": [{ "src": "/assets/images/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mural Visualizer",
+      "short_name": "Mural",
+      "description": "See how a mural looks on your wall",
+      "url": "/tools/mural-visualizer/",
+      "icons": [{ "src": "/assets/images/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/images/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Photo to Sketch tool on mobile"
+    }
+  ]
+}
