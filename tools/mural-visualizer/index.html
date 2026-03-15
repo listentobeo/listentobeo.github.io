@@ -202,8 +202,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 #placement-canvas{
   position:absolute;top:0;left:0;width:100%;height:100%;
   border-radius:var(--radius-sm);touch-action:none;
-  pointer-events:none;opacity:0;transition:opacity 0.2s}
-#placement-canvas.draw-active{cursor:crosshair;pointer-events:all;opacity:1}
+  display:none;cursor:crosshair;}
+#placement-canvas.draw-active{display:block;pointer-events:all;}
 .placement-tools{
   display:flex;align-items:center;gap:8px;padding:10px 0 4px;flex-wrap:wrap}
 .ptool-btn{
@@ -346,7 +346,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
               <img id="preview-img" src="" alt="Your wall" draggable="false">
               <img id="placement-bg" src="" alt="" style="display:none">
               <!-- Canvas only visible when draw mode is on -->
-              <canvas id="placement-canvas" style="display:none"></canvas>
+              <canvas id="placement-canvas"></canvas>
             </div>
 
             <!-- Toolbar row below the image -->
@@ -700,10 +700,20 @@ window.toggleDrawMode = function(){
 
 function sizeCanvasToImage(){
   if(!placementCanvas) return
-  var img = document.getElementById("preview-img")
-  if(!img) return
-  placementCanvas.width  = img.offsetWidth  || img.clientWidth  || 300
-  placementCanvas.height = img.offsetHeight || img.clientHeight || 300
+  // Use rAF to ensure browser has painted the canvas before reading dimensions
+  requestAnimationFrame(function(){
+    var img = document.getElementById("preview-img")
+    if(!img) return
+    var w = img.getBoundingClientRect().width
+    var h = img.getBoundingClientRect().height
+    if(w > 0 && h > 0){
+      placementCanvas.width  = w
+      placementCanvas.height = h
+    } else {
+      placementCanvas.width  = img.offsetWidth  || 300
+      placementCanvas.height = img.offsetHeight || 200
+    }
+  })
 }
 
 function initPlacementCanvas(){
