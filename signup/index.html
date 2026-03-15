@@ -92,6 +92,27 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 </div>
 
 <div id="footer"></div>
+<script>
+// Inline wrapper — called immediately when button clicked.
+// Delegates to the real function once auth.js module has loaded.
+function signInWithGoogle(){
+  const btn = document.getElementById("google-btn")
+  if(btn){ btn.disabled = true; btn.textContent = "Loading..." }
+  // Poll until auth.js module has set window._googleSignIn
+  let attempts = 0
+  const iv = setInterval(() => {
+    attempts++
+    if(window._googleSignIn){
+      clearInterval(iv)
+      window._googleSignIn()
+    } else if(attempts > 40){
+      clearInterval(iv)
+      alert("Please try again — page is still loading.")
+      if(btn){ btn.disabled = false; btn.textContent = "Continue with Google" }
+    }
+  }, 100)
+}
+</script>
 <script type="module" src="/assets/js/app.js"></script>
 <script type="module" src="/assets/js/auth.js"></script>
 </body>
