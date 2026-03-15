@@ -1164,35 +1164,7 @@ window.downloadImage = function(){
 }
 
 
-/* ── SAVE GENERATION ── */
-async function saveGeneration(tool, style, dataUrl) {
-  try {
-    var authData = await window.supabase.auth.getUser()
-    if(!authData.data.user) return
-    var userId = authData.data.user.id
-
-    var fetchRes = await fetch(dataUrl)
-    var blob     = await fetchRes.blob()
-    var ext      = blob.type === "image/png" ? "png" : "jpg"
-    var path     = userId + "/" + Date.now() + "." + ext
-
-    var upResult = await window.supabase
-      .storage.from("generations").upload(path, blob, { contentType: blob.type })
-
-    if(upResult.error){ console.warn("Save failed:", upResult.error.message); return }
-
-    var urlData = window.supabase.storage.from("generations").getPublicUrl(path)
-
-    await window.supabase.from("generations").insert({
-      user_id:   userId,
-      tool:      tool,
-      style:     style || "custom",
-      thumb_url: urlData.data.publicUrl
-    })
-  } catch(e) {
-    console.warn("Could not save generation:", e.message)
-  }
-}
+// saveGeneration handled by /assets/js/save-generation.js
 </script>
 </body>
 </html>
