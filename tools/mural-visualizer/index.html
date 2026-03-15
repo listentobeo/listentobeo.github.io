@@ -575,6 +575,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
 <div id="footer"></div>
 
+<script src="/assets/js/guest-trial.js"></script>
 <script type="module" src="/assets/js/app.js"></script>
 <script>
 
@@ -1019,10 +1020,33 @@ window.generateMural = async function(){
   const prompt = document.getElementById("prompt").value
 
   try {
-    const { data: sessionData } = await window.supabase.auth.getSession()
-    if(!sessionData.session){
-      alert("Session expired. Please login again.")
-      window.location.href = "/login/"; return
+    // Check guest trial before anything else
+    var guestAllowed = true
+    var isGuestUser  = false
+    if(window._beoGuest) {
+      isGuestUser = window._beoGuest.isGuest
+      if(isGuestUser) {
+        if(window._beoGuest.trialUsed) {
+          window.showTrialExhaustedModal()
+          btn.disabled = false; btn.textContent = "Generate"
+          return
+        }
+        guestAllowed = await window.consumeGuestTrial()
+        if(!guestAllowed) {
+          btn.disabled = false; btn.textContent = "Generate"
+          return
+        }
+      }
+    }
+
+    var sessionToken = null
+    if(!isGuestUser) {
+      const { data: sessionData } = await window.supabase.auth.getSession()
+      if(!sessionData.session){
+        alert("Session expired. Please login again.")
+        window.location.href = "/login/"; return
+      }
+      sessionToken = sessionData.session.access_token
     }
 
     // Blank mode: skip compression, generate a plain white wall
@@ -1046,10 +1070,10 @@ window.generateMural = async function(){
 
     var response = await fetch(EDGE_FUNCTION_URL, {
       method: "POST",
-      headers:{
-        "Content-Type":  "application/json",
-        "Authorization": "Bearer " + sessionData.session.access_token
-      },
+      headers: Object.assign(
+        { "Content-Type": "application/json" },
+        sessionToken ? { "Authorization": "Bearer " + sessionToken } : {}
+      ),
       body: JSON.stringify({
         image:  "data:image/jpeg;base64," + wallBase64,
         design: compressedDesign,
@@ -1066,6 +1090,9 @@ window.generateMural = async function(){
     generatedResult = result.result
     showResult(generatedResult)
     finishProgress()
+    if(isGuestUser) window.markTrialUsed(generatedResult)
+    // Mark guest trial used and show soft badge
+    if(window._beoGuest && window._beoGuest.isGuest) window.markTrialUsed(generatedResult)
     // Save generation thumbnail async
     saveGeneration("mural-visualizer", style, generatedResult)
 
@@ -1164,4 +1191,4 @@ async function saveGeneration(tool, style, dataUrl) {
 }
 </script>
 </body>
-                  </html>
+</html>
