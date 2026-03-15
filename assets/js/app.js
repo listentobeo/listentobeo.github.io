@@ -27,10 +27,25 @@ window.toggleMenu = function(){
 
 // ── REGISTER SERVICE WORKER (PWA) ─────────────────────────
 if("serviceWorker" in navigator){
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js")
-      .then(reg => console.log("SW registered:", reg.scope))
-      .catch(err => console.warn("SW registration failed:", err))
+  window.addEventListener("load", async () => {
+    try {
+      // Unregister any old/broken registrations first
+      const regs = await navigator.serviceWorker.getRegistrations()
+      for(const reg of regs){
+        // Only keep the registration from our own scope
+        if(!reg.scope.includes(location.origin)){
+          await reg.unregister()
+          console.log("[SW] Removed stale registration:", reg.scope)
+        }
+      }
+      // Register the current service worker
+      const reg = await navigator.serviceWorker.register("/service-worker.js", {
+        scope: "/"
+      })
+      console.log("[SW] Registered:", reg.scope)
+    } catch(err){
+      console.warn("[SW] Registration failed:", err)
+    }
   })
 }
 
