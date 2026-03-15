@@ -9,6 +9,67 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
+
+<!-- Supabase UMD — loads synchronously so Google button works immediately -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// Init Supabase client instantly — available before any module loads
+var _supaClient = supabase.createClient(
+  "https://wphqcccliiwdvwdjgrmc.supabase.co",
+  "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+)
+
+function signInWithGoogle(){
+  var btn = document.getElementById("google-btn")
+  var err = document.getElementById("login-error")
+  if(btn){ btn.disabled = true; btn.textContent = "Redirecting to Google..." }
+  if(err){ err.style.display = "none" }
+
+  _supaClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "https://listentobeo.github.io/dashboard/",
+      queryParams: { prompt: "select_account" }
+    }
+  }).then(function(res){
+    if(res.error){
+      if(err){ err.textContent = res.error.message; err.style.display = "block" }
+      if(btn){ btn.disabled = false; btn.textContent = "Continue with Google" }
+    }
+    // On success Supabase automatically redirects — nothing else needed
+  })
+}
+
+function loginUser(){
+  var email    = document.getElementById("email").value.trim()
+  var password = document.getElementById("password").value
+  var btn      = document.getElementById("login-btn")
+  var err      = document.getElementById("login-error")
+
+  if(!email || !password){
+    err.textContent = "Please enter your email and password."
+    err.style.display = "block"; return
+  }
+  btn.disabled = true; btn.textContent = "Logging in..."
+  err.style.display = "none"
+
+  _supaClient.auth.signInWithPassword({ email: email, password: password })
+    .then(function(res){
+      if(res.error){
+        err.textContent = res.error.message; err.style.display = "block"
+        btn.disabled = false; btn.textContent = "Login"
+        return
+      }
+      window.location.href = "/dashboard/"
+    })
+}
+
+// Allow Enter key
+document.addEventListener("keydown", function(e){
+  if(e.key === "Enter") loginUser()
+})
+</script>
+
 <style>
 :root{--gold:#d4a017;--bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;--border:rgba(255,255,255,0.07);--border-gold:rgba(212,160,23,0.3);--text:#f0ede8;--muted:#777;--danger:#ff5c5c;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -17,21 +78,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:420px}
 .auth-card h1{font-family:var(--font-display);font-size:26px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em}
 .auth-card .sub{color:var(--muted);font-size:14px;margin-bottom:28px}
-/* Google button */
-.google-btn{
-  width:100%;padding:13px;background:#fff;color:#1f1f1f;
-  font-family:var(--font-body);font-size:14px;font-weight:500;
-  border:1px solid rgba(0,0,0,0.12);border-radius:8px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  margin-bottom:20px;transition:background 0.15s,box-shadow 0.15s}
+.google-btn{width:100%;padding:13px;background:#fff;color:#1f1f1f;font-family:var(--font-body);font-size:14px;font-weight:500;border:1px solid rgba(0,0,0,0.12);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;transition:background 0.15s,box-shadow 0.15s}
 .google-btn:hover{background:#f8f8f8;box-shadow:0 1px 4px rgba(0,0,0,0.12)}
 .google-btn:disabled{opacity:0.6;cursor:not-allowed}
 .google-btn svg{width:18px;height:18px;flex-shrink:0}
-/* Divider */
 .divider{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 .divider span{font-size:12px;color:var(--muted);white-space:nowrap}
-/* Fields */
 .field{margin-bottom:14px}
 .field label{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--font-display);font-weight:700;margin-bottom:7px}
 .field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:14px;padding:12px 14px;outline:none;transition:border-color 0.2s}
@@ -53,7 +106,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     <h1>Welcome back</h1>
     <p class="sub">Login to access your AI tools and credits.</p>
 
-    <!-- Google Sign In -->
     <button class="google-btn" id="google-btn" onclick="signInWithGoogle()">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -70,11 +122,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
     <div class="field">
       <label>Email</label>
-      <input id="email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')loginUser()">
+      <input id="email" type="email" placeholder="you@example.com">
     </div>
     <div class="field">
       <label>Password</label>
-      <input id="password" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')loginUser()">
+      <input id="password" type="password" placeholder="Your password">
     </div>
 
     <button class="auth-btn" id="login-btn" onclick="loginUser()">Login</button>
@@ -86,28 +138,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 </div>
 
 <div id="footer"></div>
-<script>
-// Inline wrapper — called immediately when button clicked.
-// Delegates to the real function once auth.js module has loaded.
-function signInWithGoogle(){
-  const btn = document.getElementById("google-btn")
-  if(btn){ btn.disabled = true; btn.textContent = "Loading..." }
-  // Poll until auth.js module has set window._googleSignIn
-  let attempts = 0
-  const iv = setInterval(() => {
-    attempts++
-    if(window._googleSignIn){
-      clearInterval(iv)
-      window._googleSignIn()
-    } else if(attempts > 40){
-      clearInterval(iv)
-      alert("Please try again — page is still loading.")
-      if(btn){ btn.disabled = false; btn.textContent = "Continue with Google" }
-    }
-  }, 100)
-}
-</script>
 <script type="module" src="/assets/js/app.js"></script>
-<script type="module" src="/assets/js/auth.js"></script>
 </body>
 </html>
