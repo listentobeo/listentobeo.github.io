@@ -357,7 +357,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
           <div class="error-bar" id="error-bar"></div>
           <div class="no-credits-bar" id="no-credits-bar">
-            You have no credits left. <a href="/dashboard/">Buy more credits →</a>
+            No credits left. <a href="/dashboard/#buy">Buy more credits →</a>
           </div>
 
         </div>
@@ -611,7 +611,17 @@ window.generateSketch = async function(){
 
   // 9999 = admin bypass set manually in Supabase
   if(!profile || profile.credits < 1){
-    document.getElementById("no-credits-bar").classList.add("visible"); return
+    var bar = document.getElementById("no-credits-bar")
+    bar.classList.add("visible")
+    bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
+    var secs = 3
+    var iv = setInterval(function(){
+      secs--
+      var cd = document.getElementById("countdown")
+      if(cd) cd.textContent = secs
+      if(secs <= 0){ clearInterval(iv); window.location.href = "/dashboard/#packages" }
+    }, 1000)
+    return
   }
 
   // Lock UI
@@ -647,6 +657,8 @@ window.generateSketch = async function(){
     generatedResult = result.result
     showResult(generatedResult)
     finishProgress()
+    // Save generation thumbnail async (don't block UI)
+    saveGeneration("photo-to-sketch", style, generatedResult)
 
     // Deduct credit + increment generations_used — always write to Supabase
     const newCredits = profile.credits - 1
@@ -735,6 +747,40 @@ window.downloadImage = function(){
   a.href = generatedResult; a.download = "beo-ai-art-"+Date.now()+".png"; a.click()
 }
 
+
+/* ── SAVE GENERATION ── */
+async function saveGeneration(tool, style, dataUrl) {
+  try {
+    const { data: userData } = await window.supabase.auth.getUser()
+    if(!userData.user) return
+
+    // Convert data URL to blob
+    const res   = await fetch(dataUrl)
+    const blob  = await res.blob()
+    const ext   = blob.type === "image/png" ? "png" : "jpg"
+    const path  = userData.user.id + "/" + Date.now() + "." + ext
+
+    // Upload to Supabase storage
+    const { data: upload, error: upErr } = await window.supabase
+      .storage.from("generations").upload(path, blob, { contentType: blob.type })
+
+    if(upErr){ console.warn("Generation save failed:", upErr.message); return }
+
+    // Get public URL
+    const { data: urlData } = window.supabase
+      .storage.from("generations").getPublicUrl(path)
+
+    // Insert record
+    await window.supabase.from("generations").insert({
+      user_id:   userData.user.id,
+      tool:      tool,
+      style:     style || "custom",
+      thumb_url: urlData.publicUrl
+    })
+  } catch(e) {
+    console.warn("Could not save generation:", e.message)
+  }
+}
 </script>
 </body>
-</html>
+  </html>
