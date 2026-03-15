@@ -29,6 +29,15 @@ async function loadDashboard(){
 
   // Display email (trim to username part for display)
   const displayName = user.email.split("@")[0]
+
+  // Time-based greeting
+  const hour = new Date().getHours()
+  let greeting = "Good morning,"
+  if(hour >= 12 && hour < 17)      greeting = "Good afternoon,"
+  else if(hour >= 17 && hour < 21) greeting = "Good evening,"
+  else if(hour >= 21 || hour < 5)  greeting = "Good night,"
+
+  document.getElementById("greeting").textContent  = greeting
   document.getElementById("user-name").textContent = displayName
 
   // Fetch profile from Supabase — source of truth for credits
