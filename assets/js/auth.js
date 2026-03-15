@@ -10,7 +10,7 @@ window.getUser    = async () => (await supabase.auth.getUser()).data.user
 window.getSession = async () => (await supabase.auth.getSession()).data.session
 
 /* ── GOOGLE SIGN IN ───────────────────────────────────── */
-window.signInWithGoogle = async function(){
+async function doGoogleSignIn(){
   const btn = document.getElementById("google-btn")
   if(btn){ btn.disabled = true; btn.textContent = "Redirecting..." }
 
@@ -20,7 +20,7 @@ window.signInWithGoogle = async function(){
       redirectTo: "https://listentobeo.github.io/dashboard/",
       queryParams: {
         access_type: "offline",
-        prompt: "consent",
+        prompt: "select_account",
       }
     }
   })
@@ -30,8 +30,11 @@ window.signInWithGoogle = async function(){
     if(errEl){ errEl.textContent = error.message; errEl.style.display = "block" }
     if(btn){ btn.disabled = false; btn.textContent = "Continue with Google" }
   }
-  // On success Supabase redirects automatically — no further action needed
 }
+
+// Expose on window directly AND as _googleSignIn signal for the inline wrapper
+window.signInWithGoogle = doGoogleSignIn
+window._googleSignIn    = doGoogleSignIn
 
 /* ── EMAIL LOGIN ──────────────────────────────────────── */
 window.loginUser = async function(){
