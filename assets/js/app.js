@@ -29,22 +29,21 @@ window.toggleMenu = function(){
 }
 
 /* ── AUTH UI ──────────────────────────────────────────── */
-// Updates header every page load based on live Supabase session.
-// This is what controls the Dashboard link appearing/disappearing.
+// Runs after header loads. Shows/hides Dashboard pill and
+// mobile Dashboard link based on live Supabase session.
 async function updateAuthUI(){
   const { data } = await window.supabase.auth.getUser()
   const user = data.user
 
+  // Elements that exist in header.html
   const authLink       = document.getElementById("auth-link")
-  const dashBtn        = document.getElementById("dashboard-btn")
-  const dashNavLink    = document.getElementById("dashboard-nav-link")
-  const dashMobileLink = document.getElementById("dashboard-mobile-link")
+  const dashBtn        = document.getElementById("dashboard-btn")       // pill near login
+  const dashMobileLink = document.getElementById("dashboard-mobile-link") // mobile menu only
 
   if(user){
-    // Logged in — show Dashboard links, change auth link to Logout
+    // Logged in — show Dashboard pill + mobile link, swap auth to Logout
     if(dashBtn)        dashBtn.style.display        = "inline-flex"
-    if(dashNavLink)    dashNavLink.style.display     = "inline"
-    if(dashMobileLink) dashMobileLink.style.display  = "block"
+    if(dashMobileLink) dashMobileLink.style.display = "block"
 
     if(authLink){
       authLink.textContent = "Logout"
@@ -57,10 +56,9 @@ async function updateAuthUI(){
     }
 
   } else {
-    // Logged out — hide Dashboard links, show Login
+    // Logged out — hide Dashboard pill + mobile link, show Login
     if(dashBtn)        dashBtn.style.display        = "none"
-    if(dashNavLink)    dashNavLink.style.display     = "none"
-    if(dashMobileLink) dashMobileLink.style.display  = "none"
+    if(dashMobileLink) dashMobileLink.style.display = "none"
 
     if(authLink){
       authLink.textContent = "Login / Sign Up"
