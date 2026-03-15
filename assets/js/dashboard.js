@@ -34,7 +34,9 @@ async function loadDashboard(){
   }
 
   const user        = authData.user
-  const displayName = user.email.split("@")[0]
+  // Google users have a full name in metadata — use it if available
+  const meta        = user.user_metadata ?? {}
+  const displayName = meta.full_name ?? meta.name ?? user.email.split("@")[0]
   const greeting    = getGreeting()
 
   // Set greeting — element guaranteed to exist since we wait for DOMContentLoaded
