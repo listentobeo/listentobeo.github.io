@@ -236,14 +236,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
 .hero-word-wrap{
   display:inline-block;
-  background:linear-gradient(135deg,var(--gold) 0%,#f5c842 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  overflow:hidden;vertical-align:bottom}
+  overflow:hidden;
+  vertical-align:bottom}
 
 .hero-word{
   display:inline-block;
-  animation:none;
+  color:var(--gold);
   will-change:transform,opacity}
 
 .hero-word.exit{
@@ -283,18 +281,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   <div class="page hero-content">
     <div class="hero-eyebrow">
       <span></span>
-      By Beo Art Studio
+      AI Tools by Beo Art Studio
     </div>
 
     <!-- Animated cycling words -->
     <h1 class="hero-h1">
-      Turn Your Photos Into
+      Transform Photos Into
       <span class="hero-word-wrap">
         <span class="hero-word" id="hero-word">Sketches</span>
       </span>
     </h1>
 
-    <p class="hero-sub">AI-powered creative tools built by real artists. Transform photos into sketches, visualize murals on your wall, and more — no design skills needed.</p>
+    <p class="hero-sub">Upload any photo. Choose a style. Get stunning AI-generated artwork in seconds — built by Beo Art Studio, real artists who paint for real.</p>
 
     <div class="hero-actions">
       <a class="btn-primary" href="/tools/photo-to-sketch-online/">
@@ -635,7 +633,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
 /* ── ANIMATED CYCLING WORDS ── */
 ;(function(){
-  var words   = ["Sketches", "Murals", "Paintings", "Portraits", "Art"]
+  var words   = ["Sketches", "Murals", "Wall Art", "Illustrations", "Paintings"]
   var current = 0
   var el      = document.getElementById("hero-word")
   if(!el) return
