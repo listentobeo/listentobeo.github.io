@@ -180,6 +180,7 @@ async function loadGenerations() {
     .from("generations")
     .select("id, tool, result_url, thumbnail_url, created_at")
     .eq("user_id", user.id)
+    .not("result_url", "in", '("uploading","storage-failed","upload-failed","pending","storage-fail")')
     .order("created_at", { ascending: false })
 
   if (result.error) {
