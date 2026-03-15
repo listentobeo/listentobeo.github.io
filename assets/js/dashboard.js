@@ -6,44 +6,42 @@ const supabase = createClient(
 )
 window.supabase = supabase
 
-/* ── PAYSTACK CREDIT PACKAGES ─────────────────────────── */
+/* ── CREDIT PACKAGES ──────────────────────────────────── */
 const PACKAGES = [
-  { id: "starter",  label: "Starter",  credits: 5,  price: 2000,  display: "₦2,000" },
-  { id: "creator",  label: "Creator",  credits: 20, price: 6000,  display: "₦6,000" },
-  { id: "studio",   label: "Studio",   credits: 50, price: 12000, display: "₦12,000" },
+  { id: "starter", label: "Starter",  credits: 5,  price: 2000,  display: "₦2,000" },
+  { id: "creator", label: "Creator",  credits: 20, price: 6000,  display: "₦6,000" },
+  { id: "studio",  label: "Studio",   credits: 50, price: 12000, display: "₦12,000" },
 ]
 
 const PAYSTACK_KEY = "pk_live_REPLACE_WITH_YOUR_PAYSTACK_PUBLIC_KEY"
 
-/* ── LOAD DASHBOARD ───────────────────────────────────── */
-async function // Wait for DOM before running — elements like #greeting must exist first
-if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', loadDashboard)
-} else {
-  loadDashboard()
-}{
+/* ── TIME-BASED GREETING ──────────────────────────────── */
+function getGreeting(){
+  const hour = new Date().getHours()
+  if(hour >= 5  && hour < 12) return "Good morning"
+  if(hour >= 12 && hour < 17) return "Good afternoon"
+  if(hour >= 17 && hour < 21) return "Good evening"
+  return "Good night"
+}
 
-  // Auth guard — redirect if not logged in
+/* ── LOAD DASHBOARD ───────────────────────────────────── */
+async function loadDashboard(){
+
   const { data: authData } = await supabase.auth.getUser()
   if(!authData.user){
     window.location.href = "/login/"
     return
   }
 
-  const user = authData.user
-
-  // Display email (trim to username part for display)
+  const user        = authData.user
   const displayName = user.email.split("@")[0]
+  const greeting    = getGreeting()
 
-  // Time-based greeting
-  const hour = new Date().getHours()
-  let greeting = "Good morning,"
-  if(hour >= 12 && hour < 17)      greeting = "Good afternoon,"
-  else if(hour >= 17 && hour < 21) greeting = "Good evening,"
-  else if(hour >= 21 || hour < 5)  greeting = "Good night,"
-
-  document.getElementById("greeting").textContent  = greeting
-  document.getElementById("user-name").textContent = displayName
+  // Set greeting — element guaranteed to exist since we wait for DOMContentLoaded
+  const greetingEl = document.getElementById("greeting")
+  const nameEl     = document.getElementById("user-name")
+  if(greetingEl) greetingEl.textContent = greeting + ","
+  if(nameEl)     nameEl.textContent     = displayName
 
   // Fetch profile from Supabase — source of truth for credits
   const { data: profile, error } = await supabase
@@ -53,68 +51,57 @@ if(document.readyState === 'loading'){
     .single()
 
   if(error || !profile){
-    document.getElementById("credits").textContent = "Error loading"
+    const credEl = document.getElementById("credits")
+    if(credEl) credEl.textContent = "Error"
     console.error("Profile fetch error:", error)
     return
   }
 
-  // Credits come from DB — never from localStorage or frontend state
-  document.getElementById("credits").textContent = profile.credits
-  document.getElementById("generations-used").textContent = profile.generations_used ?? 0
+  const credEl = document.getElementById("credits")
+  const genEl  = document.getElementById("generations-used")
+  if(credEl) credEl.textContent = profile.credits
+  if(genEl)  genEl.textContent  = profile.generations_used ?? 0
 
-  // Render buy credits packages
   renderPackages(user.email)
 }
 
-/* ── RENDER CREDIT PACKAGES ───────────────────────────── */
+/* ── RENDER PACKAGES ──────────────────────────────────── */
 function renderPackages(email){
   const grid = document.getElementById("packages-grid")
   if(!grid) return
-
   grid.innerHTML = PACKAGES.map(pkg => `
     <div class="package-card">
       <div class="pkg-label">${pkg.label}</div>
-      <div class="pkg-credits">${pkg.credits} <span>credits</span></div>
+      <div class="pkg-credits">${pkg.credits}<span>credits</span></div>
       <div class="pkg-price">${pkg.display}</div>
-      <button class="pkg-btn" onclick="initPayment('${pkg.id}', '${email}', ${pkg.price}, ${pkg.credits})">
+      <button class="pkg-btn" onclick="initPayment('${pkg.id}','${email}',${pkg.price},${pkg.credits})">
         Buy Now
       </button>
     </div>
   `).join("")
 }
 
-/* ── PAYSTACK PAYMENT ─────────────────────────────────── */
+/* ── PAYSTACK ─────────────────────────────────────────── */
 window.initPayment = function(packageId, email, amount, credits){
-
   if(!window.PaystackPop){
     alert("Payment system not loaded. Please refresh the page.")
     return
   }
-
   const handler = PaystackPop.setup({
     key:      PAYSTACK_KEY,
     email:    email,
-    amount:   amount * 100, // Paystack takes kobo
+    amount:   amount * 100,
     currency: "NGN",
     ref:      "beo_" + Date.now() + "_" + packageId,
     metadata: {
-      custom_fields: [
-        { display_name: "Package", variable_name: "package", value: packageId },
-        { display_name: "Credits", variable_name: "credits", value: credits }
+      custom_fields:[
+        {display_name:"Package", variable_name:"package", value:packageId},
+        {display_name:"Credits", variable_name:"credits", value:credits}
       ]
     },
-
-    callback: async function(response){
-      // Payment verified on frontend — in production this should be a webhook
-      // For now we top up credits directly after successful payment
-      await topUpCredits(credits, response.reference)
-    },
-
-    onClose: function(){
-      // User closed payment modal — do nothing
-    }
+    callback:  async function(response){ await topUpCredits(credits, response.reference) },
+    onClose:   function(){}
   })
-
   handler.openIframe()
 }
 
@@ -122,36 +109,22 @@ window.initPayment = function(packageId, email, amount, credits){
 async function topUpCredits(creditsToAdd, reference){
   const { data: authData } = await supabase.auth.getUser()
   if(!authData.user) return
-
-  const userId = authData.user.id
-
-  // Fetch current credits first to avoid overwriting
   const { data: profile } = await supabase
-    .from("profiles")
-    .select("credits")
-    .eq("id", userId)
-    .single()
-
+    .from("profiles").select("credits").eq("id", authData.user.id).single()
   if(!profile) return
-
   const newTotal = profile.credits + creditsToAdd
-
   const { error } = await supabase
-    .from("profiles")
-    .update({ credits: newTotal })
-    .eq("id", userId)
-
+    .from("profiles").update({ credits: newTotal }).eq("id", authData.user.id)
   if(error){
-    alert("Payment received but credits update failed. Please contact support with ref: " + reference)
+    alert("Payment received but credits update failed. Contact support with ref: " + reference)
     return
   }
-
-  // Refresh credits display
-  document.getElementById("credits").textContent = newTotal
+  const credEl = document.getElementById("credits")
+  if(credEl) credEl.textContent = newTotal
   showToast(`✓ ${creditsToAdd} credits added! New balance: ${newTotal}`)
 }
 
-/* ── TOAST NOTIFICATION ───────────────────────────────── */
+/* ── TOAST ────────────────────────────────────────────── */
 function showToast(msg){
   const toast = document.getElementById("toast")
   if(!toast) return
@@ -160,9 +133,10 @@ function showToast(msg){
   setTimeout(() => toast.classList.remove("visible"), 4000)
 }
 
-// Wait for DOM before running — elements like #greeting must exist first
-if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', loadDashboard)
+/* ── INIT ─────────────────────────────────────────────── */
+// Wait for DOM to be ready before accessing any elements
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", loadDashboard)
 } else {
   loadDashboard()
 }
