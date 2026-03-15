@@ -1,24 +1,39 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js"
 
-/* ── SUPABASE ─────────────────────────────────────────── */
 const supabase = createClient(
   "https://wphqcccliiwdvwdjgrmc.supabase.co",
   "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
 )
 window.supabase = supabase
 
-/* ── GET USER ─────────────────────────────────────────── */
-window.getUser = async function(){
-  const { data } = await supabase.auth.getUser()
-  return data.user
+window.getUser    = async () => (await supabase.auth.getUser()).data.user
+window.getSession = async () => (await supabase.auth.getSession()).data.session
+
+/* ── GOOGLE SIGN IN ───────────────────────────────────── */
+window.signInWithGoogle = async function(){
+  const btn = document.getElementById("google-btn")
+  if(btn){ btn.disabled = true; btn.textContent = "Redirecting..." }
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "https://listentobeo.github.io/dashboard/",
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent",
+      }
+    }
+  })
+
+  if(error){
+    const errEl = document.getElementById("login-error") || document.getElementById("signup-error")
+    if(errEl){ errEl.textContent = error.message; errEl.style.display = "block" }
+    if(btn){ btn.disabled = false; btn.textContent = "Continue with Google" }
+  }
+  // On success Supabase redirects automatically — no further action needed
 }
 
-window.getSession = async function(){
-  const { data } = await supabase.auth.getSession()
-  return data.session
-}
-
-/* ── LOGIN ────────────────────────────────────────────── */
+/* ── EMAIL LOGIN ──────────────────────────────────────── */
 window.loginUser = async function(){
   const email    = document.getElementById("email").value.trim()
   const password = document.getElementById("password").value
@@ -36,16 +51,14 @@ window.loginUser = async function(){
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if(error){
-    errEl.textContent = error.message
-    errEl.style.display = "block"
+    errEl.textContent = error.message; errEl.style.display = "block"
     btn.disabled = false; btn.textContent = "Login"
     return
   }
-
   window.location.href = "/dashboard/"
 }
 
-/* ── SIGNUP ───────────────────────────────────────────── */
+/* ── EMAIL SIGNUP ─────────────────────────────────────── */
 window.signupUser = async function(){
   const email    = document.getElementById("signup-email").value.trim()
   const password = document.getElementById("signup-password").value
@@ -56,7 +69,6 @@ window.signupUser = async function(){
     errEl.textContent = "Please enter your email and password."
     errEl.style.display = "block"; return
   }
-
   if(password.length < 6){
     errEl.textContent = "Password must be at least 6 characters."
     errEl.style.display = "block"; return
@@ -68,23 +80,16 @@ window.signupUser = async function(){
   const { data, error } = await supabase.auth.signUp({ email, password })
 
   if(error){
-    errEl.textContent = error.message
-    errEl.style.display = "block"
+    errEl.textContent = error.message; errEl.style.display = "block"
     btn.disabled = false; btn.textContent = "Create Account"
     return
   }
 
-  // Profile row is created by the DB trigger (handle_new_user)
-  // so we don't insert here — avoids race condition with email confirmation
-
-  // Check if email confirmation is required
   if(data.user && !data.session){
-    // Supabase sent a confirmation email
-    document.getElementById("signup-form").style.display = "none"
+    document.getElementById("signup-form").style.display    = "none"
     document.getElementById("signup-confirm").style.display = "block"
     return
   }
 
-  // Auto-confirmed (e.g. email confirmation disabled in Supabase)
   window.location.href = "/dashboard/"
 }
