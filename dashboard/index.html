@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0d0d12">
 <title>Dashboard | Beo AI Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
@@ -11,6 +8,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
 <!-- Paystack SDK -->
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
@@ -153,7 +155,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 <!-- Toast notification -->
 <div class="toast" id="toast"></div>
 
-<script type="module" src="/assets/js/dashboard.js"></script>
 <script type="module" src="/assets/js/app.js"></script>
+<script type="module" src="/assets/js/dashboard.js"></script>
 </body>
 </html>
