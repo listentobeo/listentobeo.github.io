@@ -166,12 +166,15 @@ var currentLbUrl   = ""
 async function loadGenerations() {
   var grid = document.getElementById("gen-grid")
 
-  var authResult = await _sb.auth.getUser()
-  var user = authResult.data.user
-  if (!user) {
+  // Get session — required for RLS to recognise the user
+  var sessionResult = await _sb.auth.getSession()
+  var session = sessionResult.data.session
+  if (!session) {
     window.location.href = "/login/"
     return
   }
+
+  var user = session.user
 
   var result = await _sb
     .from("generations")
@@ -179,8 +182,14 @@ async function loadGenerations() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
-  if (result.error || !result.data) {
-    grid.innerHTML = '<div class="loading-state">Could not load generations.</div>'
+  if (result.error) {
+    console.error("Generations query error:", result.error.message, result.error.code)
+    grid.innerHTML = '<div class="loading-state">Could not load generations: ' + result.error.message + '</div>'
+    return
+  }
+
+  if (!result.data) {
+    grid.innerHTML = '<div class="loading-state">No data returned.</div>'
     return
   }
 
