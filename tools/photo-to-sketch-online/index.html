@@ -209,6 +209,32 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── BOOK CTA ── */
+.book-cta-sketch{
+  display:none;
+  flex-direction:column;
+  gap:10px;
+  margin:16px 16px 0;
+  padding:16px;
+  background:rgba(212,160,23,0.06);
+  border:1px solid rgba(212,160,23,0.2);
+  border-radius:var(--radius-sm)}
+.book-cta-sketch.visible{display:flex}
+.book-cta-sketch p{
+  font-size:13px;color:var(--text);line-height:1.5;font-weight:500}
+.book-cta-sketch span{
+  font-size:12px;color:var(--muted);margin-top:-4px}
+.book-cta-sketch a{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gold);color:#0d0d12;
+  font-family:var(--font-display);font-size:12px;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;
+  padding:10px 16px;border-radius:6px;
+  text-decoration:none;align-self:flex-start;
+  transition:opacity 0.2s}
+.book-cta-sketch a:hover{opacity:0.88}
+.book-cta-sketch a svg{width:12px;height:12px;stroke:#0d0d12;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
 /* ── SHARE ROW ── */
 .share-row{
   padding:12px 14px;border-top:1px solid var(--border);
@@ -249,6 +275,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 /* ── FADE IN ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .result-reveal{animation:fadeUp 0.35s ease}
+
+/* ── BOOK CTA ── */
+.result-book-cta{
+  display:none;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;
+  margin:0 16px 16px;
+  padding:14px 16px;
+  background:var(--gold-glow);
+  border:1px solid var(--border-gold);
+  border-radius:var(--radius-sm)}
+.result-book-cta.visible{display:flex}
+.result-book-cta p{font-size:13px;color:var(--muted);margin:0;flex:1}
+.result-book-cta a{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--gold);color:#0d0d12;
+  font-family:var(--font-display);font-size:12px;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;
+  padding:9px 16px;border-radius:var(--radius-sm);
+  text-decoration:none;white-space:nowrap;
+  transition:opacity 0.2s;flex-shrink:0}
+.result-book-cta a:hover{opacity:0.88}
+.result-book-cta a svg{width:12px;height:12px;stroke:#0d0d12;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){.result-book-cta{flex-direction:column;align-items:stretch}.result-book-cta a{justify-content:center}}
 </style>
 </head>
 <body>
@@ -421,6 +470,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
             To share on Instagram or TikTok — download the image, then open the app on your phone.
           </div>
 
+          <!-- Book real artwork CTA — shown after result -->
+          <div class="book-cta-sketch" id="sketch-book-cta">
+            <p>Love your sketch? Get it drawn for real.</p>
+            <span>Beo Art Studio can recreate this as a custom pencil drawing, charcoal portrait or full painting — shipped anywhere in Nigeria.</span>
+            <a href="https://www.beoarts.com/p/contact-me.html" target="_blank">
+              Commission a Real Drawing
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+
         </div>
       </div>
     </div><!-- /result-col -->
@@ -571,6 +630,8 @@ function showResult(src){
   document.getElementById("result-shimmer").style.display = "none"
   document.getElementById("result-img-wrap").style.display = "block"
   document.getElementById("share-row").style.display       = "none"
+  var bc = document.getElementById("sketch-book-cta")
+  if(bc) bc.classList.remove("visible")
   document.getElementById("result-dot").classList.add("active")
 
   document.getElementById("render-overlay").classList.remove("hidden")
@@ -582,6 +643,9 @@ window.imageLoaded = function(){
   document.getElementById("render-overlay").classList.add("hidden")
   document.getElementById("share-row").style.display = "flex"
   setupShareButtons()
+  // Show book real artwork CTA
+  var bookCta = document.getElementById("sketch-book-cta")
+  if(bookCta) bookCta.classList.add("visible")
 }
 
 function showResultLoading(){
