@@ -271,7 +271,37 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 </style>
 </head>
 <body>
-<div id="header"></div>
+<header class="header">
+  <div class="header-inner">
+
+    <a href="/" class="logo-link">
+      <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjBee4eUGI6-rkC6O2watPnHvfgh9O1A2Y0at8JOAQpk0T5wF-tODApR-z3ZfRBWtDskB9VBlVPtA9W8wDOFrrYm9nxcXWfFpkZGi4dNLp4ZEn2tli2nwq4MGWiPSRnM_C9SlNMvxsvChmww133gdbKw2eTtnD-Q2ojtdZoLpyiVii2nIpkCz7zMy1O5DI=s300" class="logo">
+    </a>
+
+    <nav class="desktop-nav">
+      <a href="/">Home</a>
+      <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
+      <a href="/tools/mural-visualizer/">Mural Visualizer</a>
+      <a href="https://www.beoarts.com">Beo Art Studio</a>
+    </nav>
+
+    <div class="nav-right">
+      <a id="dashboard-btn" href="/dashboard/" style="display:none;background:#1a1a24;border:1px solid rgba(212,160,23,0.35);color:#d4a017;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;text-decoration:none;white-space:nowrap">
+        Dashboard
+      </a>
+      <a id="auth-link" class="login-btn" href="/login/">Login / Sign Up</a>
+      <div class="menu-btn" onclick="toggleMenu()">&#9776;</div>
+    </div>
+
+  </div>
+</header>
+
+<nav id="menu" class="menu">
+  <a href="/">Home</a>
+  <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
+  <a href="/tools/mural-visualizer/">Mural Visualizer</a>
+  <a href="https://www.beoarts.com">Beo Art Studio</a>
+</nav>
 
 <div class="tool-wrap">
 
@@ -573,7 +603,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   </div><!-- /tool-layout -->
 </div><!-- /tool-wrap -->
 
-<div id="footer"></div>
+<footer class="footer">
+<div class="container footer-inner">
+<p class="copyright">&copy; 2026 Beo Art Studio</p>
+<div class="footer-links">
+<a href="https://www.beoarts.com/privacy-policy">Privacy Policy</a>
+<a href="https://www.beoarts.com/terms-of-use">Terms of Use</a>
+<a href="https://www.beoarts.com/contact">Contact</a>
+</div>
+</div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/assets/js/guest-trial.js"></script>
@@ -1095,9 +1134,6 @@ window.generateMural = async function(){
     if(isGuestUser) window.markTrialUsed(generatedResult)
     // Save in background — never blocks the UI
     if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "mural-visualizer")
-    // Mark guest trial used and show soft badge
-    if(window._beoGuest && window._beoGuest.isGuest) window.markTrialUsed(generatedResult)
-    // Generation saved by save-generation.js above
 
     // Deduct credit + update stats
     const newCredits = profile.credits - 1

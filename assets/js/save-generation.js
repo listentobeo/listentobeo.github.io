@@ -7,7 +7,7 @@ window.saveGeneration = function(base64DataUrl, toolName) {
       _doSave(window.supabase, base64DataUrl, toolName)
     } else if (tries > 50) {
       clearInterval(iv)
-      console.error("[BEO] supabase never ready")
+      console.error("[BEO] supabase never ready — generation not saved")
     }
   }, 100)
 }
@@ -15,36 +15,41 @@ window.saveGeneration = function(base64DataUrl, toolName) {
 async function _doSave(client, base64DataUrl, toolName) {
   try {
     var sess = (await client.auth.getSession()).data.session
-    if (!sess) { console.warn("[BEO] no session"); return }
+    if (!sess) {
+      console.warn("[BEO] no session — generation not saved")
+      return
+    }
     var userId = sess.user.id
 
-    // Convert to blob
-    var b64    = base64DataUrl.split(",")[1]
-    var bin    = atob(b64)
-    var bytes  = new Uint8Array(bin.length)
-    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
-    var blob     = new Blob([bytes], { type: "image/jpeg" })
-    var filename = userId + "/" + Date.now() + ".jpg"
+    // Detect MIME type and file extension from data URL
+    var mimeMatch = base64DataUrl.match(/^data:([^;]+);base64,/)
+    if (!mimeMatch) {
+      console.error("[BEO] invalid data URL format")
+      return
+    }
+    var mimeType = mimeMatch[1]
+    var ext = mimeType === "image/png" ? "png"
+            : mimeType === "image/webp" ? "webp"
+            : "jpg"
 
-    // Upload
+    var b64   = base64DataUrl.split(",")[1]
+    var bin   = atob(b64)
+    var bytes = new Uint8Array(bin.length)
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
+    var blob     = new Blob([bytes], { type: mimeType })
+    var filename = userId + "/" + Date.now() + "." + ext
+
     var up = await client.storage
       .from("generations")
-      .upload(filename, blob, { contentType: "image/jpeg", upsert: false })
+      .upload(filename, blob, { contentType: mimeType, upsert: false })
 
     if (up.error) {
-      console.error("[BEO] upload failed:", up.error.message)
+      console.error("[BEO] storage upload failed:", up.error.message)
       return
     }
 
-    // Supabase v2 returns fullPath in some versions, path in others
-    var storagePath = (up.data && (up.data.path || up.data.fullPath)) || filename
-    console.log("[BEO] upload path:", storagePath)
-
-    // Build URL manually — most reliable approach
     var imageUrl = "https://wphqcccliiwdvwdjgrmc.supabase.co/storage/v1/object/public/generations/" + filename
-    console.log("[BEO] image url:", imageUrl)
 
-    // Insert
     var ins = await client.from("generations").insert({
       user_id:       userId,
       tool:          toolName,
@@ -53,17 +58,14 @@ async function _doSave(client, base64DataUrl, toolName) {
     })
 
     if (ins.error) {
-      console.error("[BEO] insert failed - message:", ins.error.message)
-      console.error("[BEO] insert failed - code:", ins.error.code)
-      console.error("[BEO] insert failed - details:", ins.error.details)
-      console.error("[BEO] insert failed - hint:", ins.error.hint)
-      // Log full error object
-      console.error("[BEO] full error:", JSON.stringify(ins.error))
+      console.error("[BEO] DB insert failed:", ins.error.message, "| code:", ins.error.code)
+      if (ins.error.hint) console.error("[BEO] hint:", ins.error.hint)
+      if (ins.error.details) console.error("[BEO] details:", ins.error.details)
     } else {
-      console.log("[BEO] SAVED! tool:", toolName, "url:", imageUrl)
+      console.log("[BEO] generation saved:", toolName, imageUrl)
     }
 
   } catch(e) {
-    console.error("[BEO] exception:", e.message)
+    console.error("[BEO] save exception:", e.message)
   }
 }
