@@ -320,7 +320,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
       <a id="dashboard-btn" href="/dashboard/" style="display:none;background:#1a1a24;border:1px solid rgba(212,160,23,0.35);color:#d4a017;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;text-decoration:none;white-space:nowrap">
         Dashboard
       </a>
-      <a id="auth-link" class="login-btn" href="/login/">Login / Sign Up</a>
+      <a id="auth-link" class="login-btn" href="/login/">Sign In</a>
       <div class="menu-btn" onclick="toggleMenu()">&#9776;</div>
     </div>
 
@@ -867,7 +867,7 @@ window.nativeShare = async function(){
 
 window.shareTwitter = function(){
   const t = encodeURIComponent("Just turned my photo into AI art using Beo AI Tools")
-  const u = encodeURIComponent("https://listentobeo.github.io/tools/photo-to-sketch-online/")
+  const u = encodeURIComponent("https://aitools.beoarts.com/tools/photo-to-sketch-online/")
   window.open("https://twitter.com/intent/tweet?text="+t+"&url="+u, "_blank")
 }
 

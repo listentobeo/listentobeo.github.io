@@ -37,7 +37,7 @@ async function updateAuthUI(){
   if(user){
     if(dashBtn) dashBtn.style.display = "inline-flex"
     if(authLink){
-      authLink.textContent = "Logout"
+      authLink.textContent = "Sign Out"
       authLink.href        = "#"
       authLink.onclick     = async function(e){
         e.preventDefault()
@@ -48,7 +48,7 @@ async function updateAuthUI(){
   } else {
     if(dashBtn) dashBtn.style.display = "none"
     if(authLink){
-      authLink.textContent = "Login / Sign Up"
+      authLink.textContent = "Sign In"
       authLink.href        = "/login/"
       authLink.onclick     = null
     }

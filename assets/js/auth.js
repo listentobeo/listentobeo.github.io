@@ -17,7 +17,7 @@ async function doGoogleSignIn(){
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "https://listentobeo.github.io/dashboard/",
+      redirectTo: "https://aitools.beoarts.com/dashboard/",
       queryParams: {
         access_type: "offline",
         prompt: "select_account",
