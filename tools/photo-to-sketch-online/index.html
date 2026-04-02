@@ -603,6 +603,10 @@ async function loadCredits(){
 }
 // Load fresh credits on every page load — source of truth is always Supabase
 document.addEventListener("DOMContentLoaded", loadCredits)
+// Initialize guest trial system
+document.addEventListener("DOMContentLoaded", function(){
+  waitForSupabase().then(function(){ if(window.initGuestTrial) window.initGuestTrial() })
+})
 
 /* ── PROGRESS ───────────────────────────────────── */
 let progressTimer = null, currentProgress = 0
@@ -698,36 +702,50 @@ function showResultLoading(){
 window.generateSketch = async function(){
 
   await waitForSupabase()
+
+  // Ensure guest trial is initialized before any auth check
+  if(window.initGuestTrial && window._beoGuest && !window._beoGuest.trialChecked) {
+    await window.initGuestTrial()
+  }
+
   hideError()
   document.getElementById("no-credits-bar").classList.remove("visible")
 
-  // Auth
   const { data: userData } = await window.supabase.auth.getUser()
-  if(!userData.user){
-    alert("Please login to generate artwork.")
-    window.location.href = "/login/"; return
+  const isGuestUser = !userData.user
+
+  // Guest trial gate — runs before any auth redirect
+  if(isGuestUser) {
+    if(window._beoGuest && window._beoGuest.trialUsed) {
+      window.showTrialExhaustedModal()
+      return
+    }
+    const allowed = await window.consumeGuestTrial()
+    if(!allowed) return
   }
 
-  // Image
+  // Image check
   if(!uploadedImage){ showError("Please upload a photo first."); return }
 
-  // Credits — only fetch credits column, no is_admin needed
-  const { data: profile } = await window.supabase
-    .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
-
-  // 9999 = admin bypass set manually in Supabase
-  if(!profile || profile.credits < 1){
-    var bar = document.getElementById("no-credits-bar")
-    bar.classList.add("visible")
-    bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
-    var secs = 3
-    var iv = setInterval(function(){
-      secs--
-      var cd = document.getElementById("countdown")
-      if(cd) cd.textContent = secs
-      if(secs <= 0){ clearInterval(iv); window.location.href = "/dashboard/#packages" }
-    }, 1000)
-    return
+  // Auth-only: credits check
+  var profile = null
+  if(!isGuestUser) {
+    const { data: prof } = await window.supabase
+      .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
+    profile = prof
+    if(!profile || profile.credits < 1){
+      var bar = document.getElementById("no-credits-bar")
+      bar.classList.add("visible")
+      bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
+      var secs = 3
+      var iv = setInterval(function(){
+        secs--
+        var cd = document.getElementById("countdown")
+        if(cd) cd.textContent = secs
+        if(secs <= 0){ clearInterval(iv); window.location.href = "/dashboard/#packages" }
+      }, 1000)
+      return
+    }
   }
 
   // Lock UI
@@ -740,25 +758,6 @@ window.generateSketch = async function(){
   const prompt = document.getElementById("prompt").value
 
   try {
-    // Check guest trial before anything else
-    var guestAllowed = true
-    var isGuestUser  = false
-    if(window._beoGuest) {
-      isGuestUser = window._beoGuest.isGuest
-      if(isGuestUser) {
-        if(window._beoGuest.trialUsed) {
-          window.showTrialExhaustedModal()
-          btn.disabled = false; btn.textContent = "Generate"
-          return
-        }
-        guestAllowed = await window.consumeGuestTrial()
-        if(!guestAllowed) {
-          btn.disabled = false; btn.textContent = "Generate"
-          return
-        }
-      }
-    }
-
     var sessionToken = null
     if(!isGuestUser) {
       const { data: sessionData } = await window.supabase.auth.getSession()
@@ -790,25 +789,24 @@ window.generateSketch = async function(){
     // Save in background — never blocks the UI
     if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "photo-to-sketch")
 
-    // Deduct credit + increment generations_used — always write to Supabase
-    const newCredits = profile.credits - 1
-    const { error: updateError } = await window.supabase
-      .from("profiles")
-      .update({
-        credits:          newCredits,
-        generations_used: (profile.generations_used ?? 0) + 1,
-        last_generation:  new Date().toISOString()
-      })
-      .eq("id", userData.user.id)
+    // Deduct credit — auth users only
+    if(!isGuestUser && profile) {
+      const newCredits = profile.credits - 1
+      const { error: updateError } = await window.supabase
+        .from("profiles")
+        .update({
+          credits:          newCredits,
+          generations_used: (profile.generations_used ?? 0) + 1,
+          last_generation:  new Date().toISOString()
+        })
+        .eq("id", userData.user.id)
 
-    if(updateError){
-      // Most likely cause: Supabase RLS policy blocking UPDATE
-      // Fix: run the SQL in Supabase SQL Editor (shown in console)
-      console.error("Credits update failed — check Supabase RLS policies:", updateError)
-    } else {
-      // Update badge only if write succeeded
-      document.getElementById("credits-display").innerHTML =
-        `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
+      if(updateError){
+        console.error("Credits update failed — check Supabase RLS policies:", updateError)
+      } else {
+        document.getElementById("credits-display").innerHTML =
+          `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
+      }
     }
 
   } catch(err){
