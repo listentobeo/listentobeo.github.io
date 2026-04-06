@@ -1137,24 +1137,11 @@ window.generateMural = async function(){
     // Save in background — never blocks the UI
     if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "mural-visualizer")
 
-    // Deduct credit — auth users only
+    // Update badge locally — actual deduction handled atomically by edge function
     if(!isGuestUser && profile) {
       const newCredits = profile.credits - 1
-      const { error: updateError } = await window.supabase
-        .from("profiles")
-        .update({
-          credits:          newCredits,
-          generations_used: (profile.generations_used !== undefined && profile.generations_used !== null ? profile.generations_used : 0) + 1,
-          last_generation:  new Date().toISOString()
-        })
-        .eq("id", userData.user.id)
-
-      if(!updateError){
-        document.getElementById("credits-display").innerHTML =
-          "<div class=\"credits-badge\">⚡ " + newCredits + " credits remaining</div>"
-      } else {
-        console.error("Credits update failed — check Supabase RLS policies:", updateError)
-      }
+      document.getElementById("credits-display").innerHTML =
+        "<div class=\"credits-badge\">⚡ " + newCredits + " credits remaining</div>"
     }
 
   } catch(err){
