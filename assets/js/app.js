@@ -29,7 +29,7 @@ if("serviceWorker" in navigator){
 }
 
 async function updateAuthUI(){
-  const { data } = await window.supabase.auth.getUser()
+  const { data } = await window._authReady
   const user     = data.user
   const authLink = document.getElementById("auth-link")
   const dashBtn  = document.getElementById("dashboard-btn")
@@ -54,6 +54,9 @@ async function updateAuthUI(){
     }
   }
 }
+
+// Expose shared auth promise — tool pages reuse this instead of calling getUser again
+window._authReady = window.supabase.auth.getUser()
 
 // Header is now inlined — call auth update directly
 updateAuthUI()

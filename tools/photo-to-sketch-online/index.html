@@ -588,24 +588,24 @@ function waitForSupabase(){
   })
 }
 
-/* ── CREDITS ────────────────────────────────────── */
-async function loadCredits(){
+/* ── CREDITS + GUEST INIT ───────────────────────── */
+document.addEventListener("DOMContentLoaded", async function(){
   await waitForSupabase()
-  const { data } = await window.supabase.auth.getUser()
-  if(!data.user) return
-  // Always fetch fresh from Supabase — never use cached/localStorage value
-  const { data: profile } = await window.supabase
-    .from("profiles").select("credits").eq("id", data.user.id).single()
-  if(profile){
-    document.getElementById("credits-display").innerHTML =
-      `<div class="credits-badge">⚡ ${profile.credits} credits remaining</div>`
+  // Reuse the shared auth promise from app.js — avoids concurrent getUser lock contention
+  const authResult = window._authReady || window.supabase.auth.getUser()
+  const { data } = await authResult
+  if(data && data.user){
+    // Logged-in: load credits
+    const { data: profile } = await window.supabase
+      .from("profiles").select("credits").eq("id", data.user.id).single()
+    if(profile){
+      document.getElementById("credits-display").innerHTML =
+        `<div class="credits-badge">⚡ ${profile.credits} credits remaining</div>`
+    }
+  } else {
+    // Guest: init trial system
+    if(window.initGuestTrial) window.initGuestTrial()
   }
-}
-// Load fresh credits on every page load — source of truth is always Supabase
-document.addEventListener("DOMContentLoaded", loadCredits)
-// Initialize guest trial system
-document.addEventListener("DOMContentLoaded", function(){
-  waitForSupabase().then(function(){ if(window.initGuestTrial) window.initGuestTrial() })
 })
 
 /* ── PROGRESS ───────────────────────────────────── */

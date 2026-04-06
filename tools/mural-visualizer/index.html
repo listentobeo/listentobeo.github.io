@@ -875,22 +875,22 @@ function waitForSupabase(){
   })
 }
 
-/* ── CREDITS ── */
-async function loadCredits(){
+/* ── CREDITS + GUEST INIT ── */
+document.addEventListener("DOMContentLoaded", async function(){
   await waitForSupabase()
-  const { data } = await window.supabase.auth.getUser()
-  if(!data.user) return
-  const { data: profile } = await window.supabase
-    .from("profiles").select("credits").eq("id", data.user.id).single()
-  if(profile){
-    document.getElementById("credits-display").innerHTML =
-      "<div class=\"credits-badge\">⚡ " + profile.credits + " credits remaining</div>"
+  // Reuse the shared auth promise from app.js — avoids concurrent getUser lock contention
+  var authResult = window._authReady || window.supabase.auth.getUser()
+  var authData = await authResult
+  if(authData.data && authData.data.user){
+    var userId = authData.data.user.id
+    var res = await window.supabase.from("profiles").select("credits").eq("id", userId).single()
+    if(res.data){
+      document.getElementById("credits-display").innerHTML =
+        "<div class=\"credits-badge\">⚡ " + res.data.credits + " credits remaining</div>"
+    }
+  } else {
+    if(window.initGuestTrial) window.initGuestTrial()
   }
-}
-document.addEventListener("DOMContentLoaded", loadCredits)
-// Initialize guest trial system
-document.addEventListener("DOMContentLoaded", function(){
-  waitForSupabase().then(function(){ if(window.initGuestTrial) window.initGuestTrial() })
 })
 
 /* ── COMPRESSION ── */
