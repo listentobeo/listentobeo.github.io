@@ -1027,6 +1027,11 @@ function getBlankWallImage(){
 
 /* ── GENERATE ── */
 window.generateMural = async function(){
+  // Lock button immediately — prevents race clicking before any async work starts
+  const btn = document.getElementById("generate-btn")
+  if(btn.disabled) return
+  btn.disabled = true; btn.textContent = "Visualizing..."
+
   await waitForSupabase()
 
   // Ensure guest trial is initialized before any auth check
@@ -1043,14 +1048,15 @@ window.generateMural = async function(){
   // Guest trial gate — runs before any auth redirect
   if(isGuestUser) {
     if(window._beoGuest && window._beoGuest.trialUsed) {
+      btn.disabled = false; btn.textContent = "Visualize Mural"
       window.showTrialExhaustedModal()
       return
     }
     const allowed = await window.consumeGuestTrial()
-    if(!allowed) return
+    if(!allowed){ btn.disabled = false; btn.textContent = "Visualize Mural"; return }
   }
 
-  if(!uploadedImage && currentMode !== "blank"){ showError("Please upload a photo of your wall first."); return }
+  if(!uploadedImage && currentMode !== "blank"){ btn.disabled = false; btn.textContent = "Visualize Mural"; showError("Please upload a photo of your wall first."); return }
 
   // Auth-only: credits check
   var profile = null
@@ -1059,6 +1065,7 @@ window.generateMural = async function(){
       .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
     profile = prof
     if(!profile || profile.credits < 1){
+      btn.disabled = false; btn.textContent = "Visualize Mural"
       var bar = document.getElementById("no-credits-bar")
       bar.classList.add("visible")
       bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
@@ -1073,8 +1080,7 @@ window.generateMural = async function(){
     }
   }
 
-  const btn = document.getElementById("generate-btn")
-  btn.disabled = true; btn.textContent = "Visualizing..."
+  // UI already locked at top — just show loading state
   showResultLoading()
   startProgress()
 
@@ -1118,12 +1124,13 @@ window.generateMural = async function(){
         sessionToken ? { "Authorization": "Bearer " + sessionToken } : {}
       ),
       body: JSON.stringify({
-        image:  "data:image/jpeg;base64," + wallBase64,
-        design: compressedDesign,
-        mask:   placementMask,
-        style:  style,
-        prompt: prompt,
-        mode:   currentMode
+        image:     "data:image/jpeg;base64," + wallBase64,
+        design:    compressedDesign,
+        mask:      placementMask,
+        style:     style,
+        prompt:    prompt,
+        mode:      currentMode,
+        visitorId: isGuestUser ? (window._beoGuest && window._beoGuest.visitorId) : undefined
       })
     })
 

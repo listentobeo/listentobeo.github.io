@@ -701,6 +701,11 @@ function showResultLoading(){
 /* ── GENERATE ───────────────────────────────────── */
 window.generateSketch = async function(){
 
+  // Lock button immediately — prevents race clicking before any async work starts
+  const btn = document.getElementById("generate-btn")
+  if(btn.disabled) return
+  btn.disabled = true; btn.textContent = "Generating..."
+
   await waitForSupabase()
 
   // Ensure guest trial is initialized before any auth check
@@ -717,15 +722,16 @@ window.generateSketch = async function(){
   // Guest trial gate — runs before any auth redirect
   if(isGuestUser) {
     if(window._beoGuest && window._beoGuest.trialUsed) {
+      btn.disabled = false; btn.textContent = "Generate Artwork"
       window.showTrialExhaustedModal()
       return
     }
     const allowed = await window.consumeGuestTrial()
-    if(!allowed) return
+    if(!allowed){ btn.disabled = false; btn.textContent = "Generate Artwork"; return }
   }
 
   // Image check
-  if(!uploadedImage){ showError("Please upload a photo first."); return }
+  if(!uploadedImage){ btn.disabled = false; btn.textContent = "Generate Artwork"; showError("Please upload a photo first."); return }
 
   // Auth-only: credits check
   var profile = null
@@ -734,6 +740,7 @@ window.generateSketch = async function(){
       .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
     profile = prof
     if(!profile || profile.credits < 1){
+      btn.disabled = false; btn.textContent = "Generate Artwork"
       var bar = document.getElementById("no-credits-bar")
       bar.classList.add("visible")
       bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
@@ -748,9 +755,7 @@ window.generateSketch = async function(){
     }
   }
 
-  // Lock UI
-  const btn = document.getElementById("generate-btn")
-  btn.disabled = true; btn.textContent = "Generating..."
+  // UI already locked at top — just show loading state
   showResultLoading()
   startProgress()
 
@@ -776,7 +781,12 @@ window.generateSketch = async function(){
         { "Content-Type": "application/json" },
         sessionToken ? { "Authorization": "Bearer " + sessionToken } : {}
       ),
-      body: JSON.stringify({ image: compressedImage, style, prompt })
+      body: JSON.stringify({
+        image: compressedImage,
+        style,
+        prompt,
+        visitorId: isGuestUser ? (window._beoGuest && window._beoGuest.visitorId) : undefined
+      })
     })
 
     const result = await response.json()
