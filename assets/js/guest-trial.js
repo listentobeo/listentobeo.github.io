@@ -104,39 +104,15 @@ window.initGuestTrial = async function() {
 }
 
 // ── CONSUME TRIAL ────────────────────────────────────────────
-// Call this right before an authenticated generation
-// Returns true if allowed, false if trial already used
-window.consumeGuestTrial = async function() {
-  if (!window._beoGuest.isGuest) return true // logged in users always allowed (credits handle limits)
-
+// Checks local state only — actual claim happens atomically
+// inside the edge function via claim_guest_trial (single source of truth).
+window.consumeGuestTrial = function() {
+  if (!window._beoGuest.isGuest) return true
   if (window._beoGuest.trialUsed) {
     showTrialExhaustedModal()
     return false
   }
-
-  try {
-    const res = await fetch(GUEST_CHECK_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_ANON
-      },
-      body: JSON.stringify({
-        visitorId: window._beoGuest.visitorId,
-        action: "consume"
-      })
-    })
-    const data = await res.json()
-    if (!data.allowed) {
-      window._beoGuest.trialUsed = true
-      showTrialExhaustedModal()
-      return false
-    }
-    window._beoGuest.trialUsed = false // will be true after this generation
-    return true
-  } catch(e) {
-    return true // fail open
-  }
+  return true
 }
 
 // ── MARK TRIAL USED (call after successful generation) ────────

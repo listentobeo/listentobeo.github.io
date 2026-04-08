@@ -1134,6 +1134,16 @@ window.generateMural = async function(){
       })
     })
 
+    // Guest trial exhausted — show modal instead of error bar
+    if(isGuestUser && response.status === 403) {
+      window._beoGuest.trialUsed = true
+      resetProgress()
+      document.getElementById("result-shimmer").style.display  = "none"
+      document.getElementById("empty-state").style.display     = "flex"
+      if(window.showTrialExhaustedModal) window.showTrialExhaustedModal()
+      return
+    }
+
     const result = await response.json()
     if(!result.result) throw new Error(result.error || "No image returned from AI.")
 
