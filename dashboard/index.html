@@ -230,11 +230,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   var SUPABASE_KEY = "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo";
   var PAYSTACK_KEY = "pk_live_2d3dff6f69fb6093c1df177517a802e0de68a731";
 
-  var PACKAGES = [
-    { id:"starter", label:"Starter",  credits:5,  price:2000,  display:"₦2,000"  },
-    { id:"creator", label:"Creator",  credits:20, price:6000,  display:"₦6,000"  },
-    { id:"studio",  label:"Studio",   credits:50, price:12000, display:"₦12,000" }
-  ];
+ var PACKAGES = [
+  { id:"starter", label:"Starter", credits:5,  images:5,  price:2000,  usd:1.5, display:"₦2,000" },
+  { id:"creator", label:"Creator", credits:20, images:20, price:6000,  usd:4.5, display:"₦6,000" },
+  { id:"studio",  label:"Studio",  credits:50, images:50, price:12000, usd:9,   display:"₦12,000" }
+];
 
   /* ── SUPABASE CLIENT ── */
   var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
