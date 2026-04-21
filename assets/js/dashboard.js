@@ -95,24 +95,26 @@ function renderPackages(email){
   if(!grid) return
 
   grid.innerHTML = PACKAGES.map(function(pkg){
-    return '<div class="package-card">' +
+   return '<div class="package-card">' +
 
-      '<div class="pkg-label">' + pkg.label + '</div>' +
-(pkg.id === "creator" ? '<div class="pkg-badge">Most Popular</div>' : '')
-      '<div class="pkg-credits">' + pkg.credits + '<span> credits</span></div>' +
+  '<div class="pkg-label">' + pkg.label + '</div>' +
 
-      '<div class="pkg-images">Create ' + pkg.images + ' images</div>' +
+  (pkg.id === "creator" ? '<div class="pkg-badge">Most Popular</div>' : '') +
 
-      '<div class="pkg-price">' + 
-        pkg.display + 
-        ' <span class="usd">($' + pkg.usd + ')</span>' + 
-      '</div>' +
+  '<div class="pkg-credits">' + pkg.credits + '<span> credits</span></div>' +
 
-      '<button class="pkg-btn" onclick="window.initPayment(\'' + pkg.id + '\',\'' + email + '\',' + pkg.price + ',' + pkg.credits + ')">' +
-        'Buy Now' +
-      '</button>' +
+  '<div class="pkg-images">Create ' + pkg.images + ' images</div>' +
 
-    '</div>'
+  '<div class="pkg-price">' + 
+    pkg.display + 
+    ' <span class="usd">($' + pkg.usd + ')</span>' + 
+  '</div>' +
+
+  '<button class="pkg-btn" onclick="window.initPayment(\'' + pkg.id + '\',\'' + email + '\',' + pkg.price + ',' + pkg.credits + ')">' +
+    'Buy Now' +
+  '</button>' +
+
+'</div>'
   }).join("")
 }
 
