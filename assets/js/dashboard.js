@@ -8,9 +8,33 @@ window.supabase = supabase
 
 /* ── CREDIT PACKAGES ── */
 const PACKAGES = [
-  { id: "starter", label: "Starter",  credits: 5,  price: 2000,  display: "₦2,000" },
-  { id: "creator", label: "Creator",  credits: 20, price: 6000,  display: "₦6,000" },
-  { id: "studio",  label: "Studio",   credits: 50, price: 12000, display: "₦12,000" },
+  { 
+    id: "starter", 
+    label: "Starter",  
+    credits: 5,  
+    images: 5,
+    price: 2000,  
+    usd: 1.5,
+    display: "₦2,000" 
+  },
+  { 
+    id: "creator", 
+    label: "Creator",  
+    credits: 20, 
+    images: 20,
+    price: 6000,  
+    usd: 4.5,
+    display: "₦6,000" 
+  },
+  { 
+    id: "studio",  
+    label: "Studio",   
+    credits: 50, 
+    images: 50,
+    price: 12000, 
+    usd: 9,
+    display: "₦12,000" 
+  },
 ]
 
 /* ── PAYSTACK KEY — replace with your live key ── */
@@ -69,12 +93,25 @@ async function loadDashboard(){
 function renderPackages(email){
   const grid = document.getElementById("packages-grid")
   if(!grid) return
+
   grid.innerHTML = PACKAGES.map(function(pkg){
     return '<div class="package-card">' +
+
       '<div class="pkg-label">' + pkg.label + '</div>' +
-      '<div class="pkg-credits">' + pkg.credits + '<span>credits</span></div>' +
-      '<div class="pkg-price">' + pkg.display + '</div>' +
-      '<button class="pkg-btn" onclick="window.initPayment(\'' + pkg.id + '\',\'' + email + '\',' + pkg.price + ',' + pkg.credits + ')">Buy Now</button>' +
+(pkg.id === "creator" ? '<div class="pkg-badge">Most Popular</div>' : '')
+      '<div class="pkg-credits">' + pkg.credits + '<span> credits</span></div>' +
+
+      '<div class="pkg-images">Create ' + pkg.images + ' images</div>' +
+
+      '<div class="pkg-price">' + 
+        pkg.display + 
+        ' <span class="usd">($' + pkg.usd + ')</span>' + 
+      '</div>' +
+
+      '<button class="pkg-btn" onclick="window.initPayment(\'' + pkg.id + '\',\'' + email + '\',' + pkg.price + ',' + pkg.credits + ')">' +
+        'Buy Now' +
+      '</button>' +
+
     '</div>'
   }).join("")
 }
