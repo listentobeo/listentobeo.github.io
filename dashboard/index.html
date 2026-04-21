@@ -55,6 +55,26 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .pkg-btn:hover{opacity:0.88}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border-gold);color:var(--gold);padding:12px 20px;border-radius:100px;font-size:13px;font-weight:500;opacity:0;transition:transform 0.3s,opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.buy-btn{
+  display:inline-block;
+  margin:16px 0;
+  padding:12px 18px;
+  background:#d4a017; /* your gold tone */
+  color:#000;
+  font-weight:600;
+  border-radius:10px;
+  text-decoration:none;
+  font-size:14px;
+  box-shadow:0 4px 14px rgba(212,160,23,0.25);
+  transition:all 0.2s ease;
+}
+
+.buy-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(212,160,23,0.35);
+}
+  
 </style>
     <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -121,7 +141,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       </a>
     </div>
   </div>
-<a href="#buy" class="buy-link">Buy Credits</a>
+<a href="#buy" class="buy-btn">Get More Credits</a>
   <!-- TOOLS -->
   <div class="section-title">Your Tools</div>
   <div class="tool-grid">
