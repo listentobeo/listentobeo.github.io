@@ -291,21 +291,41 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
   /* ── RENDER PACKAGES ── */
   function renderPackages(email){
-    var grid = document.getElementById("packages-grid");
-    if(!grid) return;
-    var html = "";
-    for(var i = 0; i < PACKAGES.length; i++){
-      var p = PACKAGES[i];
-      html += '<div class="package-card">';
-      html += '<div class="pkg-label">' + p.label + '</div>';
-      html += '<div class="pkg-credits">' + p.credits + '<span>credits</span></div>';
-      html += '<div class="pkg-price">' + p.display + '</div>';
-      html += '<button class="pkg-btn" onclick="doPay(\'' + p.id + '\',\'' + email + '\',' + p.price + ',' + p.credits + ')">Buy Now</button>';
-      html += '</div>';
+  var grid = document.getElementById("packages-grid");
+  if(!grid) return;
+
+  var html = "";
+
+  for(var i = 0; i < PACKAGES.length; i++){
+    var p = PACKAGES[i];
+
+    html += '<div class="package-card">';
+
+    html += '<div class="pkg-label">' + p.label + '</div>';
+
+    // optional badge (nice touch)
+    if(p.id === "creator"){
+      html += '<div class="pkg-badge">Most Popular</div>';
     }
-    grid.innerHTML = html;
+
+    html += '<div class="pkg-credits">' + p.credits + '<span> credits</span></div>';
+
+    // ✅ NEW (this is what you were missing)
+    html += '<div class="pkg-images">Create ' + p.images + ' images</div>';
+
+    // ✅ UPDATED price with USD
+    html += '<div class="pkg-price">' + 
+              p.display + 
+              ' <span class="usd">($' + p.usd + ')</span>' +
+            '</div>';
+
+    html += '<button class="pkg-btn" onclick="doPay(\'' + p.id + '\',\'' + email + '\',' + p.price + ',' + p.credits + ')">Buy Now</button>';
+
+    html += '</div>';
   }
 
+  grid.innerHTML = html;
+}
   /* ── PAYSTACK ── */
   window.doPay = function(packageId, email, amount, credits){
     if(typeof PaystackPop === "undefined"){
