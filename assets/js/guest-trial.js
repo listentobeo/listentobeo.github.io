@@ -185,6 +185,10 @@ window.showTrialExhaustedModal = function() {
   ].join(";")
 
   overlay.innerHTML =
+
+     (resultImg ?
+    '<img src="' + resultImg + '" id="trial-preview-img">' 
+  : '') +
     '<div id="trial-modal" style="' +
       'background:#13131a;' +
       'border:1px solid rgba(255,255,255,0.08);' +
@@ -204,17 +208,12 @@ window.showTrialExhaustedModal = function() {
         'cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center' +
       '">✕</button>' +
 
-      // Thumbnail of their result
-      (resultImg ?
-        '<div style="width:80px;height:80px;border-radius:10px;overflow:hidden;margin:0 auto 16px;border:2px solid rgba(212,160,23,0.4)">' +
-          '<img src="' + resultImg + '" style="width:100%;height:100%;object-fit:cover">' +
-        '</div>' : '') +
 
       // Heading
       '<div style="text-align:center;margin-bottom:20px">' +
         '<div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,160,23,0.8);margin-bottom:8px;font-family:Syne,sans-serif">Free Trial Used</div>' +
         '<h3 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#f0ede8;margin-bottom:8px">Create more like this?</h3>' +
-        '<p style="font-size:14px;color:#888;line-height:1.6">You’ve created your first image as a guest.Continue creating more styles and refine it.<strong style="color:#f0ede8">2 more credits</strong> to keep going. No card required.</p>' +
+        '<p style="font-size:14px;color:#888;line-height:1.6">You’ve created your first image as a guest. Continue creating more styles and refine it.<strong style="color:#f0ede8">2 more credits</strong> to keep going. No card required.</p>' +
       '</div>' +
 
       // Perks
@@ -264,10 +263,13 @@ window.showTrialExhaustedModal = function() {
 ;(function() {
   const style = document.createElement("style")
   style.textContent = [
-    "@keyframes badgeIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}",
-    "@keyframes badgeOut{to{opacity:0;transform:translateX(-50%) translateY(20px)}}",
-    "@keyframes overlayIn{from{opacity:0}to{opacity:1}}",
-    "@keyframes sheetIn{from{transform:translateY(100%)}to{transform:translateY(0)}}"
-  ].join("")
+  "@keyframes badgeIn{...}",
+  "@keyframes badgeOut{...}",
+  "@keyframes overlayIn{...}",
+  "@keyframes sheetIn{...}",
+
+  "#trial-preview-img{position:fixed;top:25%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;object-fit:cover;border-radius:12px;border:2px solid rgba(212,160,23,0.5);z-index:10002;}"
+
+].join("")
   document.head.appendChild(style)
 })()
