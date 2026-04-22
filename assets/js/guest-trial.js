@@ -79,7 +79,13 @@ window.initGuestTrial = async function() {
   // Guest user — generate fingerprint
   window._beoGuest.isGuest     = true
   window._beoGuest.visitorId   = generateFingerprint()
-
+// ✅ ADD THIS HERE (right after guest is set)
+  try {
+    const saved = localStorage.getItem("beo_last_result")
+    if (saved) {
+      window._beoGuest.resultImageUrl = saved
+    }
+  } catch(e) {}
   // Check if they've already used their free trial
   try {
     const res = await fetch(GUEST_CHECK_URL, {
@@ -118,8 +124,15 @@ window.consumeGuestTrial = function() {
 // ── MARK TRIAL USED (call after successful generation) ────────
 window.markTrialUsed = function(resultImageUrl) {
   if (!window._beoGuest.isGuest) return
-  window._beoGuest.trialUsed     = true
+
+  window._beoGuest.trialUsed = true
   window._beoGuest.resultImageUrl = resultImageUrl
+
+  // ✅ NEW — save result for reload
+  try {
+    localStorage.setItem("beo_last_result", resultImageUrl)
+  } catch(e) {}
+
   // Show the soft "free trial used" badge on result
   showTrialUsedBadge()
 }
