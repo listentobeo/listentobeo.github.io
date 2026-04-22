@@ -268,7 +268,19 @@ window.showTrialExhaustedModal = function() {
   "@keyframes overlayIn{...}",
   "@keyframes sheetIn{...}",
 
-  "#trial-preview-img{position:fixed;top:25%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;object-fit:cover;border-radius:12px;border:2px solid rgba(212,160,23,0.5);z-index:10002;}"
+ " #trial-preview-img{
+  position:fixed;
+  top:22%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:180px;          /* bigger */
+  max-width:45vw;       /* responsive */
+  height:auto;          /* keep aspect ratio */
+  border-radius:14px;
+  border:2px solid rgba(212,160,23,0.5);
+  box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  z-index:10002;
+}"
 
 ].join("")
   document.head.appendChild(style)
