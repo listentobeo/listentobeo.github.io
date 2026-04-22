@@ -212,8 +212,8 @@ window.showTrialExhaustedModal = function() {
       // Heading
       '<div style="text-align:center;margin-bottom:20px">' +
         '<div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,160,23,0.8);margin-bottom:8px;font-family:Syne,sans-serif">Free Trial Used</div>' +
-        '<h3 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#f0ede8;margin-bottom:8px">Create more like this?</h3>' +
-        '<p style="font-size:14px;color:#888;line-height:1.6">You’ve created your first image as a guest. Continue creating more styles and refine it.<strong style="color:#f0ede8">2 more credits</strong> to keep going. No card required.</p>' +
+        '<h3 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#f0ede8;margin-bottom:8px">Create more like this</h3>' +
+        '<p style="font-size:14px;color:#888;line-height:1.6">You’ve created your first image as a guest. Continue creating more styles with <strong style="color:#f0ede8"> 2 more credits</strong> to keep going. No card required.</p>' +
       '</div>' +
 
       // Perks
