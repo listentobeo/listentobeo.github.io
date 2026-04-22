@@ -213,20 +213,20 @@ window.showTrialExhaustedModal = function() {
       // Heading
       '<div style="text-align:center;margin-bottom:20px">' +
         '<div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,160,23,0.8);margin-bottom:8px;font-family:Syne,sans-serif">Free Trial Used</div>' +
-        '<h3 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#f0ede8;margin-bottom:8px">Like what you created?</h3>' +
-        '<p style="font-size:14px;color:#888;line-height:1.6">Create a free account and get <strong style="color:#f0ede8">2 more credits</strong> to keep going. No card required.</p>' +
+        '<h3 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#f0ede8;margin-bottom:8px">Create more like this?</h3>' +
+        '<p style="font-size:14px;color:#888;line-height:1.6">You’ve created your first image as a guest.Continue creating more styles and refine it.<strong style="color:#f0ede8">2 more credits</strong> to keep going. No card required.</p>' +
       '</div>' +
 
       // Perks
       '<div style="display:flex;justify-content:center;gap:20px;margin-bottom:22px;flex-wrap:wrap">' +
         '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#666">' +
-          '<span style="color:#d4a017">✓</span> 2 free credits' +
+          '<span style="color:#d4a017">✓</span> Try more styles with FREE credits' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#666">' +
+          '<span style="color:#d4a017">✓</span>Improve your result ' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#666">' +
           '<span style="color:#d4a017">✓</span> Save your artwork' +
-        '</div>' +
-        '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#666">' +
-          '<span style="color:#d4a017">✓</span> Never expires' +
         '</div>' +
       '</div>' +
 
@@ -239,7 +239,7 @@ window.showTrialExhaustedModal = function() {
         'border-radius:8px;text-decoration:none;' +
         'text-align:center;margin-bottom:10px;' +
         'box-sizing:border-box' +
-      '">Create Free Account →</a>' +
+      '">Continue Creating →</a>' +
 
       // Secondary — already have account
       '<a href="/login/" style="' +
