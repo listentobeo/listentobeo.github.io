@@ -281,7 +281,7 @@ window.showTrialExhaustedModal = function() {
   "@keyframes overlayIn{...}",
   "@keyframes sheetIn{...}",
 
-"#trial-preview-img{position:fixed;top:38%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;object-fit:cover;border-radius:12px;border:2px solid rgba(212,160,23,0.5);z-index:10002;}"
+"#trial-preview-img{position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;object-fit:cover;border-radius:12px;border:2px solid rgba(212,160,23,0.5);z-index:10002;}"
 
 ].join("")
   document.head.appendChild(style)
