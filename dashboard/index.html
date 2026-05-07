@@ -327,18 +327,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   grid.innerHTML = html;
 }
   /* ── PAYSTACK ── */
-  window.doPay = function(packageId, email, amount, credits){
+  window.doPay = async function(packageId, email, amount, credits){
     if(typeof PaystackPop === "undefined"){
       alert("Payment is still loading — please try again in a moment.");
       return;
     }
+
+    // ── GEO-GATE ──
+    var channels = ["card"];
+    try {
+      var geo = await fetch("https://ipapi.co/json/");
+      var loc = await geo.json();
+      if(loc.country_code === "NG"){
+        channels = ["card","bank","ussd","qr","bank_transfer"];
+      } else {
+        channels = ["card"];
+      }
+    } catch(e){
+      console.warn("Geo-detection failed, defaulting to card only:", e);
+    }
+    // ── END GEO-GATE ──
+
     var handler = PaystackPop.setup({
       key:      PAYSTACK_KEY,
       email:    email,
       amount:   amount * 100,
       currency: "NGN",
       ref:      "beo_" + Date.now() + "_" + packageId,
-      channels: ["card","bank","ussd","qr","bank_transfer"],
+      channels: channels,
       metadata: {
         custom_fields:[
           {display_name:"Package", variable_name:"package", value:packageId},
