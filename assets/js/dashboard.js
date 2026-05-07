@@ -119,7 +119,7 @@ function renderPackages(email){
 }
 
 /* ── PAYSTACK ── */
-window.initPayment = function(packageId, email, amount, credits){
+window.initPayment = async function(packageId, email, amount, credits){
   // Check SDK loaded
   if(typeof PaystackPop === "undefined"){
     alert("Payment is loading, please try again in a moment.")
@@ -131,6 +131,22 @@ window.initPayment = function(packageId, email, amount, credits){
     return
   }
 
+  // ── GEO-GATE PAYMENT CHANNELS ──
+  let channels = ["card"] // safe default
+  try {
+    const geo = await fetch("https://ipapi.co/json/")
+    const loc = await geo.json()
+    if(loc.country_code === "NG"){
+      channels = ["card", "bank", "ussd", "qr", "bank_transfer"]
+    } else {
+      channels = ["card"] // add "apple_pay" here once you enable it on your Paystack dashboard
+    }
+  } catch(e){
+    console.warn("Geo-detection failed, defaulting to card only:", e)
+    // channels stays as ["card"] — safe fallback
+  }
+  // ── END GEO-GATE ──
+
   try {
     const handler = PaystackPop.setup({
       key:      PAYSTACK_KEY,
@@ -138,7 +154,7 @@ window.initPayment = function(packageId, email, amount, credits){
       amount:   amount * 100,
       currency: "NGN",
       ref:      "beo_" + Date.now() + "_" + packageId,
-      channels: ["card", "bank", "ussd", "qr", "bank_transfer"],
+      channels: channels, // 👈 now dynamic
       metadata: {
         custom_fields:[
           {display_name:"Package",  variable_name:"package",  value: packageId},
