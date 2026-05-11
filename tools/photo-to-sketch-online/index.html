@@ -622,6 +622,13 @@ document.addEventListener("DOMContentLoaded", async function(){
       document.getElementById("credits-display").innerHTML =
         `<div class="credits-badge">⚡ ${profile.credits} credits remaining</div>`
     }
+    if(window.restoreGuestGeneration) {
+      const restored = window.restoreGuestGeneration("photo-to-sketch", function(src){
+        generatedResult = src
+        showResult(src)
+      })
+      if(restored) return
+    }
   } else {
     // Guest: init trial system
     if(window.initGuestTrial) window.initGuestTrial()

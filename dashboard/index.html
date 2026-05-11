@@ -222,6 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 <!-- Single self-contained dashboard script — no modules, no timing issues -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/assets/js/auth-redirect.js"></script>
 <script>
 ;(function(){
 
@@ -255,6 +256,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     var auth = await db.auth.getUser();
     if(!auth.data.user){
       window.location.href = "/login/";
+      return;
+    }
+
+    var returnTo = window.BeoAuthRedirect && window.BeoAuthRedirect.getReturnPath();
+    if(returnTo && returnTo !== "/dashboard/" && returnTo.indexOf("/dashboard/#buy") !== 0){
+      window.location.replace(returnTo);
       return;
     }
 

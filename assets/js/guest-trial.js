@@ -6,6 +6,24 @@
 
 const GUEST_CHECK_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/check-guest"
 const SUPABASE_ANON   = "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+const GUEST_RESULT_KEY = "beo_last_result"
+const GUEST_RETURN_KEY = "beo_guest_return_to"
+const GUEST_SAVED_KEY  = "beo_last_result_saved_to_account"
+
+function getGuestReturnPath() {
+  return window.location.pathname + window.location.search + window.location.hash
+}
+
+function saveGuestReturnPath() {
+  try {
+    localStorage.setItem(GUEST_RETURN_KEY, getGuestReturnPath())
+  } catch(e) {}
+}
+
+function getGuestAuthHref(path) {
+  saveGuestReturnPath()
+  return path + "?returnTo=" + encodeURIComponent(getGuestReturnPath())
+}
 
 // ── FINGERPRINT ────────────────────────────────────────────
 // Lightweight canvas + audio fingerprint — no third party needed
@@ -81,7 +99,7 @@ window.initGuestTrial = async function() {
   window._beoGuest.visitorId   = generateFingerprint()
 // ✅ ADD THIS HERE (right after guest is set)
   try {
-    const saved = localStorage.getItem("beo_last_result")
+    const saved = localStorage.getItem(GUEST_RESULT_KEY)
     if (saved) {
       window._beoGuest.resultImageUrl = saved
     }
@@ -127,10 +145,12 @@ window.markTrialUsed = function(resultImageUrl) {
 
   window._beoGuest.trialUsed = true
   window._beoGuest.resultImageUrl = resultImageUrl
+  saveGuestReturnPath()
 
   // ✅ NEW — save result for reload
   try {
-    localStorage.setItem("beo_last_result", resultImageUrl)
+    localStorage.setItem(GUEST_RESULT_KEY, resultImageUrl)
+    localStorage.removeItem(GUEST_SAVED_KEY)
   } catch(e) {}
 
   // Show the soft "free trial used" badge on result
@@ -185,6 +205,8 @@ window.showTrialExhaustedModal = function() {
   if (existing) existing.remove()
 
   const resultImg = window._beoGuest.resultImageUrl
+  const signupHref = getGuestAuthHref("/signup/")
+  const loginHref = getGuestAuthHref("/login/")
 
   const overlay = document.createElement("div")
   overlay.id = "trial-modal-overlay"
@@ -243,7 +265,7 @@ window.showTrialExhaustedModal = function() {
       '</div>' +
 
       // Primary CTA
-      '<a href="/signup/" style="' +
+      '<a href="' + signupHref + '" style="' +
         'display:block;width:100%;padding:14px;' +
         'background:#d4a017;color:#0d0d12;' +
         'font-family:Syne,sans-serif;font-size:14px;font-weight:700;' +
@@ -254,7 +276,7 @@ window.showTrialExhaustedModal = function() {
       '">Continue Creating →</a>' +
 
       // Secondary — already have account
-      '<a href="/login/" style="' +
+      '<a href="' + loginHref + '" style="' +
         'display:block;width:100%;padding:12px;' +
         'background:transparent;color:#888;' +
         'font-size:13px;text-align:center;' +
@@ -270,6 +292,52 @@ window.showTrialExhaustedModal = function() {
   })
 
   document.body.appendChild(overlay)
+}
+
+// Restore the guest result after signup/login lands back on the same tool.
+window.restoreGuestGeneration = function(toolName, showResultFn) {
+  if (typeof showResultFn !== "function") return null
+
+  var result = null
+  var returnPath = null
+  try {
+    result = localStorage.getItem(GUEST_RESULT_KEY)
+    returnPath = localStorage.getItem(GUEST_RETURN_KEY)
+  } catch(e) {}
+
+  if (!result) return null
+
+  if (returnPath) {
+    var expectedPath = returnPath.split("#")[0].split("?")[0]
+    if (expectedPath && expectedPath !== window.location.pathname) return null
+  }
+
+  showResultFn(result)
+
+  try {
+    localStorage.removeItem(GUEST_RETURN_KEY)
+  } catch(e) {}
+
+  if (window.saveGeneration && toolName) {
+    var savedMarker = toolName + ":" + result.slice(0, 120)
+    try {
+      if (localStorage.getItem(GUEST_SAVED_KEY) !== savedMarker) {
+        localStorage.setItem(GUEST_SAVED_KEY, savedMarker)
+        window.saveGeneration(result, toolName)
+      }
+    } catch(e) {
+      window.saveGeneration(result, toolName)
+    }
+  }
+
+  setTimeout(function(){
+    var resultCol = document.getElementById("result-col")
+    if(resultCol && window.location.hash !== "#buy"){
+      resultCol.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, 250)
+
+  return result
 }
 
 // ── CSS ANIMATIONS ───────────────────────────────────────────

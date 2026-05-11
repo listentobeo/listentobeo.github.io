@@ -12,6 +12,7 @@
 
 <!-- Supabase UMD — loads synchronously so Google button works immediately -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/assets/js/auth-redirect.js"></script>
 <script>
 // Init Supabase client instantly — available before any module loads
 var _supaClient = supabase.createClient(
@@ -28,7 +29,7 @@ function signInWithGoogle(){
   _supaClient.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "https://aitools.beoarts.com/dashboard/",
+      redirectTo: window.BeoAuthRedirect ? window.BeoAuthRedirect.getOAuthRedirectUrl() : "https://aitools.beoarts.com/dashboard/",
       queryParams: { prompt: "select_account" }
     }
   }).then(function(res){
@@ -60,7 +61,7 @@ function loginUser(){
         btn.disabled = false; btn.textContent = "Login"
         return
       }
-      window.location.href = "/dashboard/"
+      window.location.href = window.BeoAuthRedirect ? window.BeoAuthRedirect.getPostAuthRedirect() : "/dashboard/"
     })
 }
 

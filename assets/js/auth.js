@@ -9,6 +9,27 @@ window.supabase = supabase
 window.getUser    = async () => (await supabase.auth.getUser()).data.user
 window.getSession = async () => (await supabase.auth.getSession()).data.session
 
+function getAuthReturnPath(){
+  if(window.BeoAuthRedirect) return window.BeoAuthRedirect.getReturnPath()
+
+  try {
+    const params = new URLSearchParams(window.location.search)
+    const fromQuery = params.get("returnTo")
+    const fromStorage = localStorage.getItem("beo_guest_return_to")
+    const path = fromQuery || fromStorage
+    if(path && path.charAt(0) === "/" && path.indexOf("//") !== 0 && path.indexOf("/login/") !== 0 && path.indexOf("/signup/") !== 0){
+      return decodeURIComponent(path)
+    }
+  } catch(e) {}
+
+  return "/dashboard/"
+}
+
+function getOAuthRedirectUrl(){
+  if(window.BeoAuthRedirect) return window.BeoAuthRedirect.getOAuthRedirectUrl()
+  return window.location.origin + "/dashboard/?returnTo=" + encodeURIComponent(getAuthReturnPath())
+}
+
 /* ── GOOGLE SIGN IN ───────────────────────────────────── */
 async function doGoogleSignIn(){
   const btn = document.getElementById("google-btn")
@@ -17,7 +38,7 @@ async function doGoogleSignIn(){
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "https://aitools.beoarts.com/dashboard/",
+      redirectTo: getOAuthRedirectUrl(),
       queryParams: {
         access_type: "offline",
         prompt: "select_account",
@@ -58,7 +79,7 @@ window.loginUser = async function(){
     btn.disabled = false; btn.textContent = "Login"
     return
   }
-  window.location.href = "/dashboard/"
+  window.location.href = getAuthReturnPath()
 }
 
 /* ── EMAIL SIGNUP ─────────────────────────────────────── */
@@ -80,7 +101,11 @@ window.signupUser = async function(){
   btn.disabled = true; btn.textContent = "Creating account..."
   errEl.style.display = "none"
 
-  const { data, error } = await supabase.auth.signUp({ email, password })
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: getOAuthRedirectUrl() }
+  })
 
   if(error){
     errEl.textContent = error.message; errEl.style.display = "block"
@@ -94,5 +119,5 @@ window.signupUser = async function(){
     return
   }
 
-  window.location.href = "/dashboard/"
+  window.location.href = getAuthReturnPath()
 }

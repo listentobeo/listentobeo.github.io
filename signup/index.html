@@ -12,6 +12,7 @@
 
 <!-- Supabase UMD — loads synchronously so Google button works immediately -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/assets/js/auth-redirect.js"></script>
 <script>
 var _supaClient = supabase.createClient(
   "https://wphqcccliiwdvwdjgrmc.supabase.co",
@@ -27,7 +28,7 @@ function signInWithGoogle(){
   _supaClient.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "https://aitools.beoarts.com/dashboard/",
+      redirectTo: window.BeoAuthRedirect ? window.BeoAuthRedirect.getOAuthRedirectUrl() : "https://aitools.beoarts.com/dashboard/",
       queryParams: { prompt: "select_account" }
     }
   }).then(function(res){
@@ -55,7 +56,13 @@ function signupUser(){
   btn.disabled = true; btn.textContent = "Creating account..."
   err.style.display = "none"
 
-  _supaClient.auth.signUp({ email: email, password: password })
+  var emailRedirectTo = window.BeoAuthRedirect ? window.BeoAuthRedirect.getEmailRedirectUrl() : "https://aitools.beoarts.com/dashboard/"
+
+  _supaClient.auth.signUp({
+    email: email,
+    password: password,
+    options: { emailRedirectTo: emailRedirectTo }
+  })
     .then(function(res){
       if(res.error){
         err.textContent = res.error.message; err.style.display = "block"
@@ -67,7 +74,7 @@ function signupUser(){
         document.getElementById("signup-confirm").style.display = "block"
         return
       }
-      window.location.href = "/dashboard/"
+      window.location.href = window.BeoAuthRedirect ? window.BeoAuthRedirect.getPostAuthRedirect() : "/dashboard/"
     })
 }
 </script>

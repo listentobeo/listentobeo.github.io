@@ -895,6 +895,13 @@ document.addEventListener("DOMContentLoaded", async function(){
       document.getElementById("credits-display").innerHTML =
         "<div class=\"credits-badge\">⚡ " + res.data.credits + " credits remaining</div>"
     }
+    if(window.restoreGuestGeneration) {
+      var restored = window.restoreGuestGeneration("mural-visualizer", function(src){
+        generatedResult = src
+        showResult(src)
+      })
+      if(restored) return
+    }
   } else {
     if(window.initGuestTrial) window.initGuestTrial()
   }
