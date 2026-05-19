@@ -199,7 +199,7 @@ function showTrialUsedBadge() {
 }
 
 // ── EXHAUSTED MODAL (shown when they try to generate again) ──
-window.showTrialExhaustedModal = function() {
+function showLegacyTrialExhaustedModal() {
   // Remove existing
   const existing = document.getElementById("trial-modal-overlay")
   if (existing) existing.remove()
@@ -294,6 +294,55 @@ window.showTrialExhaustedModal = function() {
   document.body.appendChild(overlay)
 }
 
+// Premium conversion gate.
+window.showTrialExhaustedModal = function() {
+  const existing = document.getElementById("trial-modal-overlay")
+  if (existing) existing.remove()
+
+  const resultImg = window._beoGuest.resultImageUrl
+  const signupHref = getGuestAuthHref("/signup/")
+  const loginHref = getGuestAuthHref("/login/")
+  const previewHtml = resultImg
+    ? '<div id="trial-preview-wrap"><img src="' + resultImg + '" id="trial-preview-img" alt="Your generated result"><div id="trial-preview-label">Your first result is saved</div></div>'
+    : '<div id="trial-preview-wrap" class="empty"><div id="trial-preview-label">Your result is ready to save</div></div>'
+
+  const overlay = document.createElement("div")
+  overlay.id = "trial-modal-overlay"
+  overlay.style.cssText = [
+    "position:fixed","inset:0",
+    "background:rgba(0,0,0,0.78)",
+    "z-index:10000",
+    "display:flex","align-items:center","justify-content:center",
+    "padding:24px",
+    "animation:overlayIn 0.22s ease",
+    "font-family:DM Sans,sans-serif"
+  ].join(";")
+
+  overlay.innerHTML =
+    '<div id="trial-modal">' +
+      '<button id="trial-close-btn" onclick="document.getElementById(\'trial-modal-overlay\').remove()" aria-label="Close">x</button>' +
+      previewHtml +
+      '<div id="trial-modal-body">' +
+        '<div id="trial-kicker">Free trial complete</div>' +
+        '<h3 id="trial-title">Keep creating with 2 free credits</h3>' +
+        '<p id="trial-copy">Create a free account to continue from this exact result, unlock more generations, and keep your work saved. No card required.</p>' +
+        '<div id="trial-benefits">' +
+          '<div><strong>2</strong><span>Free credits</span></div>' +
+          '<div><strong>Saved</strong><span>Your result</span></div>' +
+          '<div><strong>More</strong><span>Style tries</span></div>' +
+        '</div>' +
+        '<a href="' + signupHref + '" id="trial-primary-cta">Create free account</a>' +
+        '<a href="' + loginHref + '" id="trial-secondary-cta">I already have an account</a>' +
+      '</div>' +
+    '</div>'
+
+  overlay.addEventListener("click", function(e) {
+    if (e.target === overlay) overlay.remove()
+  })
+
+  document.body.appendChild(overlay)
+}
+
 // Restore the guest result after signup/login lands back on the same tool.
 window.restoreGuestGeneration = function(toolName, showResultFn) {
   if (typeof showResultFn !== "function") return null
@@ -344,13 +393,28 @@ window.restoreGuestGeneration = function(toolName, showResultFn) {
 ;(function() {
   const style = document.createElement("style")
   style.textContent = [
-  "@keyframes badgeIn{...}",
-  "@keyframes badgeOut{...}",
-  "@keyframes overlayIn{...}",
-  "@keyframes sheetIn{...}",
-
-"#trial-preview-img{position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;object-fit:cover;border-radius:12px;border:2px solid rgba(212,160,23,0.5);z-index:10002;}"
-
-].join("")
+    "@keyframes badgeIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}",
+    "@keyframes badgeOut{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,10px)}}",
+    "@keyframes overlayIn{from{opacity:0}to{opacity:1}}",
+    "@keyframes sheetIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}",
+    "#trial-modal{width:100%;max-width:440px;overflow:hidden;background:#111118;border:1px solid rgba(255,255,255,.1);border-top:1px solid rgba(212,160,23,.38);border-radius:18px;box-shadow:0 28px 90px rgba(0,0,0,.55);position:relative;animation:sheetIn .28s cubic-bezier(.2,.8,.2,1)}",
+    "#trial-close-btn{position:absolute;top:12px;right:12px;width:30px;height:30px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(10,10,14,.62);color:#b7b2aa;cursor:pointer;z-index:2;font-size:15px;line-height:1}",
+    "#trial-preview-wrap{height:178px;position:relative;background:#1a1a24;overflow:hidden}",
+    "#trial-preview-wrap.empty{height:96px;background:linear-gradient(135deg,#171720,#222230)}",
+    "#trial-preview-img{width:100%;height:100%;object-fit:cover;display:block}",
+    "#trial-preview-wrap:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,17,24,0) 35%,rgba(17,17,24,.78) 100%)}",
+    "#trial-preview-label{position:absolute;left:16px;bottom:14px;z-index:1;padding:6px 10px;border-radius:999px;background:rgba(17,17,24,.76);border:1px solid rgba(212,160,23,.32);color:#f0ede8;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-family:Syne,sans-serif}",
+    "#trial-modal-body{padding:22px 22px 24px;text-align:left}",
+    "#trial-kicker{font-family:Syne,sans-serif;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#d4a017;margin-bottom:8px}",
+    "#trial-title{font-family:Syne,sans-serif;font-size:24px;line-height:1.12;font-weight:800;color:#f0ede8;margin:0 34px 10px 0;letter-spacing:0}",
+    "#trial-copy{font-size:14px;line-height:1.58;color:#aaa39a;margin:0 0 16px}",
+    "#trial-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 18px}",
+    "#trial-benefits div{background:#181821;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 8px;min-width:0}",
+    "#trial-benefits strong{display:block;color:#f0ede8;font-family:Syne,sans-serif;font-size:13px;font-weight:800;margin-bottom:2px}",
+    "#trial-benefits span{display:block;color:#746f69;font-size:11px;line-height:1.25}",
+    "#trial-primary-cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;background:#d4a017;color:#0d0d12;border-radius:8px;text-decoration:none;font-family:Syne,sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;box-sizing:border-box;margin-bottom:10px}",
+    "#trial-secondary-cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:42px;color:#aaa39a;background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:8px;text-decoration:none;font-size:13px;box-sizing:border-box}",
+    "@media(max-width:600px){#trial-modal-overlay{align-items:flex-end!important;padding:0!important}#trial-modal{max-width:100%;border-radius:22px 22px 0 0}#trial-preview-wrap{height:150px}#trial-modal-body{padding:20px 18px 24px}#trial-title{font-size:22px;margin-right:36px}#trial-benefits{gap:6px}#trial-benefits div{padding:9px 7px}}"
+  ].join("")
   document.head.appendChild(style)
 })()
