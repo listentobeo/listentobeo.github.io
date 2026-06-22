@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js"
+import "/assets/js/referrals.js"
 
 window.supabase = createClient(
   "https://wphqcccliiwdvwdjgrmc.supabase.co",

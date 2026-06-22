@@ -836,9 +836,17 @@ window.generateSketch = async function(){
     // Save in background — never blocks the UI
     if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "photo-to-sketch")
 
+    var referralBonus = 0
+    if(!isGuestUser && window.BeoReferrals && sessionToken) {
+      var referralResult = await window.BeoReferrals.completeFirstGeneration(sessionToken)
+      if(referralResult && referralResult.awarded === true) {
+        referralBonus = referralResult.referredCreditsAwarded || 0
+      }
+    }
+
     // Update badge locally — actual deduction handled atomically by edge function
     if(!isGuestUser && profile) {
-      const newCredits = profile.credits - 1
+      const newCredits = profile.credits - 1 + referralBonus
       document.getElementById("credits-display").innerHTML =
         `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
     }

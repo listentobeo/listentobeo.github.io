@@ -1,0 +1,4 @@
+project_id = "wphqcccliiwdvwdjgrmc"
+
+[functions.referral-credit]
+verify_jwt = false

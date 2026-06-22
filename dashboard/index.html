@@ -53,6 +53,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .pkg-price{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
 .pkg-btn{width:100%;padding:10px;background:var(--gold);color:#0d0d12;border:none;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s}
 .pkg-btn:hover{opacity:0.88}
+.share-earn-card{background:linear-gradient(135deg,rgba(212,160,23,0.1),rgba(19,19,26,0.98));border:1px solid var(--border-gold);border-radius:var(--radius);padding:22px;margin-bottom:40px}
+.share-earn-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.share-earn-kicker{font-family:var(--font-display);font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.share-earn-title{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:0;color:var(--text);margin-bottom:6px}
+.share-earn-copy{font-size:13px;color:#aaa39a;line-height:1.55;max-width:520px}
+.share-earn-stats{display:flex;gap:8px;flex-wrap:wrap}
+.share-mini-stat{min-width:92px;background:rgba(13,13,18,0.45);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px}
+.share-mini-stat strong{display:block;font-family:var(--font-display);font-size:20px;color:var(--gold);line-height:1}
+.share-mini-stat span{display:block;font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.08em}
+.referral-link-row{display:flex;gap:8px;margin-bottom:12px}
+.referral-link-row input{flex:1;min-width:0;background:#0d0d12;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-size:13px;padding:12px 13px}
+.share-action-row{display:flex;gap:8px;flex-wrap:wrap}
+.share-action-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:9px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:#181821;color:var(--text);font-size:12px;font-weight:700;font-family:var(--font-display);letter-spacing:0.04em;cursor:pointer;text-decoration:none}
+.share-action-btn.gold{background:var(--gold);border-color:var(--gold);color:#0d0d12}
+.share-action-btn:hover{border-color:rgba(212,160,23,0.45)}
+.referral-code-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(13,13,18,0.55);border:1px solid rgba(212,160,23,0.28);border-radius:999px;padding:7px 11px;color:var(--gold);font-size:11px;font-family:var(--font-display);font-weight:800;letter-spacing:0.08em;text-transform:uppercase}
+@media(max-width:600px){.share-earn-card{padding:18px}.referral-link-row{flex-direction:column}.share-action-btn{width:100%}}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border-gold);color:var(--gold);padding:12px 20px;border-radius:100px;font-size:13px;font-weight:500;opacity:0;transition:transform 0.3s,opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -196,6 +213,37 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
   </div>
 
+  <!-- SHARE & EARN -->
+  <div class="share-earn-card" id="share-earn-section">
+    <div class="share-earn-head">
+      <div>
+        <div class="share-earn-kicker">Share &amp; Earn</div>
+        <h2 class="share-earn-title">Give credits, get credits</h2>
+        <p class="share-earn-copy">Share your link with another creator. When they sign up and complete their first generation, you both receive bonus credits.</p>
+      </div>
+      <div class="share-earn-stats">
+        <div class="share-mini-stat">
+          <strong id="referral-earned">0</strong>
+          <span>Credits earned</span>
+        </div>
+        <div class="share-mini-stat">
+          <strong id="referral-count">0</strong>
+          <span>Successful</span>
+        </div>
+      </div>
+    </div>
+    <div class="referral-code-pill">Code <span id="referral-code">Loading</span></div>
+    <div style="height:12px"></div>
+    <div class="referral-link-row">
+      <input id="referral-link" readonly value="Loading your referral link...">
+      <button class="share-action-btn gold" onclick="copyReferralLink()">Copy Link</button>
+    </div>
+    <div class="share-action-row">
+      <button class="share-action-btn" onclick="shareReferralWhatsApp()">WhatsApp</button>
+      <button class="share-action-btn" onclick="shareReferralTwitter()">Twitter/X</button>
+    </div>
+  </div>
+
   <!-- BUY CREDITS -->
   <div class="section-title" id="buy">Buy Credits</div>
   <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Each generation costs 1 credit. Credits never expire.</p>
@@ -223,6 +271,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 <!-- Single self-contained dashboard script — no modules, no timing issues -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/assets/js/auth-redirect.js"></script>
+<script src="/assets/js/guest-trial.js"></script>
+<script src="/assets/js/referrals.js"></script>
 <script>
 ;(function(){
 
@@ -294,6 +344,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
     /* Render buy buttons */
     renderPackages(user.email);
+    if(window.BeoReferrals){
+      window.BeoReferrals.renderDashboard(db, user, showToast);
+    }
   }
 
   /* ── RENDER PACKAGES ── */

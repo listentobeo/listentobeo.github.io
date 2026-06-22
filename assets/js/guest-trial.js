@@ -73,6 +73,10 @@ function generateFingerprint() {
   return "fp_" + Math.abs(hash).toString(36)
 }
 
+window.getBeoGuestFingerprint = function() {
+  return generateFingerprint()
+}
+
 // ── GLOBAL STATE ────────────────────────────────────────────
 window._beoGuest = {
   visitorId:    null,
