@@ -153,6 +153,14 @@
       .eq("id", user.id)
       .single()
       .then(function(profileRes){
+        if(profileRes.error || !profileRes.data){
+          var missingCodeEl = document.getElementById("referral-code")
+          var missingLinkEl = document.getElementById("referral-link")
+          if(missingCodeEl) missingCodeEl.textContent = "Not ready"
+          if(missingLinkEl) missingLinkEl.value = "Run the referral SQL migration to enable this link."
+          return
+        }
+
         var code = profileRes.data && profileRes.data.referral_code
         var codeEl = document.getElementById("referral-code")
         var linkEl = document.getElementById("referral-link")
@@ -163,12 +171,25 @@
 
         window._beoReferralLink = link
         window._beoReferralText = "Try Beo AI Tools and get free credits for AI art and mural previews."
+      }).catch(function(){
+        var codeEl = document.getElementById("referral-code")
+        var linkEl = document.getElementById("referral-link")
+        if(codeEl) codeEl.textContent = "Not ready"
+        if(linkEl) linkEl.value = "Run the referral SQL migration to enable this link."
       })
 
     db.from("referrals")
       .select("status, credits_awarded")
       .eq("referrer_id", user.id)
       .then(function(res){
+        if(res.error){
+          var errCountEl = document.getElementById("referral-count")
+          var errEarnedEl = document.getElementById("referral-earned")
+          if(errCountEl) errCountEl.textContent = "0"
+          if(errEarnedEl) errEarnedEl.textContent = "0"
+          return
+        }
+
         var rows = res.data || []
         var count = 0
         var earned = 0
@@ -182,6 +203,11 @@
         var earnedEl = document.getElementById("referral-earned")
         if(countEl) countEl.textContent = count
         if(earnedEl) earnedEl.textContent = earned
+      }).catch(function(){
+        var countEl = document.getElementById("referral-count")
+        var earnedEl = document.getElementById("referral-earned")
+        if(countEl) countEl.textContent = "0"
+        if(earnedEl) earnedEl.textContent = "0"
       })
 
     window.copyReferralLink = function(){

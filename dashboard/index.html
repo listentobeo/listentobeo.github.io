@@ -324,6 +324,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     if(gEl) gEl.textContent = getGreeting();
     if(nEl) nEl.textContent = name;
 
+    renderPackages(user.email);
+
     /* Fetch profile */
     var res = await db.from("profiles")
       .select("credits, generations_used")
@@ -331,19 +333,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       .single();
 
     if(res.error || !res.data){
-      console.error("Profile error:", res.error);
-      var cEl = document.getElementById("credits");
-      if(cEl) cEl.textContent = "Error";
-      return;
+      console.warn("Profile full fetch error:", res.error);
+      res = await db.from("profiles")
+        .select("credits")
+        .eq("id", user.id)
+        .single();
     }
 
     var cEl = document.getElementById("credits");
     var gUsedEl = document.getElementById("generations-used");
-    if(cEl) cEl.textContent = res.data.credits;
-    if(gUsedEl) gUsedEl.textContent = res.data.generations_used || 0;
+    if(res.error || !res.data){
+      console.error("Profile error:", res.error);
+      if(cEl) cEl.textContent = "Error";
+      if(gUsedEl) gUsedEl.textContent = "0";
+    } else {
+      if(cEl) cEl.textContent = res.data.credits;
+      if(gUsedEl) gUsedEl.textContent = res.data.generations_used || 0;
+    }
 
-    /* Render buy buttons */
-    renderPackages(user.email);
     if(window.BeoReferrals){
       window.BeoReferrals.renderDashboard(db, user, showToast);
     }
