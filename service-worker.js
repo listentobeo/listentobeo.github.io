@@ -1,8 +1,8 @@
 // ============================================================
-// BEO AI TOOLS - SERVICE WORKER v4
+// BEO AI TOOLS - SERVICE WORKER v5
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v4"
+const CACHE_NAME  = "beo-ai-v5"
 const OFFLINE_URL = "/offline.html"
 
 const SHELL_ASSETS = [
@@ -25,7 +25,7 @@ const SHELL_ASSETS = [
 
 // ── INSTALL ────────────────────────────────────────────────
 self.addEventListener("install", event => {
-  console.log("[SW] Installing v4")
+  console.log("[SW] Installing v5")
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -42,7 +42,7 @@ self.addEventListener("install", event => {
 
 // ── ACTIVATE — delete ALL old caches ──────────────────────
 self.addEventListener("activate", event => {
-  console.log("[SW] Activating v4, clearing old caches")
+  console.log("[SW] Activating v5, clearing old caches")
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(

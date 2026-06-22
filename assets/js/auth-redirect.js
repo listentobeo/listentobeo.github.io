@@ -38,6 +38,11 @@
     return path
   }
 
+  function getQueryReturnPath(){
+    var params = new URLSearchParams(window.location.search)
+    return cleanReturnPath(params.get("returnTo"))
+  }
+
   function getOAuthRedirectUrl(){
     var returnTo = getReturnPath()
     return window.location.origin + "/dashboard/?returnTo=" + encodeURIComponent(returnTo)
@@ -46,6 +51,7 @@
   window.BeoAuthRedirect = {
     cleanReturnPath: cleanReturnPath,
     getReturnPath: getReturnPath,
+    getQueryReturnPath: getQueryReturnPath,
     getPostAuthRedirect: getReturnPath,
     getOAuthRedirectUrl: getOAuthRedirectUrl,
     getEmailRedirectUrl: getOAuthRedirectUrl

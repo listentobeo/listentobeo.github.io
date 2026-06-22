@@ -309,7 +309,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       return;
     }
 
-    var returnTo = window.BeoAuthRedirect && window.BeoAuthRedirect.getReturnPath();
+    var returnTo = window.BeoAuthRedirect && window.BeoAuthRedirect.getQueryReturnPath();
     if(returnTo && returnTo !== "/dashboard/" && returnTo.indexOf("/dashboard/#buy") !== 0){
       window.location.replace(returnTo);
       return;
