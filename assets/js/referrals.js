@@ -61,6 +61,16 @@
     return isValidCode(code) ? code.toUpperCase() : null
   }
 
+  function renderReferralNotice(){
+    var code = getStoredReferralCode()
+    if(!code) return
+
+    var notice = document.getElementById("referral-applied")
+    var codeEl = document.getElementById("homepage-referral-code")
+    if(codeEl) codeEl.textContent = code
+    if(notice) notice.style.display = "flex"
+  }
+
   function getVisitorId(){
     if(window._beoGuest && window._beoGuest.visitorId) return window._beoGuest.visitorId
     if(window.getBeoGuestFingerprint) return window.getBeoGuestFingerprint()
@@ -234,6 +244,7 @@
   window.BeoReferrals = {
     captureReferralCode: captureReferralCode,
     getStoredReferralCode: getStoredReferralCode,
+    renderReferralNotice: renderReferralNotice,
     getVisitorId: getVisitorId,
     registerCurrentUser: registerCurrentUser,
     completeFirstGeneration: completeFirstGeneration,
@@ -241,4 +252,9 @@
   }
 
   captureReferralCode()
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", renderReferralNotice)
+  } else {
+    renderReferralNotice()
+  }
 })()

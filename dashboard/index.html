@@ -305,7 +305,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   async function init(){
     var auth = await db.auth.getUser();
     if(!auth.data.user){
-      window.location.href = "/login/";
+      window.location.href = "/login/?returnTo=" + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
       return;
     }
 
