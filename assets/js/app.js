@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js"
 import "/assets/js/referrals.js"
 
-if(!window.supabase){
+if(!window.supabase || !window.supabase.auth || typeof window.supabase.auth.getUser !== "function"){
   window.supabase = createClient(
   "https://wphqcccliiwdvwdjgrmc.supabase.co",
     "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
