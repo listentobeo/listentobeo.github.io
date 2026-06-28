@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#0d0d12">
 <link rel="apple-touch-icon" href="/assets/icon-192.png">
 <!-- Paystack SDK must load before everything else -->
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://js.paystack.co/v2/inline.js"></script>
 <style>
 :root{
   --gold:#d4a017;--gold-glow:rgba(212,160,23,0.12);
@@ -102,6 +102,46 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   opacity:0.6;
   margin-left:6px;
 }  
+
+.workspace-tabs{display:inline-flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin:0 0 28px}
+.workspace-tab{min-height:38px;padding:8px 16px;border:0;border-radius:6px;background:transparent;color:var(--muted);font-family:var(--font-display);font-size:12px;font-weight:700;cursor:pointer}
+.workspace-tab.active{background:var(--gold);color:#0d0d12}
+.workspace-panel[hidden]{display:none}
+.recent-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 40px}
+.recent-item{display:block;position:relative;aspect-ratio:1;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+.recent-item img{width:100%;height:100%;object-fit:cover;display:block}
+.recent-empty{grid-column:1/-1;padding:20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--muted);font-size:13px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.text-link{color:var(--gold);font-size:12px;font-weight:700;text-decoration:none}
+.client-intro{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,.6fr);gap:24px;padding:26px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:30px}
+.client-intro h2{font-family:var(--font-display);font-size:clamp(22px,4vw,32px);margin-bottom:8px}
+.client-intro p{color:#aaa39a;font-size:14px;line-height:1.65;max-width:590px}
+.client-intro-actions{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:9px}
+.primary-command,.secondary-command{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 16px;border-radius:8px;font-family:var(--font-display);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer}
+.primary-command{background:var(--gold);border:1px solid var(--gold);color:#0d0d12}
+.secondary-command{background:var(--surface);border:1px solid var(--border);color:var(--text)}
+.plan-line{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:28px}
+.plan-line strong{font-family:var(--font-display);font-size:14px}
+.plan-line span{font-size:12px;color:var(--muted)}
+.project-list{margin-bottom:34px;border-top:1px solid var(--border)}
+.project-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text)}
+.project-row strong{display:block;font-family:var(--font-display);font-size:14px;margin-bottom:3px}
+.project-row small{color:var(--muted);font-size:12px}
+.status-pill{padding:5px 8px;border:1px solid var(--border);border-radius:999px;color:#aaa39a;font-size:10px;text-transform:uppercase}
+.workspace-plans{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:40px}
+.workspace-plan{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px}
+.workspace-plan.featured{border-color:var(--border-gold)}
+.workspace-plan h3{font-family:var(--font-display);font-size:17px;margin-bottom:5px}
+.workspace-price{font-family:var(--font-display);font-size:24px;color:var(--gold);margin-bottom:12px}
+.workspace-price span{font-size:11px;color:var(--muted)}
+.workspace-plan ul{list-style:none;margin:0 0 18px}
+.workspace-plan li{font-size:12px;color:#aaa39a;padding:5px 0}
+.workspace-plan-actions{display:flex;gap:8px;flex-wrap:wrap}
+.workspace-plan button{min-height:38px;padding:8px 12px;border-radius:7px;font-family:var(--font-display);font-size:11px;font-weight:700;cursor:pointer}
+.workspace-plan .monthly{background:var(--gold);border:1px solid var(--gold);color:#0d0d12}
+.workspace-plan .pass{background:transparent;border:1px solid var(--border);color:var(--text)}
+@media(max-width:700px){.recent-strip{grid-template-columns:repeat(2,1fr)}.client-intro{grid-template-columns:1fr}.workspace-plans{grid-template-columns:1fr}.project-row{grid-template-columns:1fr auto}.project-row .row-date{display:none}}
+
 </style>
     <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -110,6 +150,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "w8pdzfo88z");
     </script>
+<script src="/assets/js/analytics.js"></script>
 </head>
 <body>
 <header class="header">
@@ -154,6 +195,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     </div>
   </div>
 
+  <div class="workspace-tabs" role="tablist" aria-label="Dashboard view">
+    <button class="workspace-tab active" id="create-tab" role="tab" aria-selected="true" onclick="showDashboardView('create')">Create</button>
+    <button class="workspace-tab" id="client-tab" role="tab" aria-selected="false" onclick="showDashboardView('client')">Client Work</button>
+  </div>
+
+  <section class="workspace-panel" id="create-panel">
   <!-- STATS -->
   <div class="stats-row">
     <div class="stat-card gold">
@@ -213,13 +260,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
   </div>
 
+
+  <div class="section-head">
+    <div class="section-title" style="margin-bottom:0">Recent Creations</div>
+    <a class="text-link" href="/generations/">View all</a>
+  </div>
+  <div class="recent-strip" id="recent-creations">
+    <div class="recent-empty">Loading recent creations...</div>
+  </div>
+
   <!-- SHARE & EARN -->
   <div class="share-earn-card" id="share-earn-section">
     <div class="share-earn-head">
       <div>
         <div class="share-earn-kicker">Share &amp; Earn</div>
         <h2 class="share-earn-title">Give credits, get credits</h2>
-        <p class="share-earn-copy">Share your link with another creator. When they sign up and complete their first generation, you both receive bonus credits.</p>
+        <p class="share-earn-copy">Share your link with another creator. When they buy their first credit pack, you both receive one bonus credit.</p>
       </div>
       <div class="share-earn-stats">
         <div class="share-mini-stat">
@@ -251,6 +307,51 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     <!-- Rendered by JS below -->
   </div>
 
+  </section>
+
+  <section class="workspace-panel" id="client-panel" hidden>
+    <div class="client-intro">
+      <div>
+        <div class="share-earn-kicker">Client Work</div>
+        <h2>Turn a concept into an approved project</h2>
+        <p>Organize mural and commission ideas, build a clear proposal, and give clients one place to review, comment, and approve. Your first project is free.</p>
+      </div>
+      <div class="client-intro-actions">
+        <a class="primary-command" href="/projects.html?action=new">New client project</a>
+        <a class="secondary-command" href="/projects.html">View all projects</a>
+      </div>
+    </div>
+
+    <div class="plan-line">
+      <div><strong id="workspace-plan-name">Free workspace</strong><br><span id="workspace-plan-detail">One active project and a Beo-branded proposal</span></div>
+      <button class="secondary-command" id="manage-workspace-btn" onclick="manageWorkspace()" style="display:none">Manage plan</button>
+    </div>
+
+    <div class="section-head">
+      <div class="section-title" style="margin-bottom:0">Recent Projects</div>
+      <a class="text-link" href="/projects.html">View all</a>
+    </div>
+    <div class="project-list" id="dashboard-projects">
+      <div class="recent-empty">Loading projects...</div>
+    </div>
+
+    <div class="section-title">Workspace Plans</div>
+    <div class="workspace-plans">
+      <article class="workspace-plan featured">
+        <h3>Creator Workspace</h3>
+        <div class="workspace-price">NGN 6,000 <span>/ month</span></div>
+        <ul><li>20 generation credits each month</li><li>10 active client projects</li><li>Proposal links, feedback and approvals</li><li>Saved client history</li></ul>
+        <div class="workspace-plan-actions"><button class="monthly" onclick="startWorkspace('creator','recurring')">Subscribe monthly</button><button class="pass" onclick="startWorkspace('creator','pass')">30-day pass</button></div>
+      </article>
+      <article class="workspace-plan">
+        <h3>Studio Workspace</h3>
+        <div class="workspace-price">NGN 15,000 <span>/ month</span></div>
+        <ul><li>60 generation credits each month</li><li>Unlimited active projects</li><li>Your logo and proposal accent color</li><li>Priority support</li></ul>
+        <div class="workspace-plan-actions"><button class="monthly" onclick="startWorkspace('studio','recurring')">Subscribe monthly</button><button class="pass" onclick="startWorkspace('studio','pass')">30-day pass</button></div>
+      </article>
+    </div>
+  </section>
+
 </div>
 </main>
 
@@ -279,7 +380,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   /* ── CONFIG ── */
   var SUPABASE_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co";
   var SUPABASE_KEY = "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo";
-  var PAYSTACK_KEY = "pk_live_2d3dff6f69fb6093c1df177517a802e0de68a731";
 
  var PACKAGES = [
   { id:"starter", label:"Starter", credits:5,  images:5,  price:2000,  usd:1.5, display:"₦2,000" },
@@ -309,7 +409,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       return;
     }
 
-    var returnTo = window.BeoAuthRedirect && window.BeoAuthRedirect.getQueryReturnPath();
+    var paymentReturn = new URLSearchParams(window.location.search).get("payment_ref");
+    var returnTo = paymentReturn ? null : (window.BeoAuthRedirect && window.BeoAuthRedirect.consumeReturnPath());
     if(returnTo && returnTo !== "/dashboard/" && returnTo.indexOf("/dashboard/#buy") !== 0){
       window.location.replace(returnTo);
       return;
@@ -325,6 +426,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     if(nEl) nEl.textContent = name;
 
     renderPackages(user.email);
+    if(window.BeoReferrals){
+      window.BeoReferrals.renderDashboard(db, user, showToast);
+    }
 
     /* Fetch profile */
     var res = await db.from("profiles")
@@ -351,9 +455,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       if(gUsedEl) gUsedEl.textContent = res.data.generations_used || 0;
     }
 
-    if(window.BeoReferrals){
-      window.BeoReferrals.renderDashboard(db, user, showToast);
-    }
+    var paymentRef = new URLSearchParams(window.location.search).get("payment_ref");
+    if(paymentRef) await verifyPayment(paymentRef, false);
+    try {
+      var authEventKey = "beo_auth_complete_" + user.id;
+      if(!localStorage.getItem(authEventKey)){
+        if(window.BeoAnalytics) window.BeoAnalytics.track("auth_complete");
+        localStorage.setItem(authEventKey, "1");
+      }
+    } catch(e) {}
+    if(window.location.hash === "#buy" && window.BeoAnalytics) window.BeoAnalytics.track("paywall_view");
   }
 
   /* ── RENDER PACKAGES ── */
@@ -394,74 +505,81 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   grid.innerHTML = html;
 }
   /* ── PAYSTACK ── */
-  window.doPay = async function(packageId, email, amount, credits){
-    if(typeof PaystackPop === "undefined"){
-      alert("Payment is still loading — please try again in a moment.");
-      return;
-    }
+  var PAYMENT_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/paystack-payment";
 
-    // ── GEO-GATE ──
-    var channels = ["card"];
-    try {
-      var geo = await fetch("https://ipapi.co/json/");
-      var loc = await geo.json();
-      if(loc.country_code === "NG"){
-        channels = ["card","bank","ussd","qr","bank_transfer"];
-      } else {
-        channels = ["card"];
-      }
-    } catch(e){
-      console.warn("Geo-detection failed, defaulting to card only:", e);
-    }
-    // ── END GEO-GATE ──
-
-    var handler = PaystackPop.setup({
-      key:      PAYSTACK_KEY,
-      email:    email,
-      amount:   amount * 100,
-      currency: "NGN",
-      ref:      "beo_" + Date.now() + "_" + packageId,
-      channels: channels,
-      metadata: {
-        custom_fields:[
-          {display_name:"Package", variable_name:"package", value:packageId},
-          {display_name:"Credits", variable_name:"credits", value:credits}
-        ]
+  async function paymentRequest(action, payload){
+    var sessionResult = await db.auth.getSession();
+    var session = sessionResult.data && sessionResult.data.session;
+    if(!session) throw new Error("Your session expired. Please sign in again.");
+    payload = payload || {};
+    payload.action = action;
+    var response = await fetch(PAYMENT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + session.access_token
       },
-      callback: function(response){
-        addCredits(credits, response.reference);
-      },
-      onClose: function(){}
+      body: JSON.stringify(payload)
     });
-    handler.openIframe();
-  };
-
-  /* ── ADD CREDITS AFTER PAYMENT ── */
-  async function addCredits(creditsToAdd, reference){
-    var auth = await db.auth.getUser();
-    if(!auth.data.user) return;
-    var uid = auth.data.user.id;
-
-    var res = await db.from("profiles").select("credits").eq("id", uid).single();
-    if(!res.data){
-      alert("Payment received but balance fetch failed. Contact support. Ref: " + reference);
-      return;
-    }
-
-    var newTotal = res.data.credits + creditsToAdd;
-    var upd = await db.from("profiles").update({credits: newTotal}).eq("id", uid);
-
-    if(upd.error){
-      alert("Payment received but update failed. Contact support. Ref: " + reference);
-      return;
-    }
-
-    var cEl = document.getElementById("credits");
-    if(cEl) cEl.textContent = newTotal;
-    showToast("+" + creditsToAdd + " credits added! New balance: " + newTotal);
+    var data = await response.json().catch(function(){ return {}; });
+    if(!response.ok) throw new Error(data.error || "Payment request failed.");
+    return data;
   }
 
-  /* ── TOAST ── */
+  window.doPay = async function(packageId){
+    if(typeof PaystackPop === "undefined"){
+      alert("Payment is still loading. Please try again in a moment.");
+      return;
+    }
+    if(window.BeoAnalytics) window.BeoAnalytics.track("checkout_start", { package_id: packageId });
+    try {
+      var referralCode = window.BeoReferrals ? window.BeoReferrals.getStoredReferralCode() : "";
+      var visitorId = window.BeoReferrals ? window.BeoReferrals.getVisitorId() : "";
+      var order = await paymentRequest("initialize", {
+        packageId: packageId,
+        referralCode: referralCode || "",
+        visitorId: visitorId || ""
+      });
+      var popup = new PaystackPop();
+      popup.resumeTransaction(order.accessCode);
+      pollPayment(order.reference);
+    } catch(error) {
+      if(window.BeoAnalytics) window.BeoAnalytics.track("payment_failed");
+      alert(error.message || "Could not start payment.");
+    }
+  };
+
+  async function verifyPayment(reference, quiet){
+    try {
+      var result = await paymentRequest("verify", { reference: reference });
+      var creditsEl = document.getElementById("credits");
+      if(creditsEl && result.balance !== undefined) creditsEl.textContent = result.balance;
+      if(window.BeoAnalytics) window.BeoAnalytics.track("payment_success");
+      if(!quiet) showToast("Payment confirmed. Your credits are ready.");
+      var cleanUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, document.title, cleanUrl);
+      return true;
+    } catch(error) {
+      if(!quiet) alert(error.message || "Payment is still processing.");
+      return false;
+    }
+  }
+
+  function pollPayment(reference){
+    var attempts = 0;
+    var timer = setInterval(function(){
+      attempts++;
+      verifyPayment(reference, true).then(function(done){
+        if(done){
+          clearInterval(timer);
+          showToast("Payment confirmed. Your credits are ready.");
+        } else if(attempts >= 45) {
+          clearInterval(timer);
+        }
+      });
+    }, 4000);
+  }
+
   function showToast(msg){
     var t = document.getElementById("toast");
     if(!t) return;
@@ -480,5 +598,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 })();
 </script>
 
+<script src="/assets/js/workspace-dashboard.js"></script>
 </body>
 </html>

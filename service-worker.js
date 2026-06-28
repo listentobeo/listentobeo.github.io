@@ -1,22 +1,26 @@
 // ============================================================
-// BEO AI TOOLS - SERVICE WORKER v8
+// BEO AI TOOLS - SERVICE WORKER v10
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v8"
-const OFFLINE_URL = "/offline.html"
+const CACHE_NAME  = "beo-ai-v10"
+const OFFLINE_URL = "/offline/"
 
 const SHELL_ASSETS = [
   "/",
   "/index.html",
-  "/offline.html",
+  "/offline/",
   "/manifest.json",
   "/assets/style.css",
   "/assets/js/app.js",
   "/assets/js/auth.js",
   "/assets/js/auth-redirect.js",
+  "/assets/js/analytics.js",
+  "/assets/js/stop-loss.js",
+  "/assets/js/workspace-dashboard.js",
+  "/projects.html",
+  "/proposal.html",
   "/assets/js/referrals.js",
   "/assets/js/guest-trial.js",
-  "/assets/js/dashboard.js",
   "/assets/components/header.html",
   "/assets/components/footer.html",
   "/assets/icon-192.png",
@@ -25,7 +29,7 @@ const SHELL_ASSETS = [
 
 // ── INSTALL ────────────────────────────────────────────────
 self.addEventListener("install", event => {
-  console.log("[SW] Installing v8")
+  console.log("[SW] Installing v10")
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -42,7 +46,7 @@ self.addEventListener("install", event => {
 
 // ── ACTIVATE — delete ALL old caches ──────────────────────
 self.addEventListener("activate", event => {
-  console.log("[SW] Activating v8, clearing old caches")
+  console.log("[SW] Activating v10, clearing old caches")
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
@@ -102,19 +106,23 @@ self.addEventListener("fetch", event => {
     return
   }
 
-  // Static assets — cache first, network fallback
+  // Static JS and CSS use network-first so fixes reach existing installations.
   if(url.origin === location.origin){
-    event.respondWith(
-      caches.match(event.request)
-        .then(cached => {
-          if(cached) return cached
-          return fetch(event.request).then(response => {
-            const clone = response.clone()
-            caches.open(CACHE_NAME).then(c => c.put(event.request, clone))
-            return response
-          })
+    var isCodeAsset = /\.(js|css)$/.test(url.pathname)
+    if(isCodeAsset){
+      event.respondWith(fetch(event.request).then(function(response){
+        var clone = response.clone()
+        caches.open(CACHE_NAME).then(function(cache){ cache.put(event.request, clone) })
+        return response
+      }).catch(function(){ return caches.match(event.request) }))
+    } else {
+      event.respondWith(caches.match(event.request).then(function(cached){
+        return cached || fetch(event.request).then(function(response){
+          var clone = response.clone()
+          caches.open(CACHE_NAME).then(function(cache){ cache.put(event.request, clone) })
+          return response
         })
-        .catch(() => caches.match(OFFLINE_URL))
-    )
+      }).catch(function(){ return caches.match(OFFLINE_URL) }))
+    }
   }
 })

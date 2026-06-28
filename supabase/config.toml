@@ -1,4 +1,13 @@
 project_id = "wphqcccliiwdvwdjgrmc"
 
+[functions.generate-sketch]
+verify_jwt = false
+
+[functions.mural-visualizer]
+verify_jwt = false
+
 [functions.referral-credit]
+verify_jwt = false
+
+[functions.paystack-payment]
 verify_jwt = false

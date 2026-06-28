@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Client Projects | Beo AI Tools</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="icon" href="/assets/icon-192.png">
+<style>
+:root{--gold:#d4a017;--bg:#0d0d12;--surface:#13131a;--surface2:#1a1a24;--border:rgba(255,255,255,.08);--text:#f0ede8;--muted:#777;--display:'Syne',sans-serif;--body:'DM Sans',sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh}.project-shell{max-width:1040px;margin:auto;padding:42px 20px 90px}
+.page-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:30px}.back{color:var(--muted);font-size:12px;text-decoration:none;display:inline-block;margin-bottom:12px}.page-top h1{font:800 clamp(24px,5vw,36px) var(--display);margin:0 0 7px}.page-top p{margin:0;color:var(--muted);font-size:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 16px;border-radius:8px;font:700 12px var(--display);cursor:pointer;text-decoration:none}.btn-gold{background:var(--gold);border:1px solid var(--gold);color:#0d0d12}.btn-dark{background:var(--surface);border:1px solid var(--border);color:var(--text)}.btn-danger{background:transparent;border:1px solid rgba(220,80,80,.35);color:#db8585}
+.project-list{border-top:1px solid var(--border)}.project-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid var(--border);color:var(--text);text-decoration:none}.project-row h3{font:700 15px var(--display);margin:0 0 4px}.project-row p{color:var(--muted);font-size:12px;margin:0}.status{font-size:10px;text-transform:uppercase;color:#aaa39a;border:1px solid var(--border);border-radius:999px;padding:6px 9px}.empty{padding:70px 20px;text-align:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.empty h2{font:800 21px var(--display);margin:0 0 8px}.empty p{max-width:430px;margin:0 auto 22px;color:var(--muted);font-size:14px;line-height:1.6}
+.editor{display:none}.step-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:28px;overflow:auto}.step-tab{padding:12px 15px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font:700 12px var(--display);white-space:nowrap;cursor:pointer}.step-tab.active{color:var(--gold);border-color:var(--gold)}.step[hidden]{display:none}
+.form-band{padding:22px 0;border-bottom:1px solid var(--border)}.form-band:first-child{padding-top:0}.form-band h2{font:700 17px var(--display);margin:0 0 5px}.form-band>p{color:var(--muted);font-size:13px;margin:0 0 20px;line-height:1.5}.fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field.full{grid-column:1/-1}.field label{display:block;font:700 10px var(--display);color:#aaa39a;text-transform:uppercase;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:11px 12px;font:400 14px var(--body)}.field textarea{min-height:100px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{outline:1px solid rgba(212,160,23,.55);border-color:transparent}
+.visual-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.visual-option{position:relative;aspect-ratio:1;border:2px solid transparent;border-radius:8px;overflow:hidden;background:var(--surface);cursor:pointer}.visual-option.selected{border-color:var(--gold)}.visual-option img{width:100%;height:100%;object-fit:cover;display:block}.visual-check{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;background:rgba(8,8,12,.82);display:flex;align-items:center;justify-content:center;color:transparent;font-weight:800}.visual-option.selected .visual-check{background:var(--gold);color:#0d0d12}.visual-empty{grid-column:1/-1;padding:36px 0;color:var(--muted);font-size:13px}
+.editor-actions{display:flex;justify-content:space-between;gap:10px;align-items:center;padding-top:24px}.action-group{display:flex;gap:8px;flex-wrap:wrap}.save-state{font-size:12px;color:var(--muted)}
+.review-title{font:800 27px var(--display);margin:0 0 5px}.review-client{color:var(--gold);font-size:13px;margin-bottom:24px}.review-images{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}.review-images img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:7px}.review-section{display:grid;grid-template-columns:180px 1fr;gap:20px;padding:18px 0;border-top:1px solid var(--border)}.review-section strong{font:700 12px var(--display);text-transform:uppercase;color:#aaa39a}.review-section p{white-space:pre-wrap;margin:0;color:#d2cec7;font-size:14px;line-height:1.65}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.overlay.open{display:flex}.modal{width:min(500px,100%);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px}.modal h2{font:800 21px var(--display);margin:0 0 7px}.modal>p{color:var(--muted);font-size:13px;margin:0 0 20px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.notice{padding:12px;border:1px solid rgba(212,160,23,.3);background:rgba(212,160,23,.07);border-radius:7px;font-size:12px;color:#c9bd9c;margin-bottom:18px;display:none}
+@media(max-width:700px){.page-top{flex-direction:column}.page-top>.btn{width:100%}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.visual-grid{grid-template-columns:repeat(2,1fr)}.review-images{grid-template-columns:1fr}.review-section{grid-template-columns:1fr;gap:7px}.project-row{grid-template-columns:1fr auto}.project-date{display:none}.editor-actions{align-items:flex-start;flex-direction:column}.action-group{width:100%}.action-group .btn{flex:1}}
+</style>
+</head>
+<body>
+<main class="project-shell">
+  <section id="list-view">
+    <div class="page-top">
+      <div><a class="back" href="/dashboard/#client-work">Back to dashboard</a><h1>Client Projects</h1><p>Concepts, proposals, feedback and approvals in one place.</p></div>
+      <button class="btn btn-gold" onclick="openNewProject()">New project</button>
+    </div>
+    <div id="project-list" class="project-list"><div class="empty"><p>Loading projects...</p></div></div>
+  </section>
+
+  <section class="editor" id="editor-view">
+    <div class="page-top">
+      <div><a class="back" href="/projects.html">All projects</a><h1 id="editor-title">Project</h1><p id="editor-subtitle">Build a client-ready proposal without starting from a blank page.</p></div>
+      <span class="status" id="editor-status">Draft</span>
+    </div>
+    <div class="notice" id="editor-notice"></div>
+    <div class="step-tabs" role="tablist">
+      <button class="step-tab active" onclick="showStep(1)">1. Visuals</button>
+      <button class="step-tab" onclick="showStep(2)">2. Project details</button>
+      <button class="step-tab" onclick="showStep(3)">3. Review and share</button>
+    </div>
+
+    <section class="step" id="step-1">
+      <div class="form-band">
+        <h2>Select the concepts to show</h2>
+        <p>Choose from your saved Beo creations. You can return to a tool and create more at any time.</p>
+        <div class="visual-grid" id="visual-grid"><div class="visual-empty">Loading your creations...</div></div>
+      </div>
+      <div class="editor-actions"><span class="save-state" id="save-state-1"></span><div class="action-group"><a class="btn btn-dark" href="/tools/mural-visualizer/">Create mural visual</a><button class="btn btn-gold" onclick="saveAndNext(2)">Save and continue</button></div></div>
+    </section>
+
+    <section class="step" id="step-2" hidden>
+      <div class="form-band">
+        <h2>Project basics</h2><p>These details become the first page of the client proposal.</p>
+        <div class="fields">
+          <div class="field"><label for="project-title">Project title</label><input id="project-title" maxlength="120"></div>
+          <div class="field"><label for="client-name">Client name</label><input id="client-name" maxlength="120" placeholder="Optional"></div>
+          <div class="field"><label for="project-type">Project type</label><select id="project-type"><option value="mural">Mural</option><option value="commission">Art commission</option><option value="interior">Interior art</option><option value="other">Other</option></select></div>
+          <div class="field"><label for="location">Location</label><input id="location" maxlength="180" placeholder="Venue, city or wall location"></div>
+          <div class="field full"><label for="dimensions">Dimensions</label><input id="dimensions" maxlength="180" placeholder="Example: 8m wide x 4m high"></div>
+        </div>
+      </div>
+      <div class="form-band">
+        <h2>Proposal content</h2><p>We have provided a useful structure. Edit only what matters for this job.</p>
+        <div class="fields">
+          <div class="field full"><label for="summary">Project summary</label><textarea id="summary"></textarea></div>
+          <div class="field full"><label for="scope">Scope of work</label><textarea id="scope"></textarea></div>
+          <div class="field"><label for="timeline">Timeline</label><textarea id="timeline"></textarea></div>
+          <div class="field"><label for="price">Project price</label><textarea id="price" placeholder="Optional. Example: NGN 450,000"></textarea></div>
+          <div class="field"><label for="revisions">Revisions</label><textarea id="revisions"></textarea></div>
+          <div class="field"><label for="notes">Notes or terms</label><textarea id="notes"></textarea></div>
+          <div class="field"><label for="contact-name">Your name or studio</label><input id="contact-name" maxlength="120"></div>
+          <div class="field"><label for="contact-email">Contact email</label><input id="contact-email" maxlength="180" type="email"></div>
+          <div class="field studio-brand" style="display:none"><label for="accent-color">Proposal accent</label><input id="accent-color" type="color" value="#d4a017"></div>
+          <div class="field studio-brand" style="display:none"><label for="logo-url">Logo URL</label><input id="logo-url" type="url" placeholder="https://..."></div>
+        </div>
+      </div>
+      <div class="editor-actions"><span class="save-state" id="save-state-2"></span><div class="action-group"><button class="btn btn-dark" onclick="showStep(1)">Back</button><button class="btn btn-gold" onclick="saveAndNext(3)">Save and review</button></div></div>
+    </section>
+
+    <section class="step" id="step-3" hidden>
+      <div class="form-band" id="review-content"></div>
+      <div class="editor-actions"><span class="save-state" id="save-state-3"></span><div class="action-group"><button class="btn btn-dark" onclick="showStep(2)">Edit details</button><button class="btn btn-dark" onclick="previewProposal()">Preview</button><button class="btn btn-gold" onclick="shareProposal()">Copy client link</button></div></div>
+    </section>
+  </section>
+</main>
+
+<div class="overlay" id="new-project-overlay" onclick="closeNewProject(event)">
+  <div class="modal">
+    <h2>Start a client project</h2><p>Add the basics now. The guided proposal will help with the rest.</p>
+    <div class="notice" id="new-project-error"></div>
+    <div class="fields">
+      <div class="field full"><label for="new-title">Project title</label><input id="new-title" maxlength="120" placeholder="Lekki cafe feature wall"></div>
+      <div class="field full"><label for="new-client">Client name</label><input id="new-client" maxlength="120" placeholder="Optional"></div>
+      <div class="field full"><label for="new-type">Project type</label><select id="new-type"><option value="mural">Mural</option><option value="commission">Art commission</option><option value="interior">Interior art</option><option value="other">Other</option></select></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-dark" onclick="closeNewProject()">Cancel</button><button class="btn btn-gold" id="create-project-btn" onclick="createProject()">Create project</button></div>
+  </div>
+</div>
+
+<script src="/assets/js/analytics.js"></script>
+<script type="module" src="/assets/js/app.js"></script>
+<script>
+var db=null,user=null,currentProject=null,currentProposal=null,allGenerations=[],selectedIds={},workspaceTier="free"
+function waitForClient(){var tries=0,timer=setInterval(function(){tries++;if(window.supabase&&window.supabase.auth){clearInterval(timer);start()}else if(tries>80){clearInterval(timer);showNotice("editor-notice","Could not connect. Please refresh.")}},100)}
+async function start(){db=window.supabase;var auth=await db.auth.getUser();user=auth.data&&auth.data.user;if(!user){window.location.href="/login/?returnTo="+encodeURIComponent(window.location.pathname+window.location.search);return}
+ var params=new URLSearchParams(window.location.search),id=params.get("id");loadWorkspaceTier()
+ if(id){document.getElementById("list-view").style.display="none";document.getElementById("editor-view").style.display="block";await loadEditor(id)}
+ else{await loadProjects();if(params.get("action")==="new")openNewProject()}}
+async function loadWorkspaceTier(){try{var r=await db.rpc("active_workspace_tier",{p_user_id:user.id});workspaceTier=r.data||"free";if(workspaceTier==="studio"){var fields=document.querySelectorAll(".studio-brand");for(var i=0;i<fields.length;i++)fields[i].style.display="block"}}catch(e){}}
+async function loadProjects(){var box=document.getElementById("project-list"),r=await db.from("projects").select("id,title,client_name,project_type,status,updated_at").eq("user_id",user.id).order("updated_at",{ascending:false})
+ if(r.error){box.innerHTML='<div class="empty"><h2>Projects are not ready yet</h2><p>The creator workspace migration needs to be deployed before projects can load.</p></div>';return}
+ if(!r.data||!r.data.length){box.innerHTML='<div class="empty"><h2>Your client workspace is ready</h2><p>Create one free project, add your generated concepts, and share a professional proposal with a client.</p><button class="btn btn-gold" onclick="openNewProject()">Create first project</button></div>';return}
+ var html="";for(var i=0;i<r.data.length;i++){var p=r.data[i];html+='<a class="project-row" href="/projects.html?id='+encodeURIComponent(p.id)+'"><div><h3>'+esc(p.title)+'</h3><p>'+esc(p.client_name||labelType(p.project_type))+'</p></div><span class="status">'+esc(p.status.replace(/_/g," "))+'</span><p class="project-date">'+formatDate(p.updated_at)+'</p></a>'}box.innerHTML=html}
+window.openNewProject=function(){document.getElementById("new-project-overlay").classList.add("open");document.getElementById("new-title").focus()}
+window.closeNewProject=function(event){if(event&&event.target!==document.getElementById("new-project-overlay"))return;document.getElementById("new-project-overlay").classList.remove("open")}
+window.createProject=async function(){var title=value("new-title"),button=document.getElementById("create-project-btn");if(!title){showNotice("new-project-error","Give the project a short title.");return}
+ button.disabled=true;button.textContent="Creating..."
+ var result=await db.from("projects").insert({user_id:user.id,title:title,client_name:value("new-client")||null,project_type:value("new-type"),status:"draft"}).select("id").single()
+ if(result.error){button.disabled=false;button.textContent="Create project";showNotice("new-project-error",result.error.code==="42501"?"Your free project is already in use. Upgrade your workspace to create another active project.":"Could not create this project. "+result.error.message);return}
+ var defaults={project_id:result.data.id,status:"draft",summary:"A tailored art concept developed for this space and the client's goals.",scope:"Concept development\nFinal artwork production\nSurface preparation and installation\nProject handover",timeline:"Concept approval: 3-5 working days\nProduction schedule: confirmed after approval",revision_terms:"This proposal includes two rounds of concept revisions before final approval.",notes:"Final timing and site access will be confirmed with the client before work begins.",contact_name:(user.user_metadata&&user.user_metadata.full_name)||"",contact_email:user.email||""}
+ await db.from("proposals").insert(defaults);if(window.BeoAnalytics)window.BeoAnalytics.track("project_created",{project_type:value("new-type")});window.location.href="/projects.html?id="+encodeURIComponent(result.data.id)}
+async function loadEditor(id){var projectResult=await db.from("projects").select("*").eq("id",id).eq("user_id",user.id).single()
+ if(projectResult.error||!projectResult.data){showNotice("editor-notice","Project not found.");return}currentProject=projectResult.data
+ var results=await Promise.all([db.from("proposals").select("*").eq("project_id",id).maybeSingle(),db.from("generations").select("id,tool,result_url,thumbnail_url,created_at").eq("user_id",user.id).order("created_at",{ascending:false}),db.from("project_generations").select("generation_id").eq("project_id",id)])
+ currentProposal=results[0].data;if(!currentProposal){var created=await db.from("proposals").insert({project_id:id,status:"draft"}).select("*").single();currentProposal=created.data}
+ allGenerations=results[1].data||[];selectedIds={};var attached=results[2].data||[];for(var i=0;i<attached.length;i++)selectedIds[attached[i].generation_id]=true
+ fillEditor();renderVisuals();renderReview()}
+function fillEditor(){document.getElementById("editor-title").textContent=currentProject.title;document.getElementById("editor-status").textContent=currentProject.status.replace(/_/g," ")
+ setValue("project-title",currentProject.title);setValue("client-name",currentProject.client_name);setValue("project-type",currentProject.project_type);setValue("location",currentProject.location);setValue("dimensions",currentProject.dimensions_text)
+ var p=currentProposal||{};setValue("summary",p.summary);setValue("scope",p.scope);setValue("timeline",p.timeline);setValue("price",p.price_text);setValue("revisions",p.revision_terms);setValue("notes",p.notes);setValue("contact-name",p.contact_name);setValue("contact-email",p.contact_email);setValue("accent-color",p.accent_color||"#d4a017");setValue("logo-url",p.logo_url)}
+function renderVisuals(){var box=document.getElementById("visual-grid");if(!allGenerations.length){box.innerHTML='<div class="visual-empty">No saved generations yet. Create an image first, then return here to add it.</div>';return}
+ var html="";for(var i=0;i<allGenerations.length;i++){var g=allGenerations[i],url=g.thumbnail_url||g.result_url,selected=selectedIds[g.id]?" selected":"";html+='<button type="button" class="visual-option'+selected+'" data-id="'+esc(g.id)+'" onclick="toggleVisual(\''+esc(g.id)+'\',this)"><img src="'+esc(url)+'" alt="Generated concept" loading="lazy"><span class="visual-check">OK</span></button>'}box.innerHTML=html}
+window.toggleVisual=function(id,element){if(selectedIds[id])delete selectedIds[id];else selectedIds[id]=true;element.classList.toggle("selected",Boolean(selectedIds[id]))}
+window.showStep=function(step){var sections=document.querySelectorAll(".step"),tabs=document.querySelectorAll(".step-tab");for(var i=0;i<sections.length;i++)sections[i].hidden=i!==step-1;for(var j=0;j<tabs.length;j++)tabs[j].classList.toggle("active",j===step-1);if(step===3)renderReview();window.scrollTo(0,0)}
+window.saveAndNext=async function(step){var ok=await saveProject();if(ok)showStep(step)}
+async function saveProject(){setSave("Saving...")
+ var title=value("project-title")||currentProject.title,projectFields={title:title,client_name:value("client-name")||null,project_type:value("project-type"),location:value("location")||null,dimensions_text:value("dimensions")||null}
+ var proposalFields={summary:value("summary")||null,scope:value("scope")||null,timeline:value("timeline")||null,price_text:value("price")||null,revision_terms:value("revisions")||null,notes:value("notes")||null,contact_name:value("contact-name")||null,contact_email:value("contact-email")||null}
+ if(workspaceTier==="studio"){proposalFields.accent_color=value("accent-color")||"#d4a017";proposalFields.logo_url=value("logo-url")||null}
+ var updates=await Promise.all([db.from("projects").update(projectFields).eq("id",currentProject.id),db.from("proposals").update(proposalFields).eq("id",currentProposal.id)])
+ if(updates[0].error||updates[1].error){setSave("Could not save changes.");return false}
+ var removed=await db.from("project_generations").delete().eq("project_id",currentProject.id);if(removed.error){setSave("Could not update visuals.");return false}
+ var rows=[],order=0;for(var i=0;i<allGenerations.length;i++){var g=allGenerations[i];if(selectedIds[g.id])rows.push({project_id:currentProject.id,generation_id:g.id,image_url:g.result_url,tool:g.tool,sort_order:order++})}
+ if(rows.length){var inserted=await db.from("project_generations").insert(rows);if(inserted.error){setSave("Could not attach visuals.");return false}}
+ currentProject.title=title;currentProject.client_name=projectFields.client_name;currentProject.project_type=projectFields.project_type;currentProject.location=projectFields.location;currentProject.dimensions_text=projectFields.dimensions_text
+ for(var key in proposalFields)currentProposal[key]=proposalFields[key];document.getElementById("editor-title").textContent=title;setSave("Saved");renderReview();return true}
+function renderReview(){if(!currentProject)return;var images="";for(var i=0;i<allGenerations.length;i++){var g=allGenerations[i];if(selectedIds[g.id])images+='<img src="'+esc(g.result_url)+'" alt="Selected concept">'}
+ var p=currentProposal||{},html='<h2 class="review-title">'+esc(value("project-title")||currentProject.title)+'</h2><div class="review-client">'+esc(value("client-name")||"Client proposal")+'</div>'
+ if(images)html+='<div class="review-images">'+images+'</div>';html+=reviewBlock("Project summary",value("summary")||p.summary)+reviewBlock("Scope of work",value("scope")||p.scope)+reviewBlock("Timeline",value("timeline")||p.timeline)+reviewBlock("Investment",value("price")||p.price_text)+reviewBlock("Revisions",value("revisions")||p.revision_terms)
+ document.getElementById("review-content").innerHTML=html}
+function reviewBlock(label,text){if(!text)return"";return'<div class="review-section"><strong>'+esc(label)+'</strong><p>'+esc(text)+'</p></div>'}
+window.shareProposal=async function(){if(!await saveProject())return;var now=new Date().toISOString(),updates=await Promise.all([db.from("proposals").update({status:"shared",shared_at:now}).eq("id",currentProposal.id),db.from("projects").update({status:"shared"}).eq("id",currentProject.id)])
+ if(updates[0].error||updates[1].error){setSave("Could not share proposal.");return}currentProposal.status="shared";currentProject.status="shared";var link=window.location.origin+"/proposal.html?token="+encodeURIComponent(currentProposal.public_token);copyText(link);setSave("Client link copied");document.getElementById("editor-status").textContent="shared";if(window.BeoAnalytics)window.BeoAnalytics.track("proposal_shared")}
+window.previewProposal=async function(){if(currentProposal.status==="draft"){await shareProposal()}window.open("/proposal.html?token="+encodeURIComponent(currentProposal.public_token),"_blank")}
+function copyText(text){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text);return}var area=document.createElement("textarea");area.value=text;document.body.appendChild(area);area.select();document.execCommand("copy");document.body.removeChild(area)}
+function setSave(text){var fields=document.querySelectorAll(".save-state");for(var i=0;i<fields.length;i++)fields[i].textContent=text}
+function showNotice(id,text){var el=document.getElementById(id);if(!el)return;el.textContent=text;el.style.display="block"}
+function value(id){var el=document.getElementById(id);return el?String(el.value||"").trim():""}function setValue(id,v){var el=document.getElementById(id);if(el)el.value=v||""}
+function esc(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+function labelType(v){return v==="commission"?"Art commission":v==="interior"?"Interior art":v==="mural"?"Mural":"Client project"}
+function formatDate(v){var d=new Date(v);return isNaN(d.getTime())?"":d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",waitForClient);else waitForClient()
+</script>
+</body>
+</html>

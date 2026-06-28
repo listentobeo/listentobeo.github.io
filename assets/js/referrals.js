@@ -118,22 +118,12 @@
 
   function registerCurrentUser(sessionToken){
     if(!sessionToken) return Promise.resolve(null)
-    return postReferralAction("register", sessionToken, {})
-      .catch(function(){ return null })
-  }
-
-  function completeFirstGeneration(sessionToken){
     var code = getStoredReferralCode()
-    if(!code || !sessionToken) return Promise.resolve(null)
-
-    return postReferralAction("complete", sessionToken, {
-      referralCode: code
-    }).then(function(data){
-      if(data && data.awarded === true) storageRemove(REF_KEY)
-      return data
-    }).catch(function(){
-      return null
-    })
+    return postReferralAction("register", sessionToken, { referralCode: code || "" })
+      .then(function(data){
+        if(data && data.registered === true && code) storageRemove(REF_KEY)
+        return data
+      }).catch(function(){ return null })
   }
 
   function copyText(text){
@@ -180,7 +170,7 @@
         if(linkEl) linkEl.value = link || "Referral code will appear after the SQL migration is applied."
 
         window._beoReferralLink = link
-        window._beoReferralText = "Try Beo AI Tools and get free credits for AI art and mural previews."
+        window._beoReferralText = "Try Beo AI Tools. When you buy your first credit pack, we both receive a bonus credit."
       }).catch(function(){
         var codeEl = document.getElementById("referral-code")
         var linkEl = document.getElementById("referral-link")
@@ -204,7 +194,7 @@
         var count = 0
         var earned = 0
         for(var i = 0; i < rows.length; i++){
-          if(rows[i].status === "completed"){
+          if(rows[i].status === "completed" && (rows[i].credits_awarded || 0) > 0){
             count++
             earned += rows[i].credits_awarded || 0
           }
@@ -247,7 +237,6 @@
     renderReferralNotice: renderReferralNotice,
     getVisitorId: getVisitorId,
     registerCurrentUser: registerCurrentUser,
-    completeFirstGeneration: completeFirstGeneration,
     renderDashboard: renderDashboard
   }
 

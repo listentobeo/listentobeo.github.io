@@ -171,7 +171,7 @@ function showTrialUsedBadge() {
   badge.id = "trial-badge"
   badge.innerHTML =
     '<span class="trial-badge-icon">🎨</span>' +
-    '<span>Free trial used &nbsp;·&nbsp; <a onclick="showTrialExhaustedModal()" style="color:var(--gold);cursor:pointer;font-weight:600">Get 2 more credits free</a></span>'
+    '<span>Free trial used &nbsp;·&nbsp; <a onclick="showTrialExhaustedModal()" style="color:var(--gold);cursor:pointer;font-weight:600">Unlock a clean generation</a></span>'
   badge.style.cssText = [
     "position:fixed",
     "bottom:80px",
@@ -252,7 +252,7 @@ function showLegacyTrialExhaustedModal() {
       '<div style="text-align:center;margin-bottom:20px">' +
         '<div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,160,23,0.8);margin-bottom:8px;font-family:Syne,sans-serif">Free Trial Used</div>' +
         '<h3 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#f0ede8;margin-bottom:8px">Create more like this</h3>' +
-        '<p style="font-size:14px;color:#888;line-height:1.6">You’ve created your first image as a guest. Continue creating more styles with <strong style="color:#f0ede8"> 2 more credits</strong> to keep going. No card required.</p>' +
+        '<p style="font-size:14px;color:#888;line-height:1.6">You’ve created your first image as a guest. Create an account to unlock <strong style="color:#f0ede8">one clean generation</strong> and keep going. No card required.</p>' +
       '</div>' +
 
       // Perks
@@ -328,10 +328,10 @@ window.showTrialExhaustedModal = function() {
       previewHtml +
       '<div id="trial-modal-body">' +
         '<div id="trial-kicker">Free trial complete</div>' +
-        '<h3 id="trial-title">Keep creating with 2 free credits</h3>' +
+        '<h3 id="trial-title">Unlock your clean generation</h3>' +
         '<p id="trial-copy">Create a free account to continue from this exact result, unlock more generations, and keep your work saved. No card required.</p>' +
         '<div id="trial-benefits">' +
-          '<div><strong>2</strong><span>Free credits</span></div>' +
+          '<div><strong>1</strong><span>Clean generation</span></div>' +
           '<div><strong>Saved</strong><span>Your result</span></div>' +
           '<div><strong>More</strong><span>Style tries</span></div>' +
         '</div>' +

@@ -374,6 +374,12 @@ body{overflow-x:hidden}
   .studio-strip-actions .btn-secondary{width:100%;justify-content:center;box-sizing:border-box}
   .page{padding:0 16px}
 }
+
+.pro-workflow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:28px;padding:34px 0;margin-bottom:60px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);align-items:center}
+.pro-workflow h2{font-family:var(--font-display);font-size:clamp(24px,4vw,36px);font-weight:800;margin:0 0 9px}.pro-workflow p{color:var(--muted);font-size:14px;line-height:1.7;max-width:600px}
+.pro-workflow-points{display:grid;gap:9px;margin-top:18px}.pro-workflow-points span{font-size:12px;color:#aaa39a}.pro-workflow-points span:before{content:'\2713';color:var(--gold);font-weight:800;margin-right:8px}
+.pro-workflow-actions{display:flex;flex-direction:column;gap:9px}@media(max-width:700px){.pro-workflow{grid-template-columns:1fr}.pro-workflow-actions a{width:100%;justify-content:center}}
+
 </style>
     <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -382,6 +388,7 @@ body{overflow-x:hidden}
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "w8pdzfo88z");
     </script>
+<script src="/assets/js/analytics.js"></script>
 </head>
 <body>
 
@@ -442,7 +449,7 @@ body{overflow-x:hidden}
 
     <div class="referral-applied" id="referral-applied">
       <strong>Referral applied</strong>
-      <span>Use code <span class="referral-code-inline" id="homepage-referral-code"></span>. Your bonus credit unlocks after your first generation.</span>
+      <span>Use code <span class="referral-code-inline" id="homepage-referral-code"></span>. Your bonus credit unlocks after your first verified purchase.</span>
     </div>
 
     <div class="hero-actions">
@@ -644,11 +651,11 @@ body{overflow-x:hidden}
   <div class="section">
     <div class="credits-cta">
       <h2>Start Creating Free</h2>
-      <p>Create an account and get 2 free credits to try any tool. No card required.</p>
+      <p>Create an account and unlock one clean generation. No card required.</p>
       <div class="credits-perks">
         <div class="perk">
           <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          2 free credits on signup
+          1 clean generation on signup
         </div>
         <div class="perk">
           <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -666,11 +673,24 @@ body{overflow-x:hidden}
     </div>
 
     <!-- ── STUDIO STRIP ── -->
+    <div class="pro-workflow">
+      <div>
+        <div class="share-home-kicker">For Working Artists</div>
+        <h2>From first concept to client approval</h2>
+        <p>Build mural and commission proposals without staring at a blank document. Add your Beo visuals, explain the job clearly, and share one link for feedback and approval.</p>
+        <div class="pro-workflow-points"><span>Your first client project is free</span><span>Guided scope, timeline, price and revision sections</span><span>Clients review without creating an account</span></div>
+      </div>
+      <div class="pro-workflow-actions">
+        <a class="btn-primary" href="/dashboard/#client-work">Open Client Workspace <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        <a class="btn-secondary" href="/tools/mural-visualizer/">Try Mural Visualizer</a>
+      </div>
+    </div>
+
     <div class="share-home-card">
       <div>
         <div class="share-home-kicker">Share &amp; Earn</div>
         <h2>Invite friends into the Beo AI suite</h2>
-        <p>Beo AI Tools is growing into a general creative AI suite. Share your referral link with friends, and when they create their first result, you both earn bonus credits.</p>
+        <p>Beo AI Tools is growing into a general creative AI suite. Share your referral link with friends, and when they buy their first credit pack, you both earn a bonus credit.</p>
         <div class="share-home-note">Your personal referral link lives inside your dashboard.</div>
       </div>
       <div class="share-home-actions">

@@ -19,8 +19,10 @@ var _supaClient = supabase.createClient(
   "https://wphqcccliiwdvwdjgrmc.supabase.co",
   "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
 )
+window.supabase = _supaClient
 
 function signInWithGoogle(){
+  if(window.BeoAnalytics) window.BeoAnalytics.track("oauth_start")
   var btn = document.getElementById("google-btn")
   var err = document.getElementById("signup-error")
   if(btn){ btn.disabled = true; btn.textContent = "Redirecting to Google..." }
@@ -41,6 +43,7 @@ function signInWithGoogle(){
 }
 
 function signupUser(){
+  if(window.BeoAnalytics) window.BeoAnalytics.track("signup_submit")
   var email    = document.getElementById("signup-email").value.trim()
   var password = document.getElementById("signup-password").value
   var btn      = document.getElementById("signup-btn")
@@ -119,6 +122,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "w8pdzfo88z");
     </script>
+<script src="/assets/js/analytics.js"></script>
 </head>
 <body>
 <header class="header">
@@ -158,7 +162,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     <div id="signup-form">
       <h1>Create account</h1>
       <p class="sub">Join Beo AI Tools and start creating.</p>
-      <div class="free-badge">⚡ 2 free credits on signup</div>
+      <div class="free-badge">⚡ 1 clean generation on signup</div>
 
       <button class="google-btn" id="google-btn" onclick="signInWithGoogle()">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

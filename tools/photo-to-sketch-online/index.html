@@ -306,6 +306,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "w8pdzfo88z");
     </script>
+<script src="/assets/js/analytics.js"></script>
 </head>
 <body>
 
@@ -514,6 +515,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
               <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download
             </button>
+            <a class="share-btn" href="/projects.html?action=new">
+              Client Project
+            </a>
           </div>
 
           <div class="share-hint" id="share-hint">
@@ -549,7 +553,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/assets/js/auth-redirect.js"></script>
 <script src="/assets/js/guest-trial.js"></script>
+<script src="/assets/js/stop-loss.js"></script>
 <script src="/assets/js/save-generation.js"></script>
 <script type="module" src="/assets/js/app.js"></script>
 <script>
@@ -577,6 +583,7 @@ function loadFile(file){
   const reader = new FileReader()
   reader.onload = e => {
     uploadedImage = e.target.result
+    if(window.BeoAnalytics) window.BeoAnalytics.track("tool_upload")
     document.getElementById("upload-zone").style.display  = "none"
     document.getElementById("preview-wrap").style.display = "block"
     document.getElementById("preview-img").src            = uploadedImage
@@ -711,7 +718,11 @@ function showResult(src){
 // img onload — bitmap decoded, hide spinner, show share buttons
 window.imageLoaded = function(){
   document.getElementById("render-overlay").classList.add("hidden")
-  document.getElementById("share-row").style.display = "flex"
+  if(window._beoGuestPreviewLocked){
+    window.lockGuestResultActions()
+  } else {
+    document.getElementById("share-row").style.display = "flex"
+  }
   setupShareButtons()
   // Show book real artwork CTA
   var bookCta = document.getElementById("sketch-book-cta")
@@ -727,6 +738,8 @@ function showResultLoading(){
 
 /* ── GENERATE ───────────────────────────────────── */
 window.generateSketch = async function(){
+
+  if(window.BeoAnalytics) window.BeoAnalytics.track("generation_started")
 
   // Lock button immediately — prevents race clicking before any async work starts
   const btn = document.getElementById("generate-btn")
@@ -768,6 +781,7 @@ window.generateSketch = async function(){
     profile = prof
     if(!profile || profile.credits < 1){
       btn.disabled = false; btn.textContent = "Generate Artwork"
+      if(window.BeoAnalytics) window.BeoAnalytics.track("paywall_view")
       var bar = document.getElementById("no-credits-bar")
       bar.classList.add("visible")
       bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
@@ -827,26 +841,30 @@ window.generateSketch = async function(){
     }
 
     const result = await response.json()
-    if(!result.result) throw new Error(result.error || "No image returned from AI.")
-
-    generatedResult = result.result
-    showResult(generatedResult)
-    finishProgress()
-    if(isGuestUser) window.markTrialUsed(generatedResult)
-    // Save in background — never blocks the UI
-    if(!isGuestUser && window.saveGeneration) window.saveGeneration(generatedResult, "photo-to-sketch")
-
-    var referralBonus = 0
-    if(!isGuestUser && window.BeoReferrals && sessionToken) {
-      var referralResult = await window.BeoReferrals.completeFirstGeneration(sessionToken)
-      if(referralResult && referralResult.awarded === true) {
-        referralBonus = referralResult.referredCreditsAwarded || 0
-      }
+    if(!result.result){
+      if(window.BeoAnalytics) window.BeoAnalytics.track("generation_failed", { failure_code: result.code || "UNKNOWN" })
+      throw new Error(result.error || "No image returned from AI.")
     }
+
+    if(isGuestUser) {
+      generatedResult = window.createGuestPreview
+        ? await window.createGuestPreview(result.result)
+        : result.result
+      if(window.lockGuestResultActions) window.lockGuestResultActions()
+      showResult(generatedResult)
+      finishProgress()
+      window.markTrialUsed(generatedResult)
+    } else {
+      generatedResult = result.result
+      showResult(generatedResult)
+      finishProgress()
+      if(window.saveGeneration) window.saveGeneration(generatedResult, "photo-to-sketch")
+    }
+    if(window.BeoAnalytics) window.BeoAnalytics.track(isGuestUser ? "generation_success_guest" : "generation_success_member")
 
     // Update badge locally — actual deduction handled atomically by edge function
     if(!isGuestUser && profile) {
-      const newCredits = profile.credits - 1 + referralBonus
+      const newCredits = profile.credits - 1
       document.getElementById("credits-display").innerHTML =
         `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
     }
@@ -856,6 +874,7 @@ window.generateSketch = async function(){
     document.getElementById("result-shimmer").style.display  = "none"
     document.getElementById("result-img-wrap").style.display = "none"
     document.getElementById("empty-state").style.display     = "flex"
+    if(window.BeoAnalytics) window.BeoAnalytics.track("generation_failed")
     showError("Something went wrong: " + err.message)
   } finally {
     btn.disabled = false; btn.textContent = "Generate Artwork"

@@ -1,10 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js"
 import "/assets/js/referrals.js"
 
-window.supabase = createClient(
+if(!window.supabase){
+  window.supabase = createClient(
   "https://wphqcccliiwdvwdjgrmc.supabase.co",
-  "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
-)
+    "sb_publishable_-VkVZ5mPWa3EPEqHCmE3dw_UvOZBiXo"
+  )
+}
 
 window.toggleMenu = function(){
   const menu = document.getElementById("menu")
@@ -58,6 +60,14 @@ async function updateAuthUI(){
 
 // Expose shared auth promise — tool pages reuse this instead of calling getUser again
 window._authReady = window.supabase.auth.getUser()
+window._authReady.then(function(result){
+  var user = result.data && result.data.user
+  if(!user || !window.BeoReferrals) return null
+  return window.supabase.auth.getSession().then(function(sessionResult){
+    var session = sessionResult.data && sessionResult.data.session
+    return session ? window.BeoReferrals.registerCurrentUser(session.access_token) : null
+  })
+})
 
 // Header is now inlined — call auth update directly
 updateAuthUI()
