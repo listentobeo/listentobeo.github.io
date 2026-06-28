@@ -507,6 +507,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   /* ── PAYSTACK ── */
   var PAYMENT_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/paystack-payment";
 
+  window.getPaymentCountryCode = async function(){
+    try {
+      var response = await fetch("https://ipapi.co/json/");
+      if(!response.ok) return "";
+      var location = await response.json();
+      return typeof location.country_code === "string" ? location.country_code.toUpperCase() : "";
+    } catch(error) {
+      return "";
+    }
+  };
+
   async function paymentRequest(action, payload){
     var sessionResult = await db.auth.getSession();
     var session = sessionResult.data && sessionResult.data.session;
@@ -538,7 +549,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       var order = await paymentRequest("initialize", {
         packageId: packageId,
         referralCode: referralCode || "",
-        visitorId: visitorId || ""
+        visitorId: visitorId || "",
+        countryCode: await window.getPaymentCountryCode()
       });
       var popup = new PaystackPop();
       popup.resumeTransaction(order.accessCode);

@@ -38,7 +38,7 @@
  }
  window.startWorkspace=async function(tier,mode){if(typeof PaystackPop==="undefined"){alert("Payment is still loading. Please try again.");return}
   if(window.BeoAnalytics)window.BeoAnalytics.track("workspace_checkout_start",{tier:tier,billing_mode:mode})
-  try{var referral=window.BeoReferrals?window.BeoReferrals.getStoredReferralCode():"",visitor=window.BeoReferrals?window.BeoReferrals.getVisitorId():"",order=await request("initialize_workspace",{tier:tier,billingMode:mode,referralCode:referral||"",visitorId:visitor||""}),popup=new PaystackPop()
+  try{var country=window.getPaymentCountryCode?await window.getPaymentCountryCode():"",referral=window.BeoReferrals?window.BeoReferrals.getStoredReferralCode():"",visitor=window.BeoReferrals?window.BeoReferrals.getVisitorId():"",order=await request("initialize_workspace",{tier:tier,billingMode:mode,referralCode:referral||"",visitorId:visitor||"",countryCode:country}),popup=new PaystackPop()
    popup.resumeTransaction(order.accessCode)
   }catch(e){if(window.BeoAnalytics)window.BeoAnalytics.track("workspace_payment_failed",{tier:tier});alert(e.message||"Could not start workspace payment.")}
  }

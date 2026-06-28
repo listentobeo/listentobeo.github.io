@@ -191,6 +191,8 @@ Deno.serve(async (req) => {
         },
         "https://aitools.beoarts.com/dashboard/?payment_ref=" +
           encodeURIComponent(reference),
+        "",
+        paymentChannels(body.countryCode, false),
       );
     }
 
@@ -277,6 +279,10 @@ Deno.serve(async (req) => {
           encodeURIComponent(reference) +
           "&workspace=1",
         planCode,
+        paymentChannels(
+          body.countryCode,
+          billingMode === "recurring",
+        ),
       );
     }
 
@@ -561,6 +567,17 @@ async function handleWebhook(
   return jsonResponse({ received: true });
 }
 
+function paymentChannels(
+  countryCode: unknown,
+  recurring: boolean,
+) {
+  if (recurring) return ["card"];
+
+  return String(countryCode || "").toUpperCase() === "NG"
+    ? ["card", "bank", "ussd", "qr", "bank_transfer"]
+    : ["card"];
+}
+
 async function initializePaystack(
   serviceClient: any,
   paystackSecret: string,
@@ -570,6 +587,7 @@ async function initializePaystack(
   metadata: Record<string, unknown>,
   callbackUrl: string,
   planCode = "",
+  channels: string[] = ["card"],
 ) {
   const payload: Record<string, unknown> = {
     email,
@@ -578,6 +596,7 @@ async function initializePaystack(
     reference,
     callback_url: callbackUrl,
     metadata,
+    channels,
   };
 
   if (planCode) {
