@@ -26,6 +26,20 @@
   ],
   "shortcuts": [
     {
+      "name": "Beo Concept Lab",
+      "short_name": "Concept Lab",
+      "description": "Turn visual inspiration into original creative directions",
+      "url": "/tools/concept-lab/",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Art Concept Generator",
+      "short_name": "Art Generator",
+      "description": "Create mystical art, storyboards and surface designs",
+      "url": "/tools/art-concept-generator/",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
       "name": "Photo to Sketch",
       "short_name": "Sketch",
       "description": "Transform photos into pencil drawings and art",

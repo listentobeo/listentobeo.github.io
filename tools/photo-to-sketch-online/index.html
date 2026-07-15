@@ -309,6 +309,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
     </script>
 <script src="/assets/js/analytics.js"></script>
 <script src="/assets/js/result-experience.js"></script>
+<script src="/assets/js/concept-transfer.js"></script>
 </head>
 <body>
 
@@ -321,6 +322,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
     <nav class="desktop-nav">
       <a href="/">Home</a>
+      <a href="/tools/concept-lab/">Concept Lab</a>
+      <a href="/tools/art-concept-generator/">Art Generator</a>
       <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
       <a href="/tools/mural-visualizer/">Mural Visualizer</a>
       <a href="https://www.beoarts.com">Beo Art Studio</a>
@@ -339,6 +342,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
 <nav id="menu" class="menu">
   <a href="/">Home</a>
+  <a href="/tools/concept-lab/">Concept Lab</a>
+  <a href="/tools/art-concept-generator/">Art Generator</a>
   <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
   <a href="/tools/mural-visualizer/">Mural Visualizer</a>
   <a href="https://www.beoarts.com">Beo Art Studio</a>
@@ -566,6 +571,14 @@ const EDGE_FUNCTION_URL = "https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1
 
 let uploadedImage   = null
 let generatedResult = null
+
+document.addEventListener("DOMContentLoaded", function(){
+  if(!window.BeoConceptTransfer) return
+  var transfer = window.BeoConceptTransfer.take("photo")
+  if(!transfer) return
+  if(transfer.prompt) document.getElementById("prompt").value = transfer.prompt
+  if(window.BeoAnalytics) window.BeoAnalytics.track("concept_transfer_received", {destination:"photo"})
+})
 
 /* ── FILE INPUT ─────────────────────────────────── */
 const fileInput = document.getElementById("upload")

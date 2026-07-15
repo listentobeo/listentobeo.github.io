@@ -37,7 +37,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .stat-card:last-child .stat-value{color:var(--text)}
 .section-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:16px;letter-spacing:-0.01em}
 .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:16px;margin-bottom:40px}
-.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px;overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.tool-card:hover{transform:translateY(-3px);border-color:rgba(212,160,23,.32);box-shadow:0 16px 36px rgba(0,0,0,.22)}
+.dashboard-tool-image{width:calc(100% + 40px);height:145px;object-fit:cover;margin:-20px -20px 5px;border-bottom:1px solid var(--border);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.tool-card:hover .dashboard-tool-image{transform:scale(1.025)}
 .tool-card svg{width:28px;height:28px}
 .tool-card h3{font-family:var(--font-display);font-size:15px;font-weight:700}
 .tool-card p{color:var(--muted);font-size:13px;flex:1;line-height:1.5}
@@ -162,6 +165,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
     <nav class="desktop-nav">
       <a href="/">Home</a>
+      <a href="/tools/concept-lab/">Concept Lab</a>
+      <a href="/tools/art-concept-generator/">Art Generator</a>
       <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
       <a href="/tools/mural-visualizer/">Mural Visualizer</a>
       <a href="https://www.beoarts.com">Beo Art Studio</a>
@@ -221,6 +226,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   <div class="tool-grid">
 
     <div class="tool-card">
+      <img class="dashboard-tool-image" src="/assets/images/tool-concept-lab.jpg" alt="Creative director building an original bottle concept" loading="lazy" decoding="async">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg>
+      <h3>Beo Concept Lab</h3><p>Turn inspiration into original directions and a professional design brief.</p><a class="tool-btn" href="/tools/concept-lab/">Open Tool</a>
+    </div>
+
+    <div class="tool-card">
+      <img class="dashboard-tool-image" src="/assets/images/tool-art-generator.jpg" alt="Artist creating a mystical indigo and gold world" loading="lazy" decoding="async">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6"><path d="M12 3a7 7 0 0 0-7 7c0 5 7 11 7 11s7-6 7-11a7 7 0 0 0-7-7z"/><path d="M8 11c2-3 6-3 8 0"/></svg>
+      <h3>Art Concept Generator</h3><p>Create mystical artwork, storyboards, surface designs and visual worlds.</p><a class="tool-btn" href="/tools/art-concept-generator/">Open Tool</a>
+    </div>
+
+    <div class="tool-card">
+      <img class="dashboard-tool-image" src="/assets/images/tool-photo-sketch.png" alt="Portrait transformed into a pencil sketch" loading="lazy" decoding="async">
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -231,6 +249,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     </div>
 
     <div class="tool-card">
+      <img class="dashboard-tool-image" src="/assets/images/tool-mural-visualizer.jpg" alt="Room before and after adding a wall mural" loading="lazy" decoding="async">
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
         <polyline points="9 22 9 12 15 12 15 22"/>

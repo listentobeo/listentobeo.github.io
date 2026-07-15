@@ -118,6 +118,11 @@ body{overflow-x:hidden}
 .tool-card-visual{
   height:200px;position:relative;overflow:hidden;
   background:var(--surface2);display:flex;align-items:center;justify-content:center}
+.tool-card-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .45s cubic-bezier(.2,.8,.2,1),filter .3s ease}
+.tool-card:hover .tool-card-image{transform:scale(1.035);filter:saturate(1.04)}
+.tool-card-visual.has-photo .visual-accent{z-index:1;background:linear-gradient(180deg,transparent 42%,rgba(8,8,12,.58) 100%)}
+.tool-card-visual.has-photo .tool-badge{z-index:2;box-shadow:0 5px 18px rgba(0,0,0,.28)}
+.tool-card-visual.has-photo .bg-icon,.tool-card-visual.has-photo .tool-illustration{display:none}
 .tool-card-visual svg.bg-icon{
   width:120px;height:120px;opacity:0.04;
   stroke:var(--gold);fill:none;stroke-width:0.8;stroke-linecap:round;stroke-linejoin:round}
@@ -401,6 +406,8 @@ body{overflow-x:hidden}
 
     <nav class="desktop-nav">
       <a href="/">Home</a>
+      <a href="/tools/concept-lab/">Concept Lab</a>
+      <a href="/tools/art-concept-generator/">Art Generator</a>
       <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
       <a href="/tools/mural-visualizer/">Mural Visualizer</a>
       <a href="https://www.beoarts.com">Beo Art Studio</a>
@@ -419,6 +426,8 @@ body{overflow-x:hidden}
 
 <nav id="menu" class="menu">
   <a href="/">Home</a>
+  <a href="/tools/concept-lab/">Concept Lab</a>
+  <a href="/tools/art-concept-generator/">Art Generator</a>
   <a href="/tools/photo-to-sketch-online/">Photo to Sketch</a>
   <a href="/tools/mural-visualizer/">Mural Visualizer</a>
   <a href="https://www.beoarts.com">Beo Art Studio</a>
@@ -469,14 +478,41 @@ body{overflow-x:hidden}
     <div class="section-header">
       <div class="section-tag">AI Tools</div>
       <h2>What You Can Create</h2>
-      <p>Each tool takes your photo and transforms it into something new — in seconds.</p>
+      <p>Move from inspiration to original concepts, finished artwork and client-ready visuals in one connected creative suite.</p>
     </div>
 
     <div class="tools-grid">
 
+      <!-- Concept Lab -->
+      <a class="tool-card" href="/tools/concept-lab/">
+        <div class="tool-card-visual has-photo">
+          <img class="tool-card-image" src="/assets/images/tool-concept-lab.jpg" alt="Creative director arranging visual references into an original bottle concept" loading="lazy" decoding="async">
+          <div class="visual-accent"></div><div class="tool-badge new">New</div>
+        </div>
+        <div class="tool-card-body"><h3>Beo Concept Lab</h3><p>Drop inspiration and turn it into original creative directions, extracted palettes and a professional design brief—without copying the reference.</p><div class="tool-features">
+          <div class="tool-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Understands composition, motifs, mood and technique</div>
+          <div class="tool-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Creates three original directions</div>
+          <div class="tool-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Routes directly into the right Beo tool</div>
+        </div><span class="tool-card-cta">Analyse Inspiration <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+      </a>
+
+      <!-- Art Concept Generator -->
+      <a class="tool-card" href="/tools/art-concept-generator/">
+        <div class="tool-card-visual has-photo">
+          <img class="tool-card-image" src="/assets/images/tool-art-generator.jpg" alt="Artist painting a luminous mystical indigo and gold world" loading="lazy" decoding="async">
+          <div class="visual-accent"></div><div class="tool-badge new">New</div>
+        </div>
+        <div class="tool-card-body"><h3>Art Concept Generator</h3><p>Create mystical fine art, cinematic storyboards, painted-object designs and extraordinary visual worlds from a brief or reference.</p><div class="tool-features">
+          <div class="tool-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Mystical art and visual world building</div>
+          <div class="tool-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Storyboard and surface-design modes</div>
+          <div class="tool-feature"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Send finished concepts to Mural Visualizer</div>
+        </div><span class="tool-card-cta">Create Art <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+      </a>
+
       <!-- Photo to Sketch -->
       <a class="tool-card" href="/tools/photo-to-sketch-online/">
-        <div class="tool-card-visual">
+        <div class="tool-card-visual has-photo">
+          <img class="tool-card-image" src="/assets/images/tool-photo-sketch.png" alt="Portrait transformed into a detailed pencil sketch" loading="lazy" decoding="async">
           <svg class="bg-icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           <div class="visual-accent"></div>
           <!-- Sketch line illustration -->
@@ -519,7 +555,8 @@ body{overflow-x:hidden}
 
       <!-- Mural Visualizer -->
       <a class="tool-card" href="/tools/mural-visualizer/">
-        <div class="tool-card-visual">
+        <div class="tool-card-visual has-photo">
+          <img class="tool-card-image" src="/assets/images/tool-mural-visualizer.jpg" alt="Room shown before and after adding a vivid wall mural" loading="lazy" decoding="async">
           <svg class="bg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           <div class="visual-accent"></div>
           <!-- Wall illustration -->

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Beo Concept Lab — Turn Inspiration into Original Creative Direction</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Analyse visual inspiration, extract its design DNA, and turn it into original art directions and professional creative briefs.">
+<meta name="theme-color" content="#0d0d12">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/concept-tools.css">
+<script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","w8pdzfo88z")</script>
+<script src="/assets/js/analytics.js"></script>
+<script src="/assets/js/concept-transfer.js"></script>
+</head>
+<body>
+<header class="header"><div class="header-inner">
+  <a href="/" class="logo-link"><img src="/assets/beo-ai-mark.svg" class="logo" alt="Beo AI"></a>
+  <nav class="desktop-nav"><a href="/">Home</a><a href="/tools/concept-lab/">Concept Lab</a><a href="/tools/art-concept-generator/">Art Generator</a><a href="/tools/mural-visualizer/">Mural Visualizer</a><a href="/tools/photo-to-sketch-online/">Photo to Sketch</a></nav>
+  <div class="nav-right"><a id="dashboard-btn" href="/dashboard/" style="display:none;color:#d4a017;text-decoration:none">Dashboard</a><a id="auth-link" class="login-btn" href="/login/">Sign In</a><div class="menu-btn" onclick="toggleMenu()">&#9776;</div></div>
+</div></header>
+<nav id="menu" class="menu"><a href="/">Home</a><a href="/tools/concept-lab/">Concept Lab</a><a href="/tools/art-concept-generator/">Art Generator</a><a href="/tools/mural-visualizer/">Mural Visualizer</a><a href="/tools/photo-to-sketch-online/">Photo to Sketch</a></nav>
+
+<main class="concept-shell">
+  <section class="concept-hero">
+    <div class="concept-kicker">Creative intelligence</div>
+    <h1>Turn inspiration into something unmistakably yours.</h1>
+    <p>Drop a reference, tell Beo what caught your eye—or say nothing. Concept Lab extracts the design DNA, removes the urge to copy, and builds an original direction you can actually create from.</p>
+  </section>
+
+  <div class="concept-grid">
+    <section class="concept-card">
+      <div class="concept-card-head">01 / Add inspiration</div>
+      <div class="concept-card-body">
+        <div class="concept-drop" id="concept-drop">
+          <input type="file" id="concept-file" accept="image/jpeg,image/png,image/webp">
+          <div class="concept-drop-copy"><div class="concept-drop-icon">&#10022;</div><strong>Drop an inspiration image</strong><span>Pinterest find, client sketch, product photo or artwork</span></div>
+        </div>
+        <div class="concept-field"><label for="concept-note">What speaks to you? <span style="color:#555">Optional</span></label><textarea id="concept-note" maxlength="900" placeholder="I love the colours and movement, but I want a completely original bottle design... Leave blank and Beo will interpret it."></textarea></div>
+        <div class="concept-field"><label>What are you designing?</label><input type="hidden" id="concept-target" value="auto"><div class="target-chips">
+          <button class="target-chip active" data-target="auto">Let Beo decide<small>Detect the best creative route</small></button>
+          <button class="target-chip" data-target="mural">Wall mural<small>Interior or exterior artwork</small></button>
+          <button class="target-chip" data-target="object_design">Object or bottle<small>Hand-painted surface design</small></button>
+          <button class="target-chip" data-target="illustration">Art or storyboard<small>Worlds, scenes and visual narratives</small></button>
+          <button class="target-chip" data-target="photo_art">Photo transformation<small>Sketch, painting or stylised portrait</small></button>
+          <button class="target-chip" data-target="packaging">Packaging / graphic<small>Labels, motifs and visual systems</small></button>
+        </div></div>
+        <button class="concept-primary" id="analyse-btn">Analyse &amp; build concepts</button>
+        <div class="concept-error" id="concept-error"></div>
+        <p class="credits-line">Concept analysis is free. Credits are only used when you generate artwork.</p>
+      </div>
+    </section>
+
+    <section class="concept-card" id="analysis-card">
+      <div class="concept-card-head">02 / Creative direction</div>
+      <div class="concept-empty" id="analysis-empty"><div><div class="concept-empty-icon">&#10022;</div><h2>Your concept intelligence appears here</h2><p>Beo will identify what matters, separate inspiration from imitation, and give you three original ways forward.</p></div></div>
+      <div class="concept-loading" id="analysis-loading"><div><div class="concept-orbit"></div><strong>Reading the visual language...</strong><p id="analysis-status">Finding composition, motifs and creative opportunities</p></div></div>
+      <div class="analysis-results" id="analysis-results">
+        <div class="analysis-hero"><div class="analysis-route" id="analysis-route"></div><h2 id="analysis-title"></h2><p id="analysis-summary"></p></div>
+        <div class="analysis-section"><h3>Design DNA</h3><div class="palette" id="analysis-palette"></div><div class="dna-grid" id="analysis-dna" style="margin-top:12px"></div></div>
+        <div class="analysis-section"><h3>Original directions — choose one</h3><div class="direction-list" id="direction-list"></div></div>
+        <div class="analysis-section"><h3>Editable creative brief</h3><textarea class="brief-editor" id="brief-editor"></textarea></div>
+        <div class="analysis-section"><h3>Continue creating</h3><div class="route-actions">
+          <button class="route-btn recommended" id="recommended-route">Continue with recommended tool</button>
+          <button class="route-btn" onclick="routeConcept('art')">Create concept artwork</button>
+          <button class="route-btn" onclick="routeConcept('mural')">Visualize as mural</button>
+          <button class="route-btn" onclick="routeConcept('photo')">Transform a photo</button>
+          <a class="route-btn" href="/projects.html?action=new" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Add to client project</a>
+        </div></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="footer"><div class="container footer-inner"><p class="copyright">&copy; 2026 Beo Art Studio</p><div class="footer-links"><a href="/privacy-policy/">Privacy</a><a href="/terms-of-service/">Terms</a></div></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/assets/js/auth-redirect.js"></script>
+<script type="module" src="/assets/js/app.js"></script>
+<script>
+;(function(){
+  var API="https://wphqcccliiwdvwdjgrmc.supabase.co/functions/v1/analyze-concept"
+  var sourceImage=null,transferImage=null,analysis=null,selectedDirection=0,statusTimer=null
+  var file=document.getElementById("concept-file"),drop=document.getElementById("concept-drop")
+
+  function esc(value){return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+  function error(message){var box=document.getElementById("concept-error");box.textContent=message;box.classList.add("visible")}
+  function clearError(){document.getElementById("concept-error").classList.remove("visible")}
+  function readImage(selected){if(!selected||!/^image\/(jpeg|png|webp)$/i.test(selected.type)){error("Choose a JPG, PNG or WEBP image.");return}if(selected.size>10*1024*1024){error("Please use an image smaller than 10 MB.");return}
+    var reader=new FileReader();reader.onload=function(event){sourceImage=event.target.result;drop.classList.add("has-image");var old=drop.querySelector("img");if(old)old.remove();var image=document.createElement("img");image.src=sourceImage;image.alt="Inspiration reference";drop.insertBefore(image,drop.firstChild);drop.querySelector("strong").textContent="Reference ready";drop.querySelector("span").textContent="Click or drop another image to replace it";clearError();if(window.BeoAnalytics)window.BeoAnalytics.track("concept_reference_added")};reader.readAsDataURL(selected)}
+  file.addEventListener("change",function(){readImage(file.files[0])});drop.addEventListener("dragover",function(e){e.preventDefault();drop.classList.add("drag")});drop.addEventListener("dragleave",function(){drop.classList.remove("drag")});drop.addEventListener("drop",function(e){e.preventDefault();drop.classList.remove("drag");if(e.dataTransfer.files[0])readImage(e.dataTransfer.files[0])})
+  document.querySelectorAll(".target-chip").forEach(function(button){button.addEventListener("click",function(){document.querySelectorAll(".target-chip").forEach(function(item){item.classList.remove("active")});button.classList.add("active");document.getElementById("concept-target").value=button.dataset.target})})
+
+  function compress(dataUrl){return new Promise(function(resolve){var image=new Image();image.onload=function(){var scale=Math.min(1,1400/image.width),canvas=document.createElement("canvas");canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.86))};image.src=dataUrl})}
+  function loading(on){document.getElementById("analysis-empty").style.display="none";document.getElementById("analysis-results").classList.remove("visible");document.getElementById("analysis-loading").classList.toggle("visible",on);var btn=document.getElementById("analyse-btn");btn.disabled=on;btn.textContent=on?"Building your concept...":"Analyse & build concepts";clearInterval(statusTimer);if(on){var messages=["Reading colour and composition","Separating inspiration from imitation","Finding new creative possibilities","Writing three original directions"];var i=0;statusTimer=setInterval(function(){document.getElementById("analysis-status").textContent=messages[i++%messages.length]},1600)}}
+
+  document.getElementById("analyse-btn").addEventListener("click",async function(){if(!sourceImage){error("Drop an inspiration image first.");return}clearError();loading(true);if(window.BeoAnalytics)window.BeoAnalytics.track("concept_analysis_started",{target:document.getElementById("concept-target").value});try{var image=await compress(sourceImage);transferImage=image;var response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:image,note:document.getElementById("concept-note").value,target:document.getElementById("concept-target").value})});var body=await response.json();if(!response.ok||!body.analysis)throw new Error(body.error||"Concept analysis failed.");analysis=body.analysis;selectedDirection=0;render();if(window.BeoAnalytics)window.BeoAnalytics.track("concept_analysis_success",{route:analysis.recommendedRoute})}catch(e){error(e.message||"Could not analyse this reference.");document.getElementById("analysis-empty").style.display="flex"}finally{loading(false)}})
+
+  function render(){document.getElementById("analysis-results").classList.add("visible");document.getElementById("analysis-route").textContent="Recommended: "+routeName(analysis.recommendedRoute);document.getElementById("analysis-title").textContent=analysis.title;document.getElementById("analysis-summary").textContent=analysis.summary
+    var palette=document.getElementById("analysis-palette");palette.innerHTML="";(analysis.palette||[]).forEach(function(color){var hex=/^#[0-9a-f]{6}$/i.test(color.hex||"")?color.hex:"#777777";palette.innerHTML+='<div class="swatch"><div class="swatch-color" style="background:'+hex+'"></div><span>'+esc(color.name||hex)+'</span></div>'})
+    var dna=document.getElementById("analysis-dna");dna.innerHTML='<div class="dna-item"><span>Composition</span><strong>'+esc(analysis.composition)+'</strong></div><div class="dna-item"><span>Mood</span><strong>'+esc(analysis.mood)+'</strong></div><div class="dna-item"><span>Visual style</span><strong>'+esc(analysis.visualStyle)+'</strong></div><div class="dna-item"><span>Key motifs</span><strong>'+esc((analysis.motifs||[]).join(", "))+'</strong></div>'
+    var list=document.getElementById("direction-list");list.innerHTML="";(analysis.directions||[]).forEach(function(direction,index){var item=document.createElement("button");item.type="button";item.className="direction"+(index===selectedDirection?" active":"");item.innerHTML='<div class="direction-top"><h4>'+esc(direction.title)+'</h4><em>'+esc(direction.bestFor||"")+'</em></div><p>'+esc(direction.concept)+'</p>';item.addEventListener("click",function(){selectedDirection=index;renderDirections();updateBrief()});list.appendChild(item)});updateBrief();var recommended=analysis.recommendedRoute||"art";document.getElementById("recommended-route").textContent="Continue to "+routeName(recommended);document.getElementById("recommended-route").onclick=function(){routeConcept(recommended)}}
+  function renderDirections(){document.querySelectorAll(".direction").forEach(function(item,index){item.classList.toggle("active",index===selectedDirection)})}
+  function updateBrief(){var direction=analysis.directions[selectedDirection]||{},brief=analysis.productionBrief||{};document.getElementById("brief-editor").value=[direction.title,direction.concept,"","Creative objective: "+(brief.objective||""),"Target surface: "+(brief.surface||""),"Palette: "+(analysis.palette||[]).map(function(c){return c.name+" "+c.hex}).join(", "),"Motifs: "+(analysis.motifs||[]).join(", "),"Materials / technique: "+(brief.materials||[]).join(", "),"Keep: "+(analysis.retain||[]).join(", "),"Transform: "+(analysis.transform||[]).join(", "),"Avoid copying: "+(analysis.avoid||[]).join(", "),"","Generation prompt: "+(direction.prompt||"")].join("\n")}
+  function routeName(route){return route==="mural"?"Mural Visualizer":route==="photo"?"Photo to Sketch":"Art Concept Generator"}
+  window.routeConcept=function(destination){if(!analysis)return;var direction=analysis.directions[selectedDirection]||{},payload={title:direction.title||analysis.title,prompt:direction.prompt||document.getElementById("brief-editor").value,brief:document.getElementById("brief-editor").value,target:analysis.detectedTarget||document.getElementById("concept-target").value,source:"concept-lab"};if(destination==="art")payload.image=transferImage||sourceImage;if(window.BeoAnalytics)window.BeoAnalytics.track("concept_routed",{destination:destination});window.BeoConceptTransfer.send(destination,payload)}
+})()
+</script>
+</body>
+</html>

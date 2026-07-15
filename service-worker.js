@@ -1,8 +1,8 @@
 // ============================================================
-// BEO AI TOOLS - SERVICE WORKER v10
+// BEO AI TOOLS - SERVICE WORKER v11
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v10"
+const CACHE_NAME  = "beo-ai-v11"
 const OFFLINE_URL = "/offline/"
 
 const SHELL_ASSETS = [
@@ -11,6 +11,15 @@ const SHELL_ASSETS = [
   "/offline/",
   "/manifest.json",
   "/assets/style.css",
+  "/assets/concept-tools.css",
+  "/assets/js/concept-transfer.js",
+  "/assets/beo-ai-mark.svg",
+  "/assets/images/tool-concept-lab.jpg",
+  "/assets/images/tool-art-generator.jpg",
+  "/assets/images/tool-photo-sketch.png",
+  "/assets/images/tool-mural-visualizer.jpg",
+  "/tools/concept-lab/",
+  "/tools/art-concept-generator/",
   "/assets/js/app.js",
   "/assets/js/auth.js",
   "/assets/js/auth-redirect.js",
@@ -29,7 +38,7 @@ const SHELL_ASSETS = [
 
 // ── INSTALL ────────────────────────────────────────────────
 self.addEventListener("install", event => {
-  console.log("[SW] Installing v10")
+  console.log("[SW] Installing v11")
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -46,7 +55,7 @@ self.addEventListener("install", event => {
 
 // ── ACTIVATE — delete ALL old caches ──────────────────────
 self.addEventListener("activate", event => {
-  console.log("[SW] Activating v10, clearing old caches")
+  console.log("[SW] Activating v11, clearing old caches")
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(

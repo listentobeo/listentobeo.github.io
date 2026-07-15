@@ -6,6 +6,12 @@ verify_jwt = false
 [functions.mural-visualizer]
 verify_jwt = false
 
+[functions.analyze-concept]
+verify_jwt = false
+
+[functions.generate-concept-art]
+verify_jwt = false
+
 [functions.referral-credit]
 verify_jwt = false
 
