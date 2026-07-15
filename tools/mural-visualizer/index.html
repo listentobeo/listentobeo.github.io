@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/result-experience.css">
 <style>
 :root{
   --gold:#d4a017;--gold-dim:#a07a10;--gold-glow:rgba(212,160,23,0.13);
@@ -277,6 +278,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
     })(window, document, "clarity", "script", "w8pdzfo88z");
     </script>
 <script src="/assets/js/analytics.js"></script>
+<script src="/assets/js/result-experience.js"></script>
 </head>
 <body>
 <header class="header">
@@ -587,7 +589,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
             </button>
             <button class="share-btn dl" onclick="downloadImage()">
               <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download
+              Download Result
             </button>
             <a class="share-btn" href="/projects.html?action=new">
               Client Project
@@ -979,6 +981,7 @@ function showError(msg){ const b=document.getElementById("error-bar"); b.innerHT
 function hideError(){ document.getElementById("error-bar").classList.remove("visible") }
 
 function showResultLoading(){
+  if(window.BeoResultExperience) window.BeoResultExperience.reset()
   document.getElementById("empty-state").style.display     = "none"
   document.getElementById("result-shimmer").style.display  = "block"
   document.getElementById("result-img-wrap").style.display = "none"
@@ -998,6 +1001,11 @@ function showResult(src){
 
 window.imageLoaded = function(){
   document.getElementById("render-overlay").classList.add("hidden")
+  if(window.BeoResultExperience) window.BeoResultExperience.mount({
+    before: currentMode === "upload" ? uploadedImage : null,
+    after: generatedResult,
+    tool: "mural-visualizer"
+  })
   if(window._beoGuestPreviewLocked){
     window.lockGuestResultActions()
   } else {

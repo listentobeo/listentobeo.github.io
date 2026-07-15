@@ -5,17 +5,15 @@
   try{saved=localStorage.getItem(RESULT_KEY)}catch(e){}window._beoGuest.resultImageUrl=saved;window._beoGuest.trialUsed=Boolean(saved);window._beoGuest.trialChecked=true}
  window.createGuestPreview=function(src){return new Promise(function(resolve){var art=new Image()
   art.onload=function(){try{var scale=Math.min(1,768/art.width),canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(art.width*scale));canvas.height=Math.max(1,Math.round(art.height*scale))
-   var ctx=canvas.getContext("2d");ctx.drawImage(art,0,0,canvas.width,canvas.height);var icon=new Image()
-   icon.onload=function(){try{var size=Math.max(30,Math.min(48,Math.round(canvas.width*0.065))),pad=Math.max(12,Math.round(size*0.38)),font=Math.max(11,Math.round(size*0.34))
-    ctx.font="600 "+font+"px Arial";var label="Beo AI Tools",labelWidth=ctx.measureText(label).width,w=pad+size+Math.round(pad*0.65)+labelWidth+pad,h=size+pad,x=pad,y=canvas.height-h-pad
-    rounded(ctx,x,y,w,h,Math.max(6,Math.round(size*0.2)));ctx.fillStyle="rgba(8,8,12,0.78)";ctx.fill();ctx.drawImage(icon,x+pad/2,y+pad/2,size,size)
-    ctx.fillStyle="#f0ede8";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(label,x+pad/2+size+pad*0.65,y+h/2);resolve(canvas.toDataURL("image/jpeg",0.86))
-   }catch(e){fallback(ctx,canvas,resolve)}};icon.onerror=function(){fallback(ctx,canvas,resolve)};icon.src="/assets/icon-192.png"}catch(e){resolve(src)}}
+   var ctx=canvas.getContext("2d");ctx.drawImage(art,0,0,canvas.width,canvas.height);var mark=new Image()
+   mark.onload=function(){try{var markWidth=Math.max(96,Math.min(142,Math.round(canvas.width*0.18))),markHeight=Math.round(markWidth*(44/168)),pad=Math.max(8,Math.round(markHeight*0.3)),w=markWidth+pad*2,h=markHeight+pad*2,x=canvas.width-w-pad,y=canvas.height-h-pad
+    rounded(ctx,x,y,w,h,Math.max(8,Math.round(markHeight*0.26)));ctx.fillStyle="rgba(8,8,12,0.5)";ctx.fill();ctx.globalAlpha=0.78;ctx.drawImage(mark,x+pad,y+pad,markWidth,markHeight);ctx.globalAlpha=1;resolve(canvas.toDataURL("image/jpeg",0.9))
+   }catch(e){fallback(ctx,canvas,resolve)}};mark.onerror=function(){fallback(ctx,canvas,resolve)};mark.src="/assets/beo-ai-mark.svg"}catch(e){resolve(src)}}
   art.onerror=function(){resolve(src)};art.src=src})}
- function fallback(ctx,canvas,resolve){var bar=Math.max(38,Math.round(canvas.height*0.075));ctx.fillStyle="rgba(8,8,12,0.74)";ctx.fillRect(0,canvas.height-bar,canvas.width,bar)
-  ctx.fillStyle="#f0ede8";ctx.font="600 "+Math.max(13,Math.round(canvas.width*0.022))+"px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Beo AI Tools",canvas.width/2,canvas.height-bar/2);resolve(canvas.toDataURL("image/jpeg",0.86))}
+ function fallback(ctx,canvas,resolve){var font=Math.max(11,Math.round(canvas.width*0.018)),pad=Math.max(10,Math.round(font*.8)),label="Made with Beo AI";ctx.font="600 "+font+"px Arial";var width=ctx.measureText(label).width+pad*2,height=font+pad*1.5,x=canvas.width-width-pad,y=canvas.height-height-pad
+  rounded(ctx,x,y,width,height,7);ctx.fillStyle="rgba(8,8,12,0.5)";ctx.fill();ctx.fillStyle="rgba(240,237,232,.82)";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(label,x+width/2,y+height/2);resolve(canvas.toDataURL("image/jpeg",0.9))}
  function rounded(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
- window.lockGuestResultActions=function(){window._beoGuestPreviewLocked=true;var share=document.getElementById("share-row"),hint=document.getElementById("share-hint");if(share)share.style.display="none";if(hint)hint.style.display="none"}
+ window.lockGuestResultActions=function(){window._beoGuestPreviewLocked=true;var share=document.getElementById("share-row");if(share)share.style.display="flex"}
  var original=window.showTrialExhaustedModal;if(typeof original==="function"){window.showTrialExhaustedModal=function(){original();var title=document.getElementById("trial-title"),copy=document.getElementById("trial-copy"),benefits=document.getElementById("trial-benefits")
   if(title)title.textContent="Unlock your clean generation";if(copy)copy.textContent="Create a free account to continue from this preview and unlock one clean generation. No card required."
   if(benefits&&benefits.firstElementChild)benefits.firstElementChild.innerHTML="<strong>1</strong><span>Clean generation</span>";if(window.BeoAnalytics)window.BeoAnalytics.track("signup_gate_view")
