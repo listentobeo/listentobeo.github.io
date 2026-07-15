@@ -13,7 +13,6 @@ const SHELL_ASSETS = [
   "/assets/style.css",
   "/assets/concept-tools.css",
   "/assets/js/concept-transfer.js",
-  "/assets/beo-ai-mark.svg",
   "/assets/images/tool-concept-lab.jpg",
   "/assets/images/tool-art-generator.jpg",
   "/assets/images/tool-photo-sketch.png",

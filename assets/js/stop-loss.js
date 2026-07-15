@@ -6,9 +6,9 @@
  window.createGuestPreview=function(src){return new Promise(function(resolve){var art=new Image()
   art.onload=function(){try{var scale=Math.min(1,768/art.width),canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(art.width*scale));canvas.height=Math.max(1,Math.round(art.height*scale))
    var ctx=canvas.getContext("2d");ctx.drawImage(art,0,0,canvas.width,canvas.height);var mark=new Image()
-   mark.onload=function(){try{var markWidth=Math.max(96,Math.min(142,Math.round(canvas.width*0.18))),markHeight=Math.round(markWidth*(44/168)),pad=Math.max(8,Math.round(markHeight*0.3)),w=markWidth+pad*2,h=markHeight+pad*2,x=canvas.width-w-pad,y=canvas.height-h-pad
-    rounded(ctx,x,y,w,h,Math.max(8,Math.round(markHeight*0.26)));ctx.fillStyle="rgba(8,8,12,0.5)";ctx.fill();ctx.globalAlpha=0.78;ctx.drawImage(mark,x+pad,y+pad,markWidth,markHeight);ctx.globalAlpha=1;resolve(canvas.toDataURL("image/jpeg",0.9))
-   }catch(e){fallback(ctx,canvas,resolve)}};mark.onerror=function(){fallback(ctx,canvas,resolve)};mark.src="/assets/beo-ai-mark.svg"}catch(e){resolve(src)}}
+   mark.onload=function(){try{var markSize=Math.max(46,Math.min(72,Math.round(canvas.width*0.085))),pad=Math.max(7,Math.round(markSize*0.16)),w=markSize+pad*2,h=w,x=canvas.width-w-pad,y=canvas.height-h-pad
+    rounded(ctx,x,y,w,h,Math.max(9,Math.round(markSize*0.2)));ctx.fillStyle="rgba(8,8,12,0.42)";ctx.fill();ctx.globalAlpha=0.76;ctx.drawImage(mark,x+pad,y+pad,markSize,markSize);ctx.globalAlpha=1;resolve(canvas.toDataURL("image/jpeg",0.9))
+   }catch(e){fallback(ctx,canvas,resolve)}};mark.onerror=function(){fallback(ctx,canvas,resolve)};mark.src="/assets/icon-192.png"}catch(e){resolve(src)}}
   art.onerror=function(){resolve(src)};art.src=src})}
  function fallback(ctx,canvas,resolve){var font=Math.max(11,Math.round(canvas.width*0.018)),pad=Math.max(10,Math.round(font*.8)),label="Made with Beo AI";ctx.font="600 "+font+"px Arial";var width=ctx.measureText(label).width+pad*2,height=font+pad*1.5,x=canvas.width-width-pad,y=canvas.height-height-pad
   rounded(ctx,x,y,width,height,7);ctx.fillStyle="rgba(8,8,12,0.5)";ctx.fill();ctx.fillStyle="rgba(240,237,232,.82)";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(label,x+width/2,y+height/2);resolve(canvas.toDataURL("image/jpeg",0.9))}
