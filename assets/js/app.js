@@ -14,23 +14,6 @@ window.toggleMenu = function(){
   menu.style.display = menu.style.display === "block" ? "none" : "block"
 }
 
-// ── REGISTER SERVICE WORKER (PWA) ─────────────────────────
-if("serviceWorker" in navigator){
-  window.addEventListener("load", async () => {
-    try {
-      const regs = await navigator.serviceWorker.getRegistrations()
-      for(const reg of regs){
-        if(!reg.scope.includes(location.origin)){
-          await reg.unregister()
-        }
-      }
-      await navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
-    } catch(err){
-      console.warn("[SW] Registration failed:", err)
-    }
-  })
-}
-
 async function updateAuthUI(){
   const { data } = await window._authReady
   const user     = data.user
