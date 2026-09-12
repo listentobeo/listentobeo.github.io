@@ -17,3 +17,18 @@ export function routeCountry(country) {
   if (!/^[A-Z]{2}$/.test(country)) throw new Error('Choose a delivery country.');
   return country === 'NG' ? 'MANUAL_NIGERIA' : 'GELATO';
 }
+
+// Preview-only geometry: match the original ratio; never invent a purchasable SKU.
+export function previewVariant(width, height) {
+  const mmPerPixel=Math.min(203.2/Math.max(width,height),25.4/150);
+  return {width_mm:width*mmPerPixel,height_mm:height*mmPerPixel,frame_style:'none',border_mm:0,min_ppi:150};
+}
+export function preferredVariant(width,height,variants) {
+  return variants.filter(v=>printQuality(width,height,v).allowed).sort((a,b)=>{
+    const mismatch=v=>Math.abs(Math.log((v.width_mm/v.height_mm)/(width/height)));
+    return mismatch(a)-mismatch(b)||(b.width_mm*b.height_mm-a.width_mm*a.height_mm);
+  })[0];
+}
+export function previewZoom(width,height,mode='detail') {
+  return mode==='full'?1:Math.max(1,Math.min(6,650/width,440/height));
+}

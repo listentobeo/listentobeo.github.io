@@ -2,7 +2,7 @@
 // BEO AI TOOLS - SERVICE WORKER v17
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v18"
+const CACHE_NAME  = "beo-ai-v20"
 const OFFLINE_URL = "/offline/"
 
 const SHELL_ASSETS = [

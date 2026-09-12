@@ -151,11 +151,21 @@
   window.BeoResultExperience={
     mount:function(options){
       options=options||{};state.before=options.before||null;state.after=options.after||null;state.tool=options.tool||"beo-ai"
+      if(options.comparisonOnDemand){
+        var wrap=document.getElementById("result-img-wrap");if(wrap)clearComparison(wrap)
+        state.hasComparison=Boolean(state.before&&state.after)
+        return
+      }
       mountComparison();addExportButtons();ensureVideoTeaser()
       var comparisonButtons=document.querySelectorAll(".beo-export-btn")
       for(var i=0;i<comparisonButtons.length;i++)comparisonButtons[i].style.display=state.hasComparison?"inline-flex":"none"
     },
-    reset:function(){var teaser=document.getElementById("beo-video-teaser");if(teaser)teaser.classList.remove("visible")},
+    toggleComparison:function(){
+      var wrap=document.getElementById("result-img-wrap");if(!wrap)return false
+      if(wrap.classList.contains("beo-compare-active")){clearComparison(wrap);return false}
+      mountComparison();return state.hasComparison
+    },
+    reset:function(){var teaser=document.getElementById("beo-video-teaser");if(teaser)teaser.classList.remove("visible");var wrap=document.getElementById("result-img-wrap");if(wrap)clearComparison(wrap)},
     exportComparison:function(){exportImage("comparison")},
     exportStory:function(){exportImage("story")}
   }

@@ -123,6 +123,18 @@ Deno.serve(async req => {
       }
       return reply({ order: customerOrder(dbResult(await db.from('print_orders').select('*').eq('id', order.id).single())) });
     }
+    if (action === 'admin_setup_check') {
+      const checks: any = {
+        gelatoKeyPresent: Boolean(env('GELATO_API_KEY')), paystackKeyPresent: Boolean(env('PAYSTACK_SECRET_KEY')),
+        workerSecretPresent: Boolean(env('PRINT_WORKER_SECRET')), webhookTokenPresent: Boolean(env('GELATO_WEBHOOK_TOKEN')),
+        checkoutEnabled: env('PRINT_CHECKOUT_ENABLED') === 'true', liveFulfillmentEnabled: env('PRINT_LIVE_FULFILLMENT_ENABLED') === 'true',
+        usdPaymentsEnabled: env('PRINT_USD_PAYMENTS_ENABLED') === 'true',
+        activeVariants: dbResult(await db.from('print_product_variants').select('id').eq('active',true)).length,
+      };
+      try { checks.catalogs = await provider().request('product.gelatoapis.com','/v3/catalogs'); checks.gelatoConnected = true; }
+      catch(e) { checks.gelatoConnected = false; checks.gelatoError = e instanceof Error ? e.message : 'Connection failed.'; }
+      return reply({ checks, note: 'Read-only check. Does not verify scheduled worker execution, webhooks, payment account currency support or SKU file compatibility. No orders submitted.' });
+    }
     if (action === 'admin_catalog') return reply({ products: dbResult(await db.from('print_products').select('*')),
       variants: dbResult(await db.from('print_product_variants').select('*')) });
     if (action === 'admin_product_search') return reply(await provider().getProducts(String(body.catalog || 'posters'), body.filters || {}));

@@ -45,7 +45,8 @@ function card(order){const section=node('section',null,'print-panel'),head=node(
  }
  section.append(actions);return section;}
 $('refresh-orders').addEventListener('click',()=>load());$('more-orders').addEventListener('click',()=>load(true));
-if(admin){$('load-catalog').addEventListener('click',async()=>{try{$('catalog-products').textContent=JSON.stringify(await request('admin_catalog'),null,2);}catch(e){message(e.message);}});
+if(admin){$('check-print-setup').addEventListener('click',async()=>{const button=$('check-print-setup');button.disabled=true;$('print-setup-status').textContent='Checking server configuration and provider connection...';try{$('print-setup-status').textContent=JSON.stringify(await request('admin_setup_check'),null,2);}catch(e){$('print-setup-status').textContent=e.message;}finally{button.disabled=false;}});
+ $('load-catalog').addEventListener('click',async()=>{try{$('catalog-products').textContent=JSON.stringify(await request('admin_catalog'),null,2);}catch(e){message(e.message);}});
  $('search-provider').addEventListener('click',async()=>{try{$('provider-results').textContent=JSON.stringify(await request('admin_product_search',{catalog:$('catalog-uid').value}),null,2);}catch(e){message(e.message);}});
  $('save-variant').addEventListener('click',async()=>{try{await request('admin_save_variant',{variant:JSON.parse($('variant-json').value),approve:$('variant-approve').checked});message('Variant saved. Only approved active variants appear in checkout.');}catch(e){message(e.message);}});
 }

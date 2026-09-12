@@ -10,6 +10,8 @@
 <div class="print-layout">
  <section class="print-panel print-preview"><h2>Your artwork, in place</h2><canvas id="print-canvas" width="1000" height="700" aria-label="Preview of your artwork at the selected physical size"></canvas>
  <label for="print-room">Preview setting</label><select id="print-room"><option value="living">Living room</option><option value="bedroom">Bedroom</option><option value="office">Office</option><option value="minimal">Minimal interior</option><option value="product">Product view</option></select>
+ <label for="print-view">Viewing distance</label><select id="print-view"><option value="detail">Auto close-up — fit artwork</option><option value="full">Full room — physical scale</option></select>
+ <p id="print-view-note" class="print-note" aria-live="polite"></p>
  <p class="print-note">Room scale is approximate. Frame colours are illustrative. White borders preserve the full artwork when its proportions differ from the print.</p><p id="print-resolution" class="print-note"></p></section>
  <section class="print-panel"><h2>Make it yours</h2>
  <label for="print-country">Delivery country</label><select id="print-country" required><option value="">Choose country</option></select>
@@ -30,5 +32,5 @@
  <p id="print-customs" class="print-note"></p><p class="print-note">Quote valid for 15 minutes. Production starts after payment is confirmed.</p>
  <button class="print-button" id="print-checkout" type="button">Order your artwork</button></div>
  </section></div></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="/assets/js/auth-redirect.js"></script><script type="module" src="/assets/js/app.js"></script><script type="module" src="/assets/js/print-shop.mjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="/assets/js/auth-redirect.js"></script><script type="module" src="/assets/js/app.js"></script><script type="module" src="/assets/js/print-shop.mjs?v=2"></script>
 </body></html>

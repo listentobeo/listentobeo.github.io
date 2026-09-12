@@ -18,6 +18,19 @@ The inspected docs did not establish a separate sandbox hostname, a create-order
 
 ## Deployment order
 
+Live diagnostic on 13 September 2026: the public `print-orders` catalog endpoint returned HTTP 404 (`Requested function was not found`). A saved Gelato key does not deploy the function or its database schema.
+
+After checking/applying the print migration, authenticate the Supabase CLI locally (`npx.cmd supabase login`), then deploy these four functions from the repository:
+
+```powershell
+npx.cmd supabase functions deploy print-orders --project-ref wphqcccliiwdvwdjgrmc
+npx.cmd supabase functions deploy print-worker --project-ref wphqcccliiwdvwdjgrmc
+npx.cmd supabase functions deploy print-webhook --project-ref wphqcccliiwdvwdjgrmc
+npx.cmd supabase functions deploy paystack-payment --project-ref wphqcccliiwdvwdjgrmc
+```
+
+Do not deploy the payment hook before its print migration is installed. After deployment, sign in as the approved print administrator, open Approved product configuration, and click **Check setup & Gelato connection**. This reads server secret-presence flags and calls the documented catalog-list API; it never returns a key or creates an order. It does not replace checkout/webhook/worker testing. Use the returned catalog UIDs to inspect actual products, then explicitly approve SKUs and business prices. Keep live fulfillment disabled during setup.
+
 1. Back up and inspect the actual Supabase schema. The repository lacks the complete original profiles/generations baseline. Apply `migrations/20260912_print_orders.sql` first in a nonproduction project; do not run it twice manually. Confirm all new tables and RPCs reject anon/authenticated direct access, and the `print-files` bucket is private with no broad storage policies.
 2. Deploy `print-orders`, `print-worker`, `print-webhook` and the changed `paystack-payment` together using the checked-in function configuration. The print functions have gateway JWT verification disabled because they verify user JWTs or dedicated webhook/worker credentials internally. Do not remove those internal checks.
 3. Set server secrets via Supabase's secure secret interface, never frontend code: `GELATO_API_KEY`, `PAYSTACK_SECRET_KEY`, random independent `PRINT_WORKER_SECRET` and `GELATO_WEBHOOK_TOKEN`. Supabase supplies its URL and service-role key in the Edge environment. Initially set `PRINT_CHECKOUT_ENABLED=false`, `PRINT_LIVE_FULFILLMENT_ENABLED=false`, `PRINT_USD_PAYMENTS_ENABLED=false`.

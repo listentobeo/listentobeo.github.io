@@ -1,4 +1,4 @@
-import { fitArtwork } from './print-math.mjs';
+import { fitArtwork, previewZoom } from './print-math.mjs?v=2';
 
 // Fixed photographic assets: approximate scale calibrated against furniture.
 // No image generation happens when a customer changes a selection.
@@ -15,7 +15,7 @@ function backdrop(src){
   if(!backdrops.has(src))backdrops.set(src,new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>{backdrops.delete(src);reject(new Error('Room unavailable'));};img.src=src;}));
   return backdrops.get(src);
 }
-export async function renderPreview(canvas, art, variant, roomId='living') {
+export async function renderPreview(canvas, art, variant, roomId='living',view='detail') {
   const ticket={};renders.set(canvas,ticket);canvas.setAttribute('aria-busy','true');
   let room=rooms[roomId]||rooms.living,photo=null;
   if(room.image)try{photo=await backdrop(room.image);}catch{room=rooms.product;}
@@ -25,12 +25,18 @@ export async function renderPreview(canvas, art, variant, roomId='living') {
   ctx.fillStyle=room.wall;ctx.fillRect(0,0,w,h);
   const light=ctx.createLinearGradient(0,0,w,h);light.addColorStop(0,'rgba(255,255,255,.25)');light.addColorStop(1,'rgba(0,0,0,.07)');ctx.fillStyle=light;ctx.fillRect(0,0,w,h);
   const frameMm=variant.frame_style==='none'?0:(variant.frame_mm||15);
-  const scale=photo?room.scale*1.2:Math.min(1.3,1000/(variant.width_mm+2*frameMm),650/(variant.height_mm+2*frameMm));
-  if(photo)ctx.drawImage(photo,0,0,w,h);
+  const scale=photo?room.scale*1.2:Math.min(1000/(variant.width_mm+2*frameMm),650/(variant.height_mm+2*frameMm));
   const fit=fitArtwork(art.naturalWidth,art.naturalHeight,variant.width_mm,variant.height_mm,variant.border_mm||0);
   const paperW=variant.width_mm*scale,paperH=variant.height_mm*scale;
   const rim=variant.frame_style==='none'?0:(variant.frame_mm||15)*scale;
   const centerY=photo?room.centerY*1.2:380,x=(w-paperW)/2,y=centerY-paperH/2;
+  const zoom=photo?previewZoom(paperW+rim*2,paperH+rim*2,view):1;
+  if(photo){
+    // Crop the entire scene, not just the artwork, preserving furniture-relative scale.
+    const cameraY=Math.max(h/(2*zoom),Math.min(h-h/(2*zoom),centerY));
+    ctx.setTransform(zoom,0,0,zoom,w/2-zoom*w/2,h/2-zoom*cameraY);
+    ctx.drawImage(photo,0,0,w,h);
+  }
   ctx.shadowColor='#20160e55';ctx.shadowBlur=Math.max(4,15*scale);ctx.shadowOffsetX=3*scale;ctx.shadowOffsetY=6*scale;
   ctx.fillStyle=frames[variant.frame_style]||frames.black;ctx.fillRect(x-rim,y-rim,paperW+rim*2,paperH+rim*2);
   ctx.shadowColor='transparent';ctx.shadowOffsetY=0;ctx.shadowOffsetX=0;
@@ -42,7 +48,8 @@ export async function renderPreview(canvas, art, variant, roomId='living') {
   ctx.fillStyle='#fff';ctx.fillRect(x,y,paperW,paperH);
   ctx.drawImage(art,x+fit.x*scale,y+fit.y*scale,fit.width*scale,fit.height*scale);
   ctx.strokeStyle='#00000033';ctx.lineWidth=Math.max(.5,scale);ctx.strokeRect(x-.5,y-.5,paperW+1,paperH+1);
-  canvas.setAttribute('aria-busy','false');canvas.dataset.room=photo?roomId:'product';
+  ctx.setTransform(1,0,0,1,0,0);
+  canvas.setAttribute('aria-busy','false');canvas.dataset.room=photo?roomId:'product';canvas.dataset.zoom=zoom.toFixed(2);
   canvas.setAttribute('aria-label',`${room.label}: ${variant.width_mm} by ${variant.height_mm} mm artwork. Approximate room scale.`);
   return { paperWidth:paperW,paperHeight:paperH,artWidth:fit.width*scale,artHeight:fit.height*scale,ppi:fit.ppi };
 }
