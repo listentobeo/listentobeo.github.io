@@ -1,8 +1,8 @@
 // ============================================================
-// BEO AI TOOLS - SERVICE WORKER v15
+// BEO AI TOOLS - SERVICE WORKER v16
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v15"
+const CACHE_NAME  = "beo-ai-v16"
 const OFFLINE_URL = "/offline/"
 
 const SHELL_ASSETS = [
@@ -13,6 +13,8 @@ const SHELL_ASSETS = [
   "/favicon.ico",
   "/assets/style.css",
   "/assets/concept-tools.css",
+  "/assets/tool-ads.css",
+  "/assets/js/tool-ads.js",
   "/assets/js/concept-transfer.js",
   "/assets/images/tool-concept-lab.jpg",
   "/assets/images/tool-art-generator.jpg",
@@ -39,7 +41,7 @@ const SHELL_ASSETS = [
 
 // ── INSTALL ────────────────────────────────────────────────
 self.addEventListener("install", event => {
-  console.log("[SW] Installing v15")
+  console.log("[SW] Installing v16")
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -56,7 +58,7 @@ self.addEventListener("install", event => {
 
 // ── ACTIVATE — delete ALL old caches ──────────────────────
 self.addEventListener("activate", event => {
-  console.log("[SW] Activating v15, clearing old caches")
+  console.log("[SW] Activating v16, clearing old caches")
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
