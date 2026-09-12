@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Turn your sketch into wall art · Beo</title><meta name="robots" content="noindex"><meta name="theme-color" content="#0d0d12">
+<link rel="stylesheet" href="/assets/style.css"><link rel="stylesheet" href="/assets/concept-tools.css"><link rel="stylesheet" href="/assets/print-shop.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico"></head><body>
+<header class="header"><div class="header-inner"><a class="login-btn" href="/tools/photo-to-sketch-online/">← Photo to Sketch</a><div class="nav-right"><a href="/print-orders/">My print orders</a><a id="auth-link" class="login-btn" href="/login/?returnTo=%2Fprint%2F">Sign In</a></div></div></header>
+<main class="print-shell"><div class="print-heading"><span class="concept-kicker">Your art, made tangible</span><h1>Turn your sketch into real wall art.</h1><p>Choose a finish, see it in a room, and make it yours. Your original artwork stays exactly as you created it.</p></div>
+<div id="print-message" class="print-message" role="status" aria-live="polite"></div>
+<div class="print-layout">
+ <section class="print-panel print-preview"><h2>Your artwork, in place</h2><canvas id="print-canvas" width="1000" height="700" aria-label="Preview of your artwork at the selected physical size"></canvas>
+ <label for="print-room">Preview setting</label><select id="print-room"><option value="living">Living room</option><option value="bedroom">Bedroom</option><option value="office">Office</option><option value="minimal">Minimal interior</option><option value="product">Product view</option></select>
+ <p class="print-note">Room scale is approximate. Frame colours are illustrative. White borders preserve the full artwork when its proportions differ from the print.</p><p id="print-resolution" class="print-note"></p></section>
+ <section class="print-panel"><h2>Make it yours</h2>
+ <label for="print-country">Delivery country</label><select id="print-country" required><option value="">Choose country</option></select>
+ <div id="print-options" hidden><label for="print-product">Format</label><select id="print-product"></select>
+ <label for="print-frame">Frame</label><select id="print-frame"></select><label for="print-size">Print size</label><select id="print-size"></select></div>
+ <p id="print-availability" class="print-note">Select a delivery country to see available prints.</p>
+ <form id="print-address" hidden><h3>Delivery details</h3>
+ <div class="print-row"><div><label for="firstName">First name</label><input id="firstName" name="firstName" autocomplete="given-name" maxlength="25" required></div><div><label for="lastName">Last name</label><input id="lastName" name="lastName" autocomplete="family-name" maxlength="25" required></div></div>
+ <label for="addressLine1">Street address</label><input id="addressLine1" name="addressLine1" autocomplete="address-line1" maxlength="35" required>
+ <label for="addressLine2">Apartment / building (optional)</label><input id="addressLine2" name="addressLine2" autocomplete="address-line2" maxlength="35">
+ <div class="print-row"><div><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" maxlength="35" required></div><div><label for="state">State / province</label><input id="state" name="state" autocomplete="address-level1" maxlength="35"></div></div>
+ <div class="print-row"><div><label for="postCode">Postal code</label><input id="postCode" name="postCode" autocomplete="postal-code" maxlength="15" required></div><div><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="25" required></div></div>
+ <label for="email">Delivery contact email</label><input id="email" name="email" type="email" autocomplete="email" maxlength="150" required>
+ <p class="print-note">Your artwork and delivery details will be shared with our production and shipping partners to fulfill your order.</p>
+ <div class="print-actions"><button class="print-button" id="print-quote-button" type="submit">Check delivery &amp; price</button><a id="print-signin" class="print-button secondary" hidden href="/login/?returnTo=%2Fprint%2F">Sign in to order</a></div></form>
+ <div id="print-quote" hidden><h3>Your order</h3><label for="print-shipping">Delivery option</label><select id="print-shipping"></select><p id="print-delivery" class="print-note"></p>
+ <div class="print-price"><span>Artwork</span><span id="print-product-price"></span></div><div class="print-price"><span>Shipping</span><span id="print-shipping-price"></span></div><div class="print-price total"><span>Total</span><span id="print-total"></span></div>
+ <p id="print-customs" class="print-note"></p><p class="print-note">Quote valid for 15 minutes. Production starts after payment is confirmed.</p>
+ <button class="print-button" id="print-checkout" type="button">Order your artwork</button></div>
+ </section></div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="/assets/js/auth-redirect.js"></script><script type="module" src="/assets/js/app.js"></script><script type="module" src="/assets/js/print-shop.mjs"></script>
+</body></html>

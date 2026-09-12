@@ -17,3 +17,12 @@ verify_jwt = false
 
 [functions.paystack-payment]
 verify_jwt = false
+
+[functions.print-orders]
+verify_jwt = false
+
+[functions.print-worker]
+verify_jwt = false
+
+[functions.print-webhook]
+verify_jwt = false

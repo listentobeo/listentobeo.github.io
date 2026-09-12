@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:jpeg-js@0.4.4": "0.4.4",
+    "npm:pngjs@7.0.0": "7.0.0"
+  },
+  "npm": {
+    "jpeg-js@0.4.4": {
+      "integrity": "sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg=="
+    },
+    "pngjs@7.0.0": {
+      "integrity": "sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow=="
+    }
+  },
+  "redirects": {
+    "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.110.5"
+  },
+  "remote": {
+    "https://esm.sh/@supabase/supabase-js@2.110.5": "55f04f5b27e7700a581c9e506ff5761fd66bb00545a44f3a2f155d4f30597e6c"
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:jpeg-js@0.4.4",
+      "npm:pngjs@7.0.0"
+    ]
+  }
+}

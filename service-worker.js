@@ -1,8 +1,8 @@
 // ============================================================
-// BEO AI TOOLS - SERVICE WORKER v16
+// BEO AI TOOLS - SERVICE WORKER v17
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v16"
+const CACHE_NAME  = "beo-ai-v18"
 const OFFLINE_URL = "/offline/"
 
 const SHELL_ASSETS = [
@@ -15,6 +15,14 @@ const SHELL_ASSETS = [
   "/assets/concept-tools.css",
   "/assets/tool-ads.css",
   "/assets/js/tool-ads.js",
+  "/assets/print-shop.css",
+  "/assets/js/print-api.mjs",
+  "/assets/js/print-math.mjs",
+  "/assets/js/print-preview.mjs",
+  "/assets/js/print-result.mjs",
+  "/assets/js/print-store.mjs",
+  "/assets/js/print-shop.mjs",
+  "/assets/js/print-orders.mjs",
   "/assets/js/concept-transfer.js",
   "/assets/images/tool-concept-lab.jpg",
   "/assets/images/tool-art-generator.jpg",
@@ -41,7 +49,7 @@ const SHELL_ASSETS = [
 
 // ── INSTALL ────────────────────────────────────────────────
 self.addEventListener("install", event => {
-  console.log("[SW] Installing v16")
+  console.log("[SW] Installing v17")
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -58,7 +66,7 @@ self.addEventListener("install", event => {
 
 // ── ACTIVATE — delete ALL old caches ──────────────────────
 self.addEventListener("activate", event => {
-  console.log("[SW] Activating v16, clearing old caches")
+  console.log("[SW] Activating v17, clearing old caches")
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
@@ -120,7 +128,7 @@ self.addEventListener("fetch", event => {
 
   // Static JS and CSS use network-first so fixes reach existing installations.
   if(url.origin === location.origin){
-    var isCodeAsset = /\.(js|css)$/.test(url.pathname)
+    var isCodeAsset = /\.(m?js|css)$/.test(url.pathname)
     if(isCodeAsset){
       event.respondWith(fetch(event.request).then(function(response){
         var clone = response.clone()

@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "pngjs": "npm:pngjs@7.0.0",
+    "jpeg-js": "npm:jpeg-js@0.4.4"
+  },
+  "compilerOptions": { "strict": true, "noImplicitAny": false }
+}

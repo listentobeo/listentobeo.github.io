@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="utf-8">
 
 <title>Photo to Sketch — Beo AI Tools</title>
 <link rel="manifest" href="/manifest.json">
@@ -16,6 +17,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/result-experience.css">
+<link rel="stylesheet" href="/assets/print-shop.css">
+<script type="module" src="/assets/js/print-result.mjs"></script>
 <style>
 
 :root{
@@ -540,6 +543,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
           </div>
 
           <!-- Book real artwork CTA — shown after result -->
+          <a class="print-cta" id="print-artwork-link" href="/print/" hidden><strong>Turn this into real wall art</strong><span>Preview your sketch in a room and explore print options →</span></a>
           <div class="book-cta-sketch" id="sketch-book-cta">
             <p>Love your sketch? Get it drawn for real.</p>
             <span>Beo Art Studio can recreate this as a custom pencil drawing, charcoal portrait or full painting — shipped straight to you.</span>
@@ -763,6 +767,7 @@ window.imageLoaded = function(){
 }
 
 function showResultLoading(){
+  if(window.BeoPrintResult) window.BeoPrintResult.reset()
   if(window.BeoResultExperience) window.BeoResultExperience.reset()
   document.getElementById("empty-state").style.display     = "none"
   document.getElementById("result-shimmer").style.display  = "block"
@@ -880,6 +885,7 @@ window.generateSketch = async function(){
       throw new Error(result.error || "No image returned from AI.")
     }
 
+    if(window.BeoPrintResult) window.BeoPrintResult.capture(result.result)
     if(isGuestUser) {
       generatedResult = window.createGuestPreview
         ? await window.createGuestPreview(result.result)

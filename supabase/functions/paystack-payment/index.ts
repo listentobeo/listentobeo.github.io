@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { acceptPrintPayment, dbResult } from '../_shared/print-service.ts';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -446,6 +447,13 @@ async function handleWebhook(
   const data = event.data || {};
   const eventName = String(event.event || "");
 
+  if (eventName === 'refund.processed' && String(data.transaction_reference || '').startsWith('print-')) {
+    dbResult(await serviceClient.rpc('print_refund_processed', {
+      p_reference: data.transaction_reference, p_amount: Number(data.amount), p_currency: data.currency,
+    }));
+    return jsonResponse({ received: true });
+  }
+
   if (
     eventName === "charge.success" &&
     data.reference
@@ -462,6 +470,12 @@ async function handleWebhook(
         502,
         true,
       );
+    }
+
+    if (String(data.reference).startsWith('print-')) {
+      if (verified.data.reference !== data.reference) throw new Error('Payment reference mismatch');
+      await acceptPrintPayment(serviceClient, verified.data);
+      return jsonResponse({ received: true, fulfilled: true });
     }
 
     let fulfilled = await fulfillPayment(
