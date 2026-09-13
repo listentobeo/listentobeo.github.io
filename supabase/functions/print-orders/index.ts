@@ -1,5 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { addressInput, customerOrder, priceQuote, routeCountry, safeTracking } from '../_shared/print-domain.ts';
+import { addressInput, customerOrder, priceQuote, routeCountry, safeTracking, launchDestination } from '../_shared/print-domain.ts';
 import { decodeArtwork, renderPrintFile } from '../_shared/print-images.ts';
 import { env, dbResult, signedFile, audit, lockOrder, unlockOrder, updateOrder, provider,
   syncProviderOrder, acceptPrintPayment, paystackRequest } from '../_shared/print-service.ts';
@@ -20,11 +20,14 @@ Deno.serve(async req => {
     const body = JSON.parse(raw), action = String(body.action || '');
     const db = createClient(env('SUPABASE_URL'), env('SUPABASE_SERVICE_ROLE_KEY'));
     if (action === 'catalog') {
+      launchDestination(String(body.country || ''));
       const route = routeCountry(String(body.country || ''));
       const products = dbResult(await db.from('print_products').select('id,name,product_type,slug').eq('active', true).neq('product_type','canvas'));
       const variants = dbResult(await db.from('print_product_variants').select('*').eq('active', true).eq('provider', route));
       const configured = products.map((p: any) => ({ ...p, variants: variants.filter((v: any) => v.product_id === p.id).map(publicVariant) })).filter((p: any) => p.variants.length);
-      return reply({ products: configured, checkoutEnabled: env('PRINT_CHECKOUT_ENABLED') === 'true' });
+      const currencyEnabled = route === 'MANUAL_NIGERIA' || env('PRINT_USD_PAYMENTS_ENABLED') === 'true';
+      return reply({ products: configured, checkoutEnabled: env('PRINT_CHECKOUT_ENABLED') === 'true' && currencyEnabled,
+        checkoutUnavailableReason: !currencyEnabled ? 'You can preview prints and check delivery. USD payments are not yet supported by our payment account.' : null });
     }
     const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
     const auth = await db.auth.getUser(token);
@@ -57,11 +60,11 @@ Deno.serve(async req => {
     }
     if (action === 'quote') {
       const address = addressInput(body.address), route = routeCountry(address.country);
+      launchDestination(address.country);
       const variant = dbResult(await db.from('print_product_variants').select('*').eq('id', uuid(body.variantId)).eq('active', true).eq('provider', route).single());
       const product = dbResult(await db.from('print_products').select('*').eq('id', variant.product_id).eq('active', true).single());
       if (product.product_type === 'canvas') throw new Error('Canvas printing is not configured.');
       const art = dbResult(await db.from('print_artworks').select('*').eq('id', uuid(body.artworkId)).eq('user_id', user.id).single());
-      if (variant.currency === 'USD' && env('PRINT_USD_PAYMENTS_ENABLED') !== 'true') throw new Error('International checkout is not yet available.');
       const data = dbResult(await db.storage.from('print-files').download(art.source_path));
       const rendered = renderPrintFile(new Uint8Array(await data.arrayBuffer()), variant);
       const quoteId = crypto.randomUUID(), path = user.id + '/exports/' + quoteId + '.png';
@@ -91,6 +94,9 @@ Deno.serve(async req => {
     }
     if (action === 'checkout') {
       if (env('PRINT_CHECKOUT_ENABLED') !== 'true') throw new Error('Print checkout is not yet open.');
+      const checkoutQuote = dbResult(await db.from('print_quotes').select('currency,country').eq('id', uuid(body.quoteId)).eq('user_id', user.id).single());
+      launchDestination(checkoutQuote.country);
+      if (checkoutQuote.currency === 'USD' && env('PRINT_USD_PAYMENTS_ENABLED') !== 'true') throw new Error('USD payments are not yet supported by our payment account.');
       const id = dbResult(await db.rpc('print_checkout', { p_quote_id: uuid(body.quoteId), p_user_id: user.id, p_shipping_id: String(body.shippingId || '') }));
       const lock = await lockOrder(db, id);
       try {
@@ -135,13 +141,50 @@ Deno.serve(async req => {
       catch(e) { checks.gelatoConnected = false; checks.gelatoError = e instanceof Error ? e.message : 'Connection failed.'; }
       return reply({ checks, note: 'Read-only check. Does not verify scheduled worker execution, webhooks, payment account currency support or SKU file compatibility. No orders submitted.' });
     }
+    if (action === 'admin_configure_worker') {
+      const jobId = dbResult(await db.rpc('print_configure_worker', { p_url: env('SUPABASE_URL'), p_secret: env('PRINT_WORKER_SECRET') }));
+      await audit(db, null, 'WORKER_SCHEDULED', { jobId }, user.id);
+      return reply({ jobId, schedule: 'Every minute' });
+    }
+    if (action === 'admin_payment_probe') {
+      // Initializes an unused checkout session, never charges or creates an order.
+      if (!env('PAYSTACK_SECRET_KEY').startsWith('sk_live_')) return reply({ liveKey: false, usdAccepted: false });
+      const response = await fetch('https://api.paystack.co/transaction/initialize', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + env('PAYSTACK_SECRET_KEY'), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, amount: 100, currency: 'USD', channels: ['card'], reference: 'beoprobe-' + crypto.randomUUID() }),
+        signal: AbortSignal.timeout(25000),
+      });
+      const result = await response.json();
+      const accepted = response.ok && result.status === true;
+      await audit(db, null, 'USD_CHECKOUT_PROBE', { accepted }, user.id);
+      return reply({ liveKey: true, usdAccepted: accepted, message: accepted ? 'USD checkout initialized; no payment made.' : String(result.message || 'USD initialization failed.').slice(0,300) });
+    }
     if (action === 'admin_catalog') return reply({ products: dbResult(await db.from('print_products').select('*')),
       variants: dbResult(await db.from('print_product_variants').select('*')) });
     if (action === 'admin_product_search') return reply(await provider().getProducts(String(body.catalog || 'posters'), body.filters || {}));
+    if (action === 'admin_provider_catalog') return reply(await provider().request('product.gelatoapis.com', '/v3/catalogs/' + encodeURIComponent(String(body.catalog || 'posters'))));
+    if (action === 'admin_get_variant') return reply({ product: await provider().getVariant(String(body.uid || '')) });
+    if (action === 'admin_test_quote') {
+      // Quote-only diagnostic: inactive variants are allowed, but no checkout or
+      // fulfillment API is called. The public provider sample is NOT a print proof.
+      const address = addressInput(body.address);
+      launchDestination(address.country);
+      const variant = dbResult(await db.from('print_product_variants').select('*').eq('id', uuid(body.variantId)).eq('provider', 'GELATO').single());
+      const options = await provider().getQuote({ reference: 'verification-' + crypto.randomUUID(), userId: user.id,
+        currency: variant.currency, address, uid: variant.provider_product_uid,
+        fileUrl: 'https://cdn-origin.gelato-api-dashboard.ie.live.gelato.tech/docs/sample-print-files/logo.png' });
+      const checked = options.map(s => {
+        try { return { ...s, ...priceQuote(s.provider_product_cost, s.provider_shipping_cost, variant), marginPassed: true }; }
+        catch (e) { return { ...s, marginPassed: false, error: e instanceof Error ? e.message : 'Margin check failed.' }; }
+      });
+      await audit(db, null, 'QUOTE_VERIFIED', { variantId: variant.id, country: address.country, city: address.city, options: checked }, user.id);
+      return reply({ verifiedAt: new Date().toISOString(), variantId: variant.id, country: address.country, city: address.city,
+        currency: variant.currency, options: checked, note: 'Quote only. No order submitted; print file compatibility is not verified by this sample.' });
+    }
     if (action === 'admin_save_variant') {
       const input = body.variant || {};
       const keys = ['product_id','name','provider','provider_product_uid','width_mm','height_mm','frame_style','frame_mm','border_mm',
-        'bleed_mm','min_ppi','currency','retail_product_price','retail_shipping_price','minimum_margin','cost_buffer_bps','manual_product_cost','manual_shipping'];
+        'bleed_mm','min_ppi','currency','retail_product_price','retail_shipping_price','minimum_margin','cost_buffer_bps','shipping_price_mode','shipping_buffer_bps','manual_product_cost','manual_shipping'];
       const record: any = Object.fromEntries(keys.filter(k => input[k] !== undefined).map(k => [k,input[k]]));
       record.active = input.active === true;
       record.approved_at = body.approve === true ? new Date().toISOString() : null;
@@ -151,6 +194,14 @@ Deno.serve(async req => {
       if (record.provider === 'GELATO') {
         const details = await provider().getVariant(String(record.provider_product_uid));
         if (details.productUid !== record.provider_product_uid || !details.isPrintable) throw new Error('Choose a valid printable product UID.');
+        if (details.attributes?.ProductStatus === 'deactivated') throw new Error('This provider product is deactivated.');
+        if (product.product_type === 'print') {
+          const width = details.dimensions?.Width, height = details.dimensions?.Height;
+          if (width?.measureUnit !== 'mm' || height?.measureUnit !== 'mm' ||
+              Number(width.value) !== Number(record.width_mm) || Number(height.value) !== Number(record.height_mm)) {
+            throw new Error('Configured dimensions must exactly match the verified provider dimensions in millimetres.');
+          }
+        }
         record.provider_details = details; record.provider_validated_at = new Date().toISOString();
       } else if (record.provider !== 'MANUAL_NIGERIA') throw new Error('Unknown fulfillment route.');
       if (record.active && !record.approved_at) throw new Error('Explicitly approve the size, frame, print layout and prices.');

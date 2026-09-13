@@ -22,15 +22,15 @@
  <div class="print-row"><div><label for="firstName">First name</label><input id="firstName" name="firstName" autocomplete="given-name" maxlength="25" required></div><div><label for="lastName">Last name</label><input id="lastName" name="lastName" autocomplete="family-name" maxlength="25" required></div></div>
  <label for="addressLine1">Street address</label><input id="addressLine1" name="addressLine1" autocomplete="address-line1" maxlength="35" required>
  <label for="addressLine2">Apartment / building (optional)</label><input id="addressLine2" name="addressLine2" autocomplete="address-line2" maxlength="35">
- <div class="print-row"><div><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" maxlength="35" required></div><div><label for="state">State / province</label><input id="state" name="state" autocomplete="address-level1" maxlength="35"></div></div>
+ <div class="print-row"><div><label for="city">City</label><input id="city" name="city" autocomplete="address-level2" maxlength="30" required></div><div><label for="state">State / province</label><input id="state" name="state" autocomplete="address-level1" maxlength="35"></div></div>
  <div class="print-row"><div><label for="postCode">Postal code</label><input id="postCode" name="postCode" autocomplete="postal-code" maxlength="15" required></div><div><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="25" required></div></div>
  <label for="email">Delivery contact email</label><input id="email" name="email" type="email" autocomplete="email" maxlength="150" required>
  <p class="print-note">Your artwork and delivery details will be shared with our production and shipping partners to fulfill your order.</p>
  <div class="print-actions"><button class="print-button" id="print-quote-button" type="submit">Check delivery &amp; price</button><a id="print-signin" class="print-button secondary" hidden href="/login/?returnTo=%2Fprint%2F">Sign in to order</a></div></form>
  <div id="print-quote" hidden><h3>Your order</h3><label for="print-shipping">Delivery option</label><select id="print-shipping"></select><p id="print-delivery" class="print-note"></p>
- <div class="print-price"><span>Artwork</span><span id="print-product-price"></span></div><div class="print-price"><span>Shipping</span><span id="print-shipping-price"></span></div><div class="print-price total"><span>Total</span><span id="print-total"></span></div>
+ <div class="print-price"><span>Artwork price</span><span id="print-product-price"></span></div><div class="print-price"><span>Delivery price</span><span id="print-shipping-price"></span></div><div class="print-price total"><span>Total</span><span id="print-total"></span></div>
  <p id="print-customs" class="print-note"></p><p class="print-note">Quote valid for 15 minutes. Production starts after payment is confirmed.</p>
- <button class="print-button" id="print-checkout" type="button">Order your artwork</button></div>
+ <button class="print-button" id="print-checkout" type="button" disabled>Order your artwork</button></div>
  </section></div></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="/assets/js/auth-redirect.js"></script><script type="module" src="/assets/js/app.js"></script><script type="module" src="/assets/js/print-shop.mjs?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="/assets/js/auth-redirect.js"></script><script type="module" src="/assets/js/app.js"></script><script type="module" src="/assets/js/print-shop.mjs?v=3"></script>
 </body></html>

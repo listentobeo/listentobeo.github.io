@@ -9,6 +9,7 @@ test('print database enforces payments, ownership isolation, idempotency and ful
     CREATE TABLE profiles(id uuid PRIMARY KEY);CREATE SCHEMA storage;
     CREATE TABLE storage.buckets(id text PRIMARY KEY,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);`);
   await db.exec(await readFile(new URL('../supabase/migrations/20260912_print_orders.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/20260914_print_live_shipping.sql',import.meta.url),'utf8'));
   const one=async(sql,params=[]) => (await db.query(sql,params)).rows[0];
   const user=(await one('INSERT INTO profiles VALUES(gen_random_uuid()) RETURNING id')).id;
   const art=(await one("INSERT INTO print_artworks(user_id,source_path,sha256,pixel_width,pixel_height,mime_type) VALUES($1,'master','hash',1200,1500,'image/png') RETURNING id",[user])).id;
@@ -16,14 +17,19 @@ test('print database enforces payments, ownership isolation, idempotency and ful
   const opts=[{id:'standard',provider_product_cost:2000,provider_shipping_cost:500,provider_total_cost:2500,retail_product_price:6000,retail_shipping_price:1000,customer_total:7000,gross_margin:4500}];
   async function setup(country='US') {
     const route=country==='NG'?'MANUAL_NIGERIA':'GELATO',currency=country==='NG'?'NGN':'USD';
-    const variant=(await one(`INSERT INTO print_product_variants(product_id,name,provider,provider_product_uid,active,approved_at,provider_validated_at,width_mm,height_mm,currency,retail_product_price,retail_shipping_price,minimum_margin)
-      VALUES($1,'Test fixture',$2,$3,true,now(),now(),203.2,254,$4,6000,1000,1000) RETURNING id`,[product,route,route==='GELATO'?'fixture-only':null,currency])).id;
+    const variant=(await one(`INSERT INTO print_product_variants(product_id,name,provider,provider_product_uid,active,approved_at,provider_validated_at,width_mm,height_mm,currency,retail_product_price,retail_shipping_price,minimum_margin,shipping_price_mode)
+      VALUES($1,'Test fixture',$2,$3,true,now(),now(),203.2,254,$4,6000,1000,1000,$5) RETURNING id`,[product,route,route==='GELATO'?'fixture-only':null,currency,route==='GELATO'?'live_buffer':'fixed'])).id;
     const quote=(await one(`INSERT INTO print_quotes(user_id,artwork_id,variant_id,provider,country,currency,shipping_address,product_snapshot,print_file_path,options,expires_at)
       VALUES($1,$2,$3,$4,$5,$6,'{}','{}','export',$7,now()+interval '15 minutes') RETURNING id`,[user,art,variant,route,country,currency,JSON.stringify(opts)])).id;
     const id=(await one('SELECT print_checkout($1,$2,$3) AS id',[quote,user,'standard'])).id;
     const order=await one('SELECT * FROM print_orders WHERE id=$1',[id]);return {...order,quote};
   }
   const order=await setup();
+  await t.test('international variants cannot use fixed shipping or margins below seven dollars',async()=>{
+    await assert.rejects(()=>one("UPDATE print_product_variants SET shipping_price_mode='fixed' WHERE provider='GELATO'"));
+    await assert.rejects(()=>one("UPDATE print_product_variants SET minimum_margin=699 WHERE provider='GELATO'"));
+    await assert.rejects(()=>one("UPDATE print_product_variants SET shipping_buffer_bps=-1 WHERE provider='GELATO'"));
+  });
   await t.test('duplicate checkout returns one order; wrong user cannot use quote',async()=>{
     assert.equal((await one('SELECT print_checkout($1,$2,$3) AS id',[order.quote,user,'standard'])).id,order.id);
     await assert.rejects(()=>one('SELECT print_checkout($1,gen_random_uuid(),$2)',[order.quote,'standard']));

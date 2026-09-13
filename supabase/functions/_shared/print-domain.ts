@@ -1,26 +1,39 @@
 export { routeCountry, printQuality, fitArtwork } from '../../../assets/js/print-math.mjs';
 
+export const GELATO_LAUNCH_COUNTRIES = ['US', 'GB', 'CA', 'DE', 'FR', 'NL', 'AU'];
+export function launchDestination(country: string) {
+  if (country !== 'NG' && !GELATO_LAUNCH_COUNTRIES.includes(country)) throw new Error('Printing is not yet available for this destination.');
+}
+
 export function money(value: unknown): number {
   const n = Number(value);
   if (value == null || !Number.isFinite(n) || n < 0 || n > 10000000) throw new Error('Invalid provider price.');
   return Math.ceil(n * 100 - 1e-8);
 }
-export function priceQuote(productCost: number, shippingCost: number, pricing: any) {
-  for (const n of [productCost, shippingCost, pricing.retail_product_price, pricing.retail_shipping_price,
+export function priceQuote(productCost: number, shippingCost: number, pricing: any, paid?: any) {
+  const liveShipping = pricing.shipping_price_mode === 'live_buffer';
+  const buffer = pricing.shipping_buffer_bps;
+  if (liveShipping && (!Number.isSafeInteger(buffer) || buffer < 0 || buffer > 10000)) throw new Error('Shipping buffer has not been configured.');
+  // A paid order must never be repriced when its provider quote is refreshed.
+  const artworkPrice = paid ? paid.retail_product_price : pricing.retail_product_price;
+  const shippingPrice = paid ? paid.retail_shipping_price : liveShipping ? Math.ceil(shippingCost * (10000 + buffer) / 10000) : pricing.retail_shipping_price;
+  for (const n of [productCost, shippingCost, artworkPrice, shippingPrice,
     pricing.minimum_margin, pricing.cost_buffer_bps]) {
     if (!Number.isSafeInteger(n) || n < 0) throw new Error('Pricing has not been configured.');
   }
   const providerTotal = productCost + shippingCost;
-  const total = pricing.retail_product_price + pricing.retail_shipping_price;
+  const total = artworkPrice + shippingPrice;
+  if (paid && total !== paid.customer_total) throw new Error('Paid order total does not match its prices.');
   const riskCost = Math.ceil(providerTotal * (1 + pricing.cost_buffer_bps / 10000));
-  if (!total || total - riskCost < pricing.minimum_margin) throw new Error('This option is temporarily unavailable at the configured price.');
+  const minimum = pricing.currency === 'USD' ? Math.max(700, pricing.minimum_margin) : pricing.minimum_margin;
+  if (!total || total - riskCost < minimum) throw new Error('This option is temporarily unavailable at the configured price.');
   return { provider_product_cost: productCost, provider_shipping_cost: shippingCost, provider_total_cost: providerTotal,
-    retail_product_price: pricing.retail_product_price, retail_shipping_price: pricing.retail_shipping_price,
+    retail_product_price: artworkPrice, retail_shipping_price: shippingPrice,
     customer_total: total, gross_margin: total - providerTotal };
 }
 export function addressInput(input: any) {
   const limits: Record<string, number> = { country: 2, firstName: 25, lastName: 25, addressLine1: 35,
-    addressLine2: 35, city: 35, state: 35, postCode: 15, email: 150, phone: 25 };
+    addressLine2: 35, city: 30, state: 35, postCode: 15, email: 150, phone: 25 };
   const address: Record<string, string> = {};
   for (const [key, max] of Object.entries(limits)) {
     const value = typeof input?.[key] === 'string' ? input[key].trim() : '';
@@ -29,6 +42,7 @@ export function addressInput(input: any) {
     address[key] = value;
   }
   if (!/^[A-Z]{2}$/.test(address.country) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address.email)) throw new Error('Check your country and email.');
+  if (['US','CA','AU'].includes(address.country) && !address.state) throw new Error('Enter your delivery state or province.');
   return address;
 }
 export function safeTracking(url: unknown) {

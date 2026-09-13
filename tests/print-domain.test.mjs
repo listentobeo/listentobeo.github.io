@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PNG } from 'pngjs';
-import { routeCountry, printQuality, priceQuote, customerOrder, safeTracking } from '../supabase/functions/_shared/print-domain.ts';
+import { routeCountry, printQuality, priceQuote, customerOrder, safeTracking, launchDestination } from '../supabase/functions/_shared/print-domain.ts';
 import { renderPrintFile } from '../supabase/functions/_shared/print-images.ts';
 import { GelatoProvider, summarizeProviderOrders } from '../supabase/functions/_shared/print-provider.ts';
 
@@ -19,6 +19,27 @@ test('retail prices are configured, costs are buffered and unsafe margins fail c
   const pricing={retail_product_price:6000,retail_shipping_price:1000,minimum_margin:2000,cost_buffer_bps:1000};
   assert.equal(priceQuote(2000,800,pricing).gross_margin,4200);
   assert.throws(()=>priceQuote(6000,800,pricing));assert.throws(()=>priceQuote(NaN,800,pricing));
+});
+test('live shipping adds configurable buffer per method and never changes approved artwork prices',()=>{
+  const p={currency:'USD',retail_product_price:1499,retail_shipping_price:99999,shipping_price_mode:'live_buffer',shipping_buffer_bps:1000,minimum_margin:700,cost_buffer_bps:0};
+  const first=priceQuote(799,501,p);
+  assert.equal(first.retail_shipping_price,552);assert.equal(first.retail_product_price,1499);assert.equal(first.customer_total,2051);
+  assert.equal(priceQuote(799,1000,p).retail_shipping_price,1100);
+  assert.equal(priceQuote(799,501,{...p,shipping_buffer_bps:0}).retail_shipping_price,501);
+  assert.throws(()=>priceQuote(799,501,{...p,shipping_buffer_bps:undefined}));
+  assert.throws(()=>priceQuote(900,501,{...p,minimum_margin:0}));
+});
+test('provider requote preserves paid totals and blocks fulfillment if margin is lost',()=>{
+  const p={currency:'USD',retail_product_price:2499,shipping_price_mode:'live_buffer',shipping_buffer_bps:1000,minimum_margin:700,cost_buffer_bps:0};
+  const paid=priceQuote(900,500,p);
+  const fresh=priceQuote(900,600,p,paid);
+  assert.equal(fresh.customer_total,paid.customer_total);assert.equal(fresh.retail_shipping_price,550);
+  assert.throws(()=>priceQuote(900,1500,p,paid));
+  assert.throws(()=>priceQuote(900,600,p,{...paid,customer_total:1}));
+});
+test('only approved international launch countries and existing manual Nigeria route are exposed',()=>{
+  for(const country of ['US','GB','CA','DE','FR','NL','AU','NG'])assert.doesNotThrow(()=>launchDestination(country));
+  for(const country of ['IE','UK','','us'])assert.throws(()=>launchDestination(country));
 });
 test('customer order projection strips provider costs, identifiers, file paths and notes',()=>{
   const out=customerOrder({id:'x',provider_product_cost:234,provider_order_id:'secret',print_file_path:'private',fulfillment_notes:'private',product_snapshot:{name:'Print'}});

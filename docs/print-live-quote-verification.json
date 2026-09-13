@@ -1,0 +1,3087 @@
+{
+  "verifiedOn": "2026-09-13",
+  "scope": "6 exact sizes × 2 orientations × 14 public-location test addresses; 20 × 30 cm unresolved. Quote-only; not order or print-proof verification.",
+  "currency": "USD",
+  "shippingFormula": "ceil(Gelato shipping cents × (10000 + shipping_buffer_bps) / 10000), shipping_buffer_bps=1000",
+  "minimumMarginCents": 700,
+  "existingCostReserveBps": 1000,
+  "checkoutEnabled": false,
+  "fulfillmentEnabled": false,
+  "retryNotes": [
+    "50 × 70 cm landscape / Los Angeles returned Gateway Timeout once; retry succeeded. Quotes are time-limited observations, never fixed rates."
+  ],
+  "results": [
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:10:45.671Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1499,
+        "shipping": 539,
+        "total": 2038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:10:45.626Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1499,
+        "shipping": 539,
+        "total": 2038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:10:50.706Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 1499,
+        "shipping": 706,
+        "total": 2205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:10:50.706Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 1499,
+        "shipping": 706,
+        "total": 2205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:10:56.262Z",
+      "methods": 4,
+      "passed": 0,
+      "blocked": 4
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:10:56.543Z",
+      "methods": 5,
+      "passed": 0,
+      "blocked": 5
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:11:00.900Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1499,
+        "shipping": 757,
+        "total": 2256,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:11:00.985Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1499,
+        "shipping": 757,
+        "total": 2256,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:11:04.545Z",
+      "methods": 1,
+      "passed": 0,
+      "blocked": 1
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:11:05.713Z",
+      "methods": 1,
+      "passed": 0,
+      "blocked": 1
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:11:09.291Z",
+      "methods": 2,
+      "passed": 0,
+      "blocked": 2
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:11:09.103Z",
+      "methods": 2,
+      "passed": 0,
+      "blocked": 2
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:11:12.168Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1499,
+        "shipping": 860,
+        "total": 2359,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "51426098-7572-48d4-8777-15058f6894ba",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:11:12.222Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1499,
+        "shipping": 860,
+        "total": 2359,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:11:55.902Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1499,
+        "shipping": 539,
+        "total": 2038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:11:56.140Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1499,
+        "shipping": 539,
+        "total": 2038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:12:00.681Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 1499,
+        "shipping": 706,
+        "total": 2205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:12:00.099Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 1499,
+        "shipping": 706,
+        "total": 2205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:12:05.142Z",
+      "methods": 4,
+      "passed": 0,
+      "blocked": 4
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:12:04.971Z",
+      "methods": 5,
+      "passed": 0,
+      "blocked": 5
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:12:08.237Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1499,
+        "shipping": 757,
+        "total": 2256,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:12:08.591Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1499,
+        "shipping": 757,
+        "total": 2256,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:12:12.029Z",
+      "methods": 1,
+      "passed": 0,
+      "blocked": 1
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:12:12.054Z",
+      "methods": 1,
+      "passed": 0,
+      "blocked": 1
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:12:14.922Z",
+      "methods": 2,
+      "passed": 0,
+      "blocked": 2
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:12:15.061Z",
+      "methods": 2,
+      "passed": 0,
+      "blocked": 2
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:12:18.049Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1499,
+        "shipping": 860,
+        "total": 2359,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "42295a57-d15c-4edd-aa47-1ad68ab5971f",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:12:18.012Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1499,
+        "shipping": 860,
+        "total": 2359,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:12:23.108Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1999,
+        "shipping": 539,
+        "total": 2538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:12:23.356Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1999,
+        "shipping": 539,
+        "total": 2538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:12:27.119Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_large_letter",
+        "artwork": 1999,
+        "shipping": 706,
+        "total": 2705,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:12:26.849Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_large_letter",
+        "artwork": 1999,
+        "shipping": 706,
+        "total": 2705,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:12:30.365Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 1999,
+        "shipping": 722,
+        "total": 2721,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:12:30.164Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 1999,
+        "shipping": 722,
+        "total": 2721,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:12:33.357Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1999,
+        "shipping": 757,
+        "total": 2756,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:12:33.342Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1999,
+        "shipping": 757,
+        "total": 2756,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:12:35.981Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 1999,
+        "shipping": 786,
+        "total": 2785,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:12:36.203Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 1999,
+        "shipping": 786,
+        "total": 2785,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:12:39.082Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 1999,
+        "shipping": 679,
+        "total": 2678,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:12:39.633Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 1999,
+        "shipping": 679,
+        "total": 2678,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:12:42.539Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1999,
+        "shipping": 884,
+        "total": 2883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "d925adde-d50c-4f0a-8564-6ba03b735229",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:12:42.105Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1999,
+        "shipping": 884,
+        "total": 2883,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:13:37.769Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1999,
+        "shipping": 539,
+        "total": 2538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:13:37.781Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 1999,
+        "shipping": 539,
+        "total": 2538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:13:41.718Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_large_letter",
+        "artwork": 1999,
+        "shipping": 706,
+        "total": 2705,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:13:41.690Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_large_letter",
+        "artwork": 1999,
+        "shipping": 706,
+        "total": 2705,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:13:45.284Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 1999,
+        "shipping": 722,
+        "total": 2721,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:13:45.314Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 1999,
+        "shipping": 722,
+        "total": 2721,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:13:48.371Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1999,
+        "shipping": 757,
+        "total": 2756,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:13:48.268Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 1999,
+        "shipping": 757,
+        "total": 2756,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:13:50.966Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 1999,
+        "shipping": 786,
+        "total": 2785,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:13:50.991Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 1999,
+        "shipping": 786,
+        "total": 2785,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:13:54.213Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 1999,
+        "shipping": 679,
+        "total": 2678,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:13:54.498Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 1999,
+        "shipping": 679,
+        "total": 2678,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:13:56.756Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1999,
+        "shipping": 884,
+        "total": 2883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "72ac9018-9a8e-4744-9808-02b8ef088a30",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:13:56.912Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 1999,
+        "shipping": 884,
+        "total": 2883,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:14:03.330Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3499,
+        "shipping": 539,
+        "total": 4038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:14:02.572Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3499,
+        "shipping": 539,
+        "total": 4038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:14:07.216Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_small",
+        "artwork": 3499,
+        "shipping": 706,
+        "total": 4205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:14:06.890Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_small",
+        "artwork": 3499,
+        "shipping": 706,
+        "total": 4205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:14:10.377Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3499,
+        "shipping": 722,
+        "total": 4221,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:14:10.715Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3499,
+        "shipping": 722,
+        "total": 4221,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:14:13.943Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3499,
+        "shipping": 917,
+        "total": 4416,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:14:14.061Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3499,
+        "shipping": 917,
+        "total": 4416,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:14:17.691Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3499,
+        "shipping": 1052,
+        "total": 4551,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:14:17.417Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3499,
+        "shipping": 1052,
+        "total": 4551,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:14:21.327Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3499,
+        "shipping": 780,
+        "total": 4279,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:14:21.625Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3499,
+        "shipping": 780,
+        "total": 4279,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:14:25.113Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3499,
+        "shipping": 884,
+        "total": 4383,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "25bc217b-a398-46a9-9c5c-48933f39ba09",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:14:24.907Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3499,
+        "shipping": 884,
+        "total": 4383,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:14:42.782Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3499,
+        "shipping": 539,
+        "total": 4038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:14:42.844Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3499,
+        "shipping": 539,
+        "total": 4038,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:14:46.186Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_small",
+        "artwork": 3499,
+        "shipping": 706,
+        "total": 4205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:14:46.383Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "amazon_shipping_48_small",
+        "artwork": 3499,
+        "shipping": 706,
+        "total": 4205,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:14:52.560Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3499,
+        "shipping": 722,
+        "total": 4221,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:14:52.910Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3499,
+        "shipping": 722,
+        "total": 4221,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:14:56.603Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3499,
+        "shipping": 917,
+        "total": 4416,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:14:56.182Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3499,
+        "shipping": 917,
+        "total": 4416,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:15:00.042Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3499,
+        "shipping": 1052,
+        "total": 4551,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:14:59.576Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3499,
+        "shipping": 1052,
+        "total": 4551,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:15:07.417Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3499,
+        "shipping": 780,
+        "total": 4279,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:15:05.583Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3499,
+        "shipping": 780,
+        "total": 4279,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:15:11.056Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3499,
+        "shipping": 884,
+        "total": 4383,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "ec1c5459-0c14-46b0-9428-9b2b3a25320f",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:15:10.566Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3499,
+        "shipping": 884,
+        "total": 4383,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:15:15.983Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3999,
+        "shipping": 539,
+        "total": 4538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:15:16.130Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3999,
+        "shipping": 539,
+        "total": 4538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:15:20.257Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 3999,
+        "shipping": 706,
+        "total": 4705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:15:20.378Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 3999,
+        "shipping": 706,
+        "total": 4705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:15:24.223Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3999,
+        "shipping": 722,
+        "total": 4721,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:15:23.741Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3999,
+        "shipping": 722,
+        "total": 4721,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:15:28.462Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3999,
+        "shipping": 917,
+        "total": 4916,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:15:28.489Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3999,
+        "shipping": 917,
+        "total": 4916,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:15:31.474Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3999,
+        "shipping": 1052,
+        "total": 5051,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:15:31.813Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3999,
+        "shipping": 1052,
+        "total": 5051,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:15:35.360Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3999,
+        "shipping": 780,
+        "total": 4779,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:15:34.985Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3999,
+        "shipping": 780,
+        "total": 4779,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:15:37.797Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3999,
+        "shipping": 884,
+        "total": 4883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "4ff4d0d9-b5b4-4da4-894a-61a34d21b85e",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:15:38.773Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3999,
+        "shipping": 884,
+        "total": 4883,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:16:33.754Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3999,
+        "shipping": 539,
+        "total": 4538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T13:16:33.664Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 3999,
+        "shipping": 539,
+        "total": 4538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:16:37.212Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 3999,
+        "shipping": 706,
+        "total": 4705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T13:16:37.266Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 3999,
+        "shipping": 706,
+        "total": 4705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:16:41.217Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3999,
+        "shipping": 722,
+        "total": 4721,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T13:16:40.701Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 3999,
+        "shipping": 722,
+        "total": 4721,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:16:44.310Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3999,
+        "shipping": 917,
+        "total": 4916,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T13:16:44.930Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_warenpost",
+        "artwork": 3999,
+        "shipping": 917,
+        "total": 4916,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-16"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:16:47.827Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3999,
+        "shipping": 1052,
+        "total": 5051,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T13:16:47.701Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 3999,
+        "shipping": 1052,
+        "total": 5051,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:16:51.390Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3999,
+        "shipping": 780,
+        "total": 4779,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T13:16:51.253Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 3999,
+        "shipping": 780,
+        "total": 4779,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:16:53.890Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3999,
+        "shipping": 884,
+        "total": 4883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "18de4a13-b515-4138-877e-37f28edb5ed4",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T13:16:54.448Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 3999,
+        "shipping": 884,
+        "total": 4883,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:34:22.558Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 4999,
+        "shipping": 539,
+        "total": 5538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:34:21.979Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 4999,
+        "shipping": 539,
+        "total": 5538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:34:27.478Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 4999,
+        "shipping": 706,
+        "total": 5705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:34:27.596Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 4999,
+        "shipping": 706,
+        "total": 5705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:34:31.164Z",
+      "methods": 3,
+      "passed": 3,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 4999,
+        "shipping": 722,
+        "total": 5721,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:34:31.177Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "landmark_standard",
+        "artwork": 4999,
+        "shipping": 722,
+        "total": 5721,
+        "delivery": {
+          "min": "2026-09-18",
+          "max": "2026-09-23"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:34:35.464Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 4999,
+        "shipping": 1091,
+        "total": 6090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:34:35.861Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 4999,
+        "shipping": 1091,
+        "total": 6090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:34:38.876Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 4999,
+        "shipping": 1318,
+        "total": 6317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:34:38.530Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 4999,
+        "shipping": 1318,
+        "total": 6317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:34:42.283Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 4999,
+        "shipping": 780,
+        "total": 5779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:34:42.361Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 4999,
+        "shipping": 780,
+        "total": 5779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:34:44.726Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 4999,
+        "shipping": 884,
+        "total": 5883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "ab2a0ccf-2b23-45dc-a0e2-9f0187a4335b",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:34:45.636Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 4999,
+        "shipping": 884,
+        "total": 5883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:35:13.283Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 4999,
+        "shipping": 539,
+        "total": 5538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:35:12.761Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 4999,
+        "shipping": 539,
+        "total": 5538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:35:17.182Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 4999,
+        "shipping": 706,
+        "total": 5705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:35:17.761Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 4999,
+        "shipping": 706,
+        "total": 5705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:35:22.153Z",
+      "methods": 3,
+      "passed": 3,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 4999,
+        "shipping": 722,
+        "total": 5721,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:35:22.584Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "landmark_standard",
+        "artwork": 4999,
+        "shipping": 722,
+        "total": 5721,
+        "delivery": {
+          "min": "2026-09-18",
+          "max": "2026-09-23"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:35:25.721Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 4999,
+        "shipping": 1091,
+        "total": 6090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:35:26.011Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 4999,
+        "shipping": 1091,
+        "total": 6090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:35:29.385Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 4999,
+        "shipping": 1318,
+        "total": 6317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:35:29.740Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 4999,
+        "shipping": 1318,
+        "total": 6317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:35:33.052Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 4999,
+        "shipping": 780,
+        "total": 5779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:35:33.558Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 4999,
+        "shipping": 780,
+        "total": 5779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:35:39.116Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 4999,
+        "shipping": 884,
+        "total": 5883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "c457328b-9013-4702-9c32-17e065d7b8ff",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:35:38.108Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 4999,
+        "shipping": 884,
+        "total": 5883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:35:44.841Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 6999,
+        "shipping": 539,
+        "total": 7538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:35:46.231Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 6999,
+        "shipping": 539,
+        "total": 7538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:35:50.085Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 6999,
+        "shipping": 706,
+        "total": 7705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:35:49.815Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 6999,
+        "shipping": 706,
+        "total": 7705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:35:53.471Z",
+      "methods": 3,
+      "passed": 3,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 6999,
+        "shipping": 722,
+        "total": 7721,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:35:53.615Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 6999,
+        "shipping": 722,
+        "total": 7721,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:35:56.979Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 6999,
+        "shipping": 1091,
+        "total": 8090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:35:57.037Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 6999,
+        "shipping": 1091,
+        "total": 8090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:36:00.429Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 6999,
+        "shipping": 1318,
+        "total": 8317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:36:00.668Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 6999,
+        "shipping": 1318,
+        "total": 8317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:36:06.979Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 6999,
+        "shipping": 780,
+        "total": 7779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:36:05.260Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 6999,
+        "shipping": 780,
+        "total": 7779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:36:10.264Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 6999,
+        "shipping": 884,
+        "total": 7883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "7a09af96-a8af-4130-b7e2-6ec95734cfb4",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:36:10.043Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 6999,
+        "shipping": 884,
+        "total": 7883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "New York",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:37:01.530Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 6999,
+        "shipping": 539,
+        "total": 7538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Los Angeles",
+      "country": "US",
+      "verifiedAt": "2026-09-13T18:38:02.612Z",
+      "methods": 10,
+      "passed": 10,
+      "blocked": 0,
+      "cheapest": {
+        "method": "usps_ground_advantage",
+        "artwork": 6999,
+        "shipping": 539,
+        "total": 7538,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "London",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:37:09.422Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 6999,
+        "shipping": 706,
+        "total": 7705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Manchester",
+      "country": "GB",
+      "verifiedAt": "2026-09-13T18:37:10.344Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "evri_48_packets",
+        "artwork": 6999,
+        "shipping": 706,
+        "total": 7705,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Toronto",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:37:14.113Z",
+      "methods": 3,
+      "passed": 3,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 6999,
+        "shipping": 722,
+        "total": 7721,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Vancouver",
+      "country": "CA",
+      "verifiedAt": "2026-09-13T18:37:14.570Z",
+      "methods": 5,
+      "passed": 5,
+      "blocked": 0,
+      "cheapest": {
+        "method": "purolator_ground",
+        "artwork": 6999,
+        "shipping": 722,
+        "total": 7721,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-21"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Berlin",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:37:19.191Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 6999,
+        "shipping": 1091,
+        "total": 8090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Munich",
+      "country": "DE",
+      "verifiedAt": "2026-09-13T18:37:19.180Z",
+      "methods": 4,
+      "passed": 4,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_parcel",
+        "artwork": 6999,
+        "shipping": 1091,
+        "total": 8090,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Paris",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:37:22.701Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 6999,
+        "shipping": 1318,
+        "total": 8317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Lyon",
+      "country": "FR",
+      "verifiedAt": "2026-09-13T18:37:23.317Z",
+      "methods": 1,
+      "passed": 1,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dpd_national_predict",
+        "artwork": 6999,
+        "shipping": 1318,
+        "total": 8317,
+        "delivery": {
+          "min": "2026-09-15",
+          "max": "2026-09-17"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Amsterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:37:29.225Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 6999,
+        "shipping": 780,
+        "total": 7779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Rotterdam",
+      "country": "NL",
+      "verifiedAt": "2026-09-13T18:37:29.110Z",
+      "methods": 6,
+      "passed": 6,
+      "blocked": 0,
+      "cheapest": {
+        "method": "dhl_global_parcel",
+        "artwork": 6999,
+        "shipping": 780,
+        "total": 7779,
+        "delivery": {
+          "min": "2026-09-17",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Sydney",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:37:32.670Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 6999,
+        "shipping": 884,
+        "total": 7883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    },
+    {
+      "variantId": "a45212ba-0a17-4146-9c89-a1e86a0264aa",
+      "city": "Melbourne",
+      "country": "AU",
+      "verifiedAt": "2026-09-13T18:37:32.478Z",
+      "methods": 2,
+      "passed": 2,
+      "blocked": 0,
+      "cheapest": {
+        "method": "australia_parcel_post",
+        "artwork": 6999,
+        "shipping": 884,
+        "total": 7883,
+        "delivery": {
+          "min": "2026-09-16",
+          "max": "2026-09-18"
+        }
+      }
+    }
+  ]
+}

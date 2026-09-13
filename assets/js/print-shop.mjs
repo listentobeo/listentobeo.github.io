@@ -17,13 +17,14 @@ function sizes(){invalidate();const frame=$('print-frame').value;const list=vari
 function frames(){const product=products.find(p=>p.id===$('print-product').value);variants=product?.variants||[];
  $('print-frame').replaceChildren(...[...new Set(variants.map(v=>v.frame_style))].map(f=>option(f,f==='none'?'Print only':f[0].toUpperCase()+f.slice(1))));sizes();}
 async function catalog(){invalidate();const current=revision;selected=null;$('print-options').hidden=true;$('print-address').hidden=true;message('');
+ $('state').required=['US','CA','AU'].includes($('print-country').value);
  preview();
  if(!$('print-country').value)return;
  try{const result=await request('catalog',{country:$('print-country').value});if(current!==revision)return;
  products=result.products;checkoutEnabled=result.checkoutEnabled;$('print-options').hidden=!products.length;
  if(!products.length){$('print-availability').textContent='Prints are not yet available for this destination. Your digital artwork is still yours to download.';return;}
  $('print-product').replaceChildren(...products.map(p=>option(p.id,p.name)));frames();
- if(!checkoutEnabled)message('Preview your artwork now. Ordering will open once our print range is ready.');
+ if(!checkoutEnabled)message(result.checkoutUnavailableReason||'Preview your artwork now. Ordering will open once our print range is ready.');
  }catch(e){if(current===revision)message(e.message);}}
 function showPrice(){const shipping=quote?.options.find(s=>s.id===$('print-shipping').value);if(!shipping)return;
  $('print-delivery').textContent=`Estimated delivery: ${shipping.delivery.min} – ${shipping.delivery.max}`;
@@ -33,16 +34,16 @@ $('print-size').addEventListener('change',()=>{invalidate();selected=variants.fi
 $('print-room').addEventListener('change',preview);$('print-address').addEventListener('input',invalidate);$('print-shipping').addEventListener('change',showPrice);
 $('print-view').addEventListener('change',preview);
 $('print-address').addEventListener('submit',async e=>{e.preventDefault();message('');invalidate();const current=revision;
- if(!checkoutEnabled){message('Ordering is not yet open.');return;}
  const button=$('print-quote-button');button.disabled=true;
  try{if(!await session()){ $('print-signin').hidden=false;throw new Error('Sign in to save your print master and order. Your artwork will be kept on this device for 24 hours.');}
  if(!artworkId){const saved=await request('artwork',{image:draft.image});artworkId=saved.artwork.id;}
  if(current!==revision)return;
  const address=Object.fromEntries(new FormData(e.target));address.country=$('print-country').value;
  const result=await request('quote',{artworkId,variantId:selected.id,address});if(current!==revision)return;
- quote=result;$('print-shipping').replaceChildren(...quote.options.map(s=>option(s.id,s.name)));$('print-quote').hidden=false;showPrice();
+ quote=result;$('print-shipping').replaceChildren(...quote.options.map(s=>option(s.id,s.name)));$('print-quote').hidden=false;$('print-checkout').disabled=!checkoutEnabled;showPrice();
  }catch(error){message(error.message);if(error.code==='SIGN_IN')$('print-signin').hidden=false;}finally{button.disabled=false;}});
 $('print-checkout').addEventListener('click',async()=>{const button=$('print-checkout');if(!quote)return;button.disabled=true;message('');
+ if(!checkoutEnabled){message('Checkout is disabled while the print range is being verified.');return;}
  try{if(Date.parse(quote.expiresAt)<=Date.now()){invalidate();throw new Error('Your quote expired. Check delivery and price again.');}
  const result=await request('checkout',{quoteId:quote.quoteId,shippingId:$('print-shipping').value});
  if(result.checkoutUrl){const url=new URL(result.checkoutUrl);if(url.protocol!=='https:'||url.hostname!=='checkout.paystack.com')throw new Error('Unexpected payment destination.');location.href=url.href;}
@@ -50,7 +51,7 @@ $('print-checkout').addEventListener('click',async()=>{const button=$('print-che
  }catch(e){message(e.message);}finally{button.disabled=false;}});
 try{
  const names=new Intl.DisplayNames(['en'],{type:'region'});
- const countries='NG US GB CA AU DE FR NL IE IT ES PT BE AT CH SE NO DK FI NZ AE SG JP ZA GH KE BR MX IN'.split(' ');
+ const countries='NG US GB CA AU DE FR NL'.split(' ');
  $('print-country').append(...countries.map(c=>({c,name:names.of(c)})).sort((a,b)=>a.name.localeCompare(b.name)).map(o=>option(o.c,o.name)));
  draft=await readPrintDraft();if(!draft)throw new Error('Open a freshly generated sketch and choose “Turn this into real wall art” to preview it here.');
  art=new Image();art.src=draft.image;await art.decode();

@@ -68,7 +68,7 @@ export async function processPrintOrder(db: any, id: string) {
       address: order.shipping_address, uid: order.product_snapshot.provider_product_uid, fileUrl });
     const shipping = fresh.find(s => s.id === order.shipping_snapshot.id);
     if (!shipping) throw new Error('Selected shipping method is no longer available.');
-    const prices = priceQuote(shipping.provider_product_cost, shipping.provider_shipping_cost, order.product_snapshot);
+    const prices = priceQuote(shipping.provider_product_cost, shipping.provider_shipping_cost, order.product_snapshot, order);
     await updateOrder(db, id, token, { ...prices, submission_started_at: new Date().toISOString(), submission_uncertain: true });
     submitted = true;
     dbResult(await db.from('print_jobs').update({ status: 'running', updated_at: new Date().toISOString() }).eq('order_id', id));

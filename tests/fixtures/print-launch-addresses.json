@@ -1,0 +1,173 @@
+{
+  "purpose": "Quote-only test fixtures using public-location addresses and synthetic recipient/contact details. Never create or fulfill an order to these addresses.",
+  "addresses": [
+    {
+      "country": "US",
+      "city": "New York",
+      "state": "NY",
+      "addressLine1": "350 5th Avenue",
+      "postCode": "10118",
+      "phone": "+12125550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "US",
+      "city": "Los Angeles",
+      "state": "CA",
+      "addressLine1": "200 N Spring Street",
+      "postCode": "90012",
+      "phone": "+12135550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "GB",
+      "city": "London",
+      "state": "",
+      "addressLine1": "Great Russell Street",
+      "postCode": "WC1B 3DG",
+      "phone": "+442079460100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "GB",
+      "city": "Manchester",
+      "state": "",
+      "addressLine1": "Lloyd Street",
+      "postCode": "M2 5DB",
+      "phone": "+441614960100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "CA",
+      "city": "Toronto",
+      "state": "ON",
+      "addressLine1": "100 Queen Street W",
+      "postCode": "M5H 2N2",
+      "phone": "+14165550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "CA",
+      "city": "Vancouver",
+      "state": "BC",
+      "addressLine1": "453 W 12th Avenue",
+      "postCode": "V5Y 1V4",
+      "phone": "+16045550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "DE",
+      "city": "Berlin",
+      "state": "",
+      "addressLine1": "Platz der Republik 1",
+      "postCode": "11011",
+      "phone": "+49305550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "DE",
+      "city": "Munich",
+      "state": "",
+      "addressLine1": "Marienplatz 8",
+      "postCode": "80331",
+      "phone": "+49895550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "FR",
+      "city": "Paris",
+      "state": "",
+      "addressLine1": "5 Avenue Anatole France",
+      "postCode": "75007",
+      "phone": "+33155550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "FR",
+      "city": "Lyon",
+      "state": "",
+      "addressLine1": "1 Place de la Comedie",
+      "postCode": "69001",
+      "phone": "+33455550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "NL",
+      "city": "Amsterdam",
+      "state": "",
+      "addressLine1": "Amstel 1",
+      "postCode": "1011 PN",
+      "phone": "+31205550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "NL",
+      "city": "Rotterdam",
+      "state": "",
+      "addressLine1": "Coolsingel 40",
+      "postCode": "3011 AD",
+      "phone": "+31105550100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "AU",
+      "city": "Sydney",
+      "state": "NSW",
+      "addressLine1": "483 George Street",
+      "postCode": "2000",
+      "phone": "+61255500100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    },
+    {
+      "country": "AU",
+      "city": "Melbourne",
+      "state": "VIC",
+      "addressLine1": "90 Swanston Street",
+      "postCode": "3000",
+      "phone": "+61355500100",
+      "firstName": "Print",
+      "lastName": "Verification",
+      "addressLine2": "",
+      "email": "admin@beoarts.com"
+    }
+  ]
+}
