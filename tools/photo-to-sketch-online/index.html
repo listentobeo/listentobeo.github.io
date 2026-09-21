@@ -562,7 +562,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
           </div>
 
           <!-- Book real artwork CTA — shown after result -->
-          <a class="print-cta" id="print-artwork-link" href="/print/" hidden><strong>Turn this into real wall art</strong><span>Preview your sketch in a room and explore print options →</span></a>
+          <a class="print-cta" id="print-artwork-link" href="/print/" hidden>
+            <span class="print-cta-copy"><strong>Turn this into real wall art</strong><span>Preview your sketch in a room and explore print options →</span></span>
+            <span class="print-cta-gallery" aria-hidden="true"><span class="print-cta-light"></span><span class="print-cta-frame"><img id="print-artwork-thumbnail" alt="" decoding="async"></span></span>
+          </a>
           <div class="book-cta-sketch" id="sketch-book-cta">
             <p>Love your sketch? Get it drawn for real.</p>
             <span>Beo Art Studio can recreate this as a custom pencil drawing, charcoal portrait or full painting — shipped straight to you.</span>
