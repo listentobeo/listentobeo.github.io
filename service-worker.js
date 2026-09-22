@@ -2,7 +2,7 @@
 // BEO AI TOOLS - SERVICE WORKER v17
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v20"
+const CACHE_NAME  = "beo-ai-v21"
 const OFFLINE_URL = "/offline/"
 
 const SHELL_ASSETS = [
@@ -31,6 +31,7 @@ const SHELL_ASSETS = [
   "/tools/concept-lab/",
   "/tools/art-concept-generator/",
   "/assets/js/app.js",
+  "/assets/js/sketch-request.mjs",
   "/assets/js/pwa.js",
   "/assets/js/auth.js",
   "/assets/js/auth-redirect.js",

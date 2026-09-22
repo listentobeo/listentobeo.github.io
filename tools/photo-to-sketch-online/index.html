@@ -8,6 +8,7 @@
 <script src="/assets/js/pwa.js" defer></script>
 <meta name="theme-color" content="#0d0d12">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png?v=20260731-brush">
 <link rel="apple-touch-icon" sizes="192x192" href="/assets/icon-192.png?v=20260731-brush">
@@ -662,19 +663,21 @@ window.selectStyle = function(style, el){
 
 /* ── SUPABASE WAIT ──────────────────────────────── */
 function waitForSupabase(){
-  return new Promise(resolve => {
-    if(window.supabase) return resolve()
-    const iv = setInterval(() => { if(window.supabase){ clearInterval(iv); resolve() } }, 50)
-    setTimeout(() => { clearInterval(iv); resolve() }, 3000)
+  return new Promise((resolve, reject) => {
+    if(window.supabase?.auth?.getSession) return resolve()
+    const iv = setInterval(() => { if(window.supabase?.auth?.getSession){ clearInterval(iv); clearTimeout(timer); resolve() } }, 50)
+    const timer = setTimeout(() => { clearInterval(iv); reject(new Error('Sign-in could not load. Check your connection and reload.')) }, 8000)
   })
 }
 
 /* ── CREDITS + GUEST INIT ───────────────────────── */
 document.addEventListener("DOMContentLoaded", async function(){
+  try {
   await waitForSupabase()
   // Reuse the shared auth promise from app.js — avoids concurrent getUser lock contention
   const authResult = window._authReady || window.supabase.auth.getUser()
-  const { data } = await authResult
+  const { data, error } = await authResult
+  if(error){ console.warn('Sign-in temporarily unavailable:', error.message); return }
   if(data && data.user){
     // Logged-in: load credits
     const { data: profile } = await window.supabase
@@ -694,26 +697,24 @@ document.addEventListener("DOMContentLoaded", async function(){
     // Guest: init trial system
     if(window.initGuestTrial) window.initGuestTrial()
   }
+  } catch(error) { console.warn('Account display unavailable:', error.message) }
 })
 
 /* ── PROGRESS ───────────────────────────────────── */
 let progressTimer = null, currentProgress = 0
-const statusMessages = ["Sending to AI...","Analysing photo...","Applying style...","Rendering details...","Almost ready..."]
 
 function startProgress(){
   currentProgress = 0
   const fill = document.getElementById("progress-fill")
   const status = document.getElementById("status-text")
   document.getElementById("progress-wrap").classList.add("visible")
-  fill.style.width = "0%"; let msgIdx = 0
-  status.textContent = statusMessages[0]
+  fill.style.width = "0%"
+  status.textContent = "Preparing your artwork..."
   progressTimer = setInterval(() => {
     if(currentProgress < 80){
       const step = currentProgress < 40 ? 3.5 : currentProgress < 65 ? 1.8 : 0.5
       currentProgress = Math.min(currentProgress + step, 80)
       fill.style.width = currentProgress + "%"
-      const ni = Math.floor((currentProgress / 80) * statusMessages.length)
-      if(ni !== msgIdx && ni < statusMessages.length){ msgIdx = ni; status.textContent = statusMessages[msgIdx] }
     }
   }, 200)
 }
@@ -832,16 +833,18 @@ window.generateSketch = async function(){
   await waitForSupabase()
   if(!window.supabase?.auth) throw new Error("Could not connect. Please try again.")
 
-  // Ensure guest trial is initialized before any auth check
-  if(window.initGuestTrial && window._beoGuest && !window._beoGuest.trialChecked) {
-    await window.initGuestTrial()
-  }
-
   hideError()
   document.getElementById("no-credits-bar").classList.remove("visible")
-
-  const { data: userData } = await window.supabase.auth.getUser()
-  const isGuestUser = !userData.user
+  document.getElementById("status-text").textContent = "Checking your sign-in..."
+  const { getGenerationSession, requestSketch, withDeadline } = await import('/assets/js/sketch-request.mjs')
+  const session = await getGenerationSession(window.supabase)
+  const isGuestUser = !session
+  // No extra auth / guest-check / profile network round trips before generation.
+  // The server remains the authority for account credits and trial eligibility.
+  if(isGuestUser && window._beoGuest){
+    window._beoGuest.isGuest = true
+    window._beoGuest.visitorId = window.getBeoGuestFingerprint()
+  }
 
   // Guest trial gate — runs before any auth redirect
   if(isGuestUser) {
@@ -857,45 +860,14 @@ window.generateSketch = async function(){
   // Image check
   if(!uploadedImage){ btn.disabled = false; btn.textContent = "Generate Artwork"; showError("Please upload a photo first."); return }
 
-  // Auth-only: credits check
-  var profile = null
-  if(!isGuestUser) {
-    const { data: prof } = await window.supabase
-      .from("profiles").select("credits, generations_used").eq("id", userData.user.id).single()
-    profile = prof
-    if(!profile || profile.credits < 1){
-      btn.disabled = false; btn.textContent = "Generate Artwork"
-      if(window.BeoAnalytics) window.BeoAnalytics.track("paywall_view")
-      var bar = document.getElementById("no-credits-bar")
-      bar.classList.add("visible")
-      bar.innerHTML = "No credits left. Redirecting to buy credits in <b><span id='countdown'>3</span>s</b>..."
-      var secs = 3
-      var iv = setInterval(function(){
-        secs--
-        var cd = document.getElementById("countdown")
-        if(cd) cd.textContent = secs
-        if(secs <= 0){ clearInterval(iv); window.location.href = "/dashboard/#buy" }
-      }, 1000)
-      return
-    }
-  }
-
   const style  = document.getElementById("style").value
   const prompt = document.getElementById("prompt").value
 
-    var sessionToken = null
-    if(!isGuestUser) {
-      const { data: sessionData } = await window.supabase.auth.getSession()
-      if(!sessionData.session){
-        alert("Session expired. Please login again.")
-        window.location.href = "/login/"; return
-      }
-      sessionToken = sessionData.session.access_token
-    }
-
-    const compressedImage = await compressImage(uploadedImage)
-
-    const response = await fetch(EDGE_FUNCTION_URL, {
+    const sessionToken = session?.access_token
+    document.getElementById("status-text").textContent = "Preparing your photo..."
+    const compressedImage = await withDeadline(compressImage(uploadedImage), 10000, 'Could not prepare this photo. Please try a different JPEG or PNG.')
+    document.getElementById("status-text").textContent = "Creating your artwork..."
+    const { response, result } = await requestSketch(EDGE_FUNCTION_URL, {
       method: "POST",
       headers: Object.assign(
         { "Content-Type": "application/json" },
@@ -910,7 +882,7 @@ window.generateSketch = async function(){
     })
 
     // Guest trial exhausted — show modal instead of error bar
-    if(isGuestUser && response.status === 403) {
+    if(isGuestUser && response.status === 403 && result.code === 'TRIAL_USED') {
       window._beoGuest.trialUsed = true
       resetProgress()
       document.getElementById("result-shimmer").style.display  = "none"
@@ -919,7 +891,9 @@ window.generateSketch = async function(){
       return
     }
 
-    const result = await response.json()
+    if(result.code === 'NO_CREDITS'){
+      document.getElementById('no-credits-bar').classList.add('visible')
+    }
     if(!result.result){
       if(window.BeoAnalytics) window.BeoAnalytics.track("generation_failed", { failure_code: result.code || "UNKNOWN" })
       throw new Error(result.error || "No image returned from AI.")
@@ -942,12 +916,10 @@ window.generateSketch = async function(){
     }
     if(window.BeoAnalytics) window.BeoAnalytics.track(isGuestUser ? "generation_success_guest" : "generation_success_member")
 
-    // Update badge locally — actual deduction handled atomically by edge function
-    if(!isGuestUser && profile) {
-      const newCredits = profile.credits - 1
-      document.getElementById("credits-display").innerHTML =
-        `<div class="credits-badge">⚡ ${newCredits} credits remaining</div>`
-    }
+    // Refresh the badge in the background; never delay displaying the artwork.
+    if(session?.user) window.supabase.from('profiles').select('credits').eq('id', session.user.id).single()
+      .then(({data}) => { if(data) document.getElementById('credits-display').textContent = data.credits + ' credits remaining' })
+      .catch(() => {})
 
   } catch(err){
     resetProgress()

@@ -1,10 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callSketchProvider, safetyBlocked } from '../_shared/sketch-provider.ts';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
 };
 
 type ErrorDefinition = {
@@ -20,23 +22,27 @@ const gateErrors: Record<string, ErrorDefinition> = {
       "AI generation is temporarily unavailable. Your trial or credit was not used.",
     retryable: true,
   },
+
   DAILY_FREE_LIMIT: {
     status: 429,
     message:
       "Today's free preview limit has been reached. Create an account for one clean generation or try again tomorrow.",
     retryable: true,
   },
+
   TRIAL_USED: {
     status: 403,
     message:
       "Your free preview has been used. Create an account for one clean generation.",
     retryable: false,
   },
+
   NO_CREDITS: {
     status: 402,
     message: "No credits remaining. Please choose a credit pack.",
     retryable: false,
   },
+
   PROFILE_NOT_FOUND: {
     status: 500,
     message: "Your account profile is not ready. Please try again.",
@@ -45,24 +51,34 @@ const gateErrors: Record<string, ErrorDefinition> = {
 };
 
 const TOOL = "photo-to-sketch";
+
+/*
+ * Keep this model name synchronized with a model currently available
+ * to your Gemini API key.
+ */
 const MODEL = "gemini-2.5-flash-image";
 
 const stylePrompts: Record<string, string> = {
   pencil:
-    "Transform this photo into a detailed graphite pencil sketch with realistic shading and fine linework on a white background. Keep the person's likeness.",
+    "Transform this photo into a detailed graphite pencil sketch with realistic shading and fine linework on a clean white background. Preserve the person's identity, facial structure, pose, proportions, clothing, and important details. Do not add extra people or objects.",
+
   charcoal:
-    "Transform this photo into a dramatic charcoal drawing with bold expressive strokes, deep shadows, and smudged texture. Black and white only.",
+    "Transform this photo into a dramatic charcoal drawing with bold expressive strokes, deep shadows, realistic smudged texture, and strong tonal contrast. Preserve the person's identity, facial structure, pose, proportions, clothing, and important details. Black and white only.",
+
   pen:
-    "Transform this photo into an ink pen illustration with detailed cross-hatching and fine linework. High contrast black and white.",
+    "Transform this photo into a detailed black ink pen illustration with fine linework, realistic cross-hatching, controlled shadows, and high contrast. Preserve the person's identity, facial structure, pose, proportions, clothing, and important details. Black and white only.",
+
   doodle:
-    "Transform this photo into a minimal hand-drawn doodle with clean simple outline art on a white background. Cartoon style.",
+    "Transform this photo into a minimal hand-drawn doodle with clean, simple outline art and a white background. Keep the main subject recognizable and preserve the pose and essential features. Cartoon-like but faithful to the original photo.",
+
   painting:
-    "Transform this photo into a vibrant oil painting with rich colors, thick visible brushstrokes, and an impressionist painterly texture.",
+    "Transform this photo into a vibrant oil painting with rich colors, visible brushstrokes, natural lighting, and a refined painterly texture. Preserve the person's identity, facial structure, pose, proportions, clothing, and important details.",
+
   anime:
-    "Transform this photo into a Japanese anime-style illustration with clean cel-shaded outlines, flat bold colors, and manga art style.",
+    "Transform this photo into a Japanese anime-style illustration with clean cel-shaded outlines, expressive but recognizable facial features, bold colors, and polished manga-inspired rendering. Preserve the person's identity, pose, proportions, clothing, and important details.",
 };
 
-function jsonResponse(body: unknown, status = 200) {
+function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
@@ -77,7 +93,7 @@ function errorResponse(
   message: string,
   status: number,
   retryable = false,
-) {
+): Response {
   return jsonResponse(
     {
       error: message,
@@ -88,28 +104,121 @@ function errorResponse(
   );
 }
 
+function getBearerToken(req: Request): string {
+  const authorization = req.headers.get("Authorization") || "";
+
+  if (!authorization) {
+    return "";
+  }
+
+  return authorization.replace(/^Bearer\s+/i, "").trim();
+}
+
+function getClientIp(req: Request): string {
+  return (
+    req.headers.get("x-forwarded-for") ||
+    req.headers.get("x-real-ip") ||
+    "unknown"
+  )
+    .split(",")[0]
+    .trim();
+}
+
+function parseDataUrl(image: string): {
+  mimeType: string;
+  base64Data: string;
+} {
+  const trimmed = image.trim();
+
+  /*
+   * Supports:
+   * data:image/jpeg;base64,xxxx
+   * data:image/png;base64,xxxx
+   * raw base64 strings
+   */
+  const dataUrlMatch = trimmed.match(
+    /^data:([^;,]+)(?:;[^,]*)?,([\s\S]+)$/i,
+  );
+
+  if (dataUrlMatch) {
+    return {
+      mimeType: dataUrlMatch[1].toLowerCase(),
+      base64Data: dataUrlMatch[2].replace(/\s/g, ""),
+    };
+  }
+
+  return {
+    mimeType: "image/jpeg",
+    base64Data: trimmed.replace(/\s/g, ""),
+  };
+}
+
+function providerFailure(status: number) {
+  if (status === 401 || status === 403) {
+    return {
+      code: "AI_UNAVAILABLE",
+      message:
+        "Gemini rejected the API request. Please verify the Gemini API key, API access, and enabled billing/project configuration. Your trial or credit was restored.",
+      httpStatus: 503,
+      circuitSeconds: 3600,
+    };
+  }
+
+  if (status === 429) {
+    return {
+      code: "AI_UNAVAILABLE",
+      message:
+        "Gemini is temporarily rate-limited or unavailable. Your trial or credit was restored.",
+      httpStatus: 503,
+      circuitSeconds: 900,
+    };
+  }
+
+  if (status >= 500) {
+    return {
+      code: "PROVIDER_ERROR",
+      message:
+        "Gemini is temporarily experiencing an error. Your trial or credit was restored.",
+      httpStatus: 502,
+      circuitSeconds: 300,
+    };
+  }
+
+  return {
+    code: "PROVIDER_ERROR",
+    message:
+      "Gemini could not process this image. Your trial or credit was restored.",
+    httpStatus: 502,
+    circuitSeconds: 0,
+  };
+}
+
 async function reserveGeneration(
   req: Request,
   serviceClient: any,
   visitorId: string,
 ) {
-  const authHeader = req.headers.get("Authorization") || "";
+  const token = getBearerToken(req);
   let userId: string | undefined;
 
-  if (authHeader) {
-    const token = authHeader.replace(/^Bearer\s+/i, "");
+  if (token) {
+    const authStarted = Date.now();
     const authResult = await serviceClient.auth.getUser(token);
+    console.log('Sketch authentication timing:', { elapsedMs: Date.now() - authStarted, failed: Boolean(authResult.error) });
+
     const user =
       authResult.data && authResult.data.user
         ? authResult.data.user
         : null;
 
     if (authResult.error || !user) {
+      const unavailable = authResult.error?.status >= 500 || authResult.error?.name === 'AuthRetryableFetchError';
       return {
         response: errorResponse(
-          "INVALID_SESSION",
-          "Invalid session. Please sign in again.",
-          401,
+          unavailable ? "AUTH_UNAVAILABLE" : "INVALID_SESSION",
+          unavailable ? "Sign-in verification is temporarily unavailable. Generation has not started; please try again shortly." : "Invalid session. Please sign in again.",
+          unavailable ? 503 : 401,
+          unavailable,
         ),
       };
     }
@@ -117,23 +226,34 @@ async function reserveGeneration(
     userId = user.id;
   }
 
-  const clientIp = (req.headers.get("x-forwarded-for") || "unknown")
-    .split(",")[0]
-    .trim();
-  const visitorKey =
+  const clientIp = getClientIp(req);
+
+  const safeVisitorId =
     visitorId && visitorId !== "unknown"
       ? visitorId.slice(0, 120)
-      : "ip_" + clientIp;
+      : "unknown";
+
+  const visitorKey =
+    userId || safeVisitorId !== "unknown"
+      ? userId
+        ? null
+        : safeVisitorId
+      : `ip_${clientIp}`;
 
   const reservation = await serviceClient.rpc("reserve_generation", {
     p_user_id: userId || null,
-    p_visitor_id: userId ? null : visitorKey,
+    p_visitor_id: visitorKey,
     p_ip: clientIp,
     p_tool_name: TOOL,
   });
 
   if (reservation.error) {
-    console.error("reserve_generation error:", reservation.error);
+    console.error("reserve_generation error:", {
+      message: reservation.error.message,
+      code: reservation.error.code,
+      details: reservation.error.details,
+      hint: reservation.error.hint,
+    });
 
     return {
       response: errorResponse(
@@ -150,6 +270,7 @@ async function reserveGeneration(
   if (!data || data.allowed !== true) {
     const code =
       data && data.code ? String(data.code) : "GATE_ERROR";
+
     const known = gateErrors[code] || {
       status: 500,
       message: "Could not start generation.",
@@ -162,10 +283,11 @@ async function reserveGeneration(
           error: known.message,
           code,
           retryable: known.retryable,
-          retryAfterSeconds:
-            data && data.retryAfterSeconds
-              ? data.retryAfterSeconds
-              : undefined,
+          ...(data?.retryAfterSeconds
+            ? {
+                retryAfterSeconds: data.retryAfterSeconds,
+              }
+            : {}),
         },
         known.status,
       ),
@@ -173,7 +295,7 @@ async function reserveGeneration(
   }
 
   return {
-    attemptId: String(data.attemptId),
+    attemptId: data.attemptId ? String(data.attemptId) : undefined,
   };
 }
 
@@ -188,77 +310,187 @@ async function finalizeGeneration(
     return;
   }
 
-  const result = await serviceClient.rpc("finalize_generation", {
-    p_attempt_id: attemptId,
-    p_succeeded: succeeded,
-    p_failure_code: failureCode || null,
-    p_circuit_seconds: circuitSeconds,
+  try {
+    const result = await serviceClient.rpc("finalize_generation", {
+      p_attempt_id: attemptId,
+      p_succeeded: succeeded,
+      p_failure_code: failureCode || null,
+      p_circuit_seconds: circuitSeconds,
+    });
+
+    if (result.error) {
+      console.error("finalize_generation error:", {
+        message: result.error.message,
+        code: result.error.code,
+        details: result.error.details,
+        hint: result.error.hint,
+      });
+    }
+  } catch (error) {
+    console.error("finalizeGeneration exception:", error);
+  }
+}
+
+function extractGeneratedImage(result: any): {
+  mimeType: string;
+  base64Data: string;
+} | null {
+  const candidates = Array.isArray(result?.candidates)
+    ? result.candidates
+    : [];
+
+  for (const candidate of candidates) {
+    const parts = Array.isArray(candidate?.content?.parts)
+      ? candidate.content.parts
+      : [];
+
+    for (const part of parts) {
+      /*
+       * Gemini responses may use camelCase or snake_case
+       * depending on the API representation.
+       */
+      const inlineData = part?.inlineData || part?.inline_data;
+
+      if (inlineData?.data) {
+        return {
+          mimeType:
+            inlineData.mimeType ||
+            inlineData.mime_type ||
+            "image/png",
+          base64Data: inlineData.data,
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+Deno.serve(async (req: Request) => {
+  /*
+   * Handle CORS before processing anything else.
+   */
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
+    });
+  }
+
+  if (req.method !== "POST") {
+    return errorResponse(
+      "METHOD_NOT_ALLOWED",
+      "Method not allowed.",
+      405,
+    );
+  }
+
+  /*
+   * These values are supplied by Supabase's runtime environment.
+   *
+   * GEMINI_API_KEY must be created in:
+   * Supabase Dashboard â†’ Edge Functions â†’ Secrets
+   *
+   * The actual secret is NOT placed in this source code.
+   */
+  const supabaseUrl =
+    Deno.env.get("SUPABASE_URL")?.trim() || "";
+
+  const serviceRoleKey =
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")?.trim() || "";
+
+  const geminiApiKey =
+    Deno.env.get("GEMINI_API_KEY")?.trim() || "";
+
+  /*
+   * Safe diagnostics. These do not print the secret itself.
+   */
+  console.log("generate-sketch configuration:", {
+    hasSupabaseUrl: Boolean(supabaseUrl),
+    hasServiceRoleKey: Boolean(serviceRoleKey),
+    hasGeminiApiKey: Boolean(geminiApiKey),
+    geminiApiKeyLength: geminiApiKey.length,
+    model: MODEL,
   });
 
-  if (result.error) {
-    console.error("finalize_generation error:", result.error);
-  }
-}
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.error("Missing Supabase runtime environment variables.");
 
-function providerFailure(status: number) {
-  if (status === 429) {
-    return {
-      code: "AI_UNAVAILABLE",
-      message:
-        "AI capacity is temporarily unavailable. Your trial or credit was restored.",
-      httpStatus: 503,
-      circuitSeconds: 900,
-    };
+    return errorResponse(
+      "SERVER_CONFIGURATION_ERROR",
+      "Service configuration is incomplete.",
+      500,
+      true,
+    );
   }
 
-  if (status === 401 || status === 403) {
-    return {
-      code: "AI_UNAVAILABLE",
-      message:
-        "AI generation is temporarily unavailable. Your trial or credit was restored.",
-      httpStatus: 503,
-      circuitSeconds: 3600,
-    };
+  if (!geminiApiKey) {
+    console.error(
+      "GEMINI_API_KEY is not available in the deployed Edge Function runtime.",
+    );
+
+    return errorResponse(
+      "AI_UNAVAILABLE",
+      "AI generation is temporarily unavailable. Your trial or credit was not used.",
+      503,
+      true,
+    );
   }
 
-  return {
-    code: "PROVIDER_ERROR",
-    message:
-      "AI generation failed. Your trial or credit was restored.",
-    httpStatus: 502,
-    circuitSeconds: status >= 500 ? 300 : 0,
-  };
-}
-
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-
-  const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-  const serviceRoleKey =
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-  const geminiApiKey = Deno.env.get("GEMINI_API_KEY") || "";
   const serviceClient = createClient(
     supabaseUrl,
     serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+      global: {
+        fetch: (input: RequestInfo | URL, init?: RequestInit) => {
+          const url = input instanceof Request ? input.url : String(input);
+          if (!url.includes('/auth/v1/')) return fetch(input, init);
+          const deadline = AbortSignal.timeout(10000);
+          return fetch(input, { ...init, signal: init?.signal ? AbortSignal.any([init.signal, deadline]) : deadline });
+        },
+      },
+    },
   );
 
   let attemptId: string | undefined;
 
   try {
-    const body = await req.json();
+    let body: any;
+
+    try {
+      body = await req.json();
+    } catch (error) {
+      console.error("Invalid JSON request body:", error);
+
+      return errorResponse(
+        "INVALID_REQUEST",
+        "Invalid request body.",
+        400,
+      );
+    }
+
     const image =
-      typeof body.image === "string" ? body.image : "";
-    const style =
-      typeof body.style === "string" ? body.style : "pencil";
-    const customPrompt =
-      typeof body.prompt === "string"
-        ? body.prompt.slice(0, 800)
+      typeof body?.image === "string"
+        ? body.image.trim()
         : "";
+
+    const style =
+      typeof body?.style === "string"
+        ? body.style.trim().toLowerCase()
+        : "pencil";
+
+    const customPrompt =
+      typeof body?.prompt === "string"
+        ? body.prompt.trim().slice(0, 800)
+        : "";
+
     const visitorId =
-      typeof body.visitorId === "string"
-        ? body.visitorId
+      typeof body?.visitorId === "string"
+        ? body.visitorId.slice(0, 120)
         : "unknown";
 
     if (!image) {
@@ -277,16 +509,36 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Do not reserve a trial or credit when Gemini is not configured.
-    if (!geminiApiKey) {
+    const { mimeType, base64Data } = parseDataUrl(image);
+
+    const supportedMimeTypes = new Set([
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/heic",
+      "image/heif",
+    ]);
+
+    if (!supportedMimeTypes.has(mimeType)) {
       return errorResponse(
-        "AI_UNAVAILABLE",
-        "AI generation is temporarily unavailable. Your trial or credit was not used.",
-        503,
-        true,
+        "UNSUPPORTED_IMAGE_TYPE",
+        "Please upload a JPEG, PNG, WebP, HEIC, or HEIF image.",
+        400,
       );
     }
 
+    if (!base64Data) {
+      return errorResponse(
+        "INVALID_IMAGE",
+        "Invalid image data.",
+        400,
+      );
+    }
+
+    /*
+     * Reserve the user's trial or credit before generation.
+     */
     const access = await reserveGeneration(
       req,
       serviceClient,
@@ -299,61 +551,52 @@ Deno.serve(async (req) => {
 
     attemptId = access.attemptId;
 
-    const base64Image =
-      image.indexOf(",") >= 0
-        ? image.split(",")[1]
-        : image;
     const stylePrompt =
       stylePrompts[style] || stylePrompts.pencil;
+
     const finalPrompt = customPrompt
-      ? stylePrompt +
-        " Additional instructions: " +
-        customPrompt
+      ? `${stylePrompt} Additional instructions: ${customPrompt}`
       : stylePrompt;
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/" +
-        MODEL +
-        ":generateContent?key=" +
-        geminiApiKey,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  inline_data: {
-                    mime_type: "image/jpeg",
-                    data: base64Image,
-                  },
+    console.log("Calling Gemini:", {
+      model: MODEL,
+      style,
+      mimeType,
+      imageBase64Length: base64Data.length,
+      hasCustomPrompt: Boolean(customPrompt),
+    });
+
+    const { response, result } = await callSketchProvider(MODEL, geminiApiKey, {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                inline_data: {
+                  mime_type: mimeType,
+                  data: base64Data,
                 },
-                {
-                  text: finalPrompt,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            responseModalities: ["IMAGE", "TEXT"],
+              },
+              {
+                text: finalPrompt,
+              },
+            ],
           },
-        }),
-      },
-    );
+        ],
+        generationConfig: {
+          responseModalities: ["IMAGE", "TEXT"],
+        },
+    });
 
     if (!response.ok) {
-      const failure = providerFailure(response.status);
       const errorText = await response.text();
+      const failure = providerFailure(response.status);
 
-      console.error(
-        "Gemini error:",
-        response.status,
-        errorText,
-      );
+      console.error("Gemini provider error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText.slice(0, 4000),
+      });
 
       await finalizeGeneration(
         serviceClient,
@@ -362,6 +605,7 @@ Deno.serve(async (req) => {
         failure.code,
         failure.circuitSeconds,
       );
+
       attemptId = undefined;
 
       return errorResponse(
@@ -372,15 +616,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    const result = await response.json();
-    const candidate =
-      result && result.candidates
-        ? result.candidates[0]
-        : null;
+    const firstCandidate = result?.candidates?.[0];
 
+    /*
+     * Gemini may finish with a safety block.
+     */
     if (
-      candidate &&
-      candidate.finishReason === "SAFETY"
+      safetyBlocked(result)
     ) {
       await finalizeGeneration(
         serviceClient,
@@ -388,35 +630,38 @@ Deno.serve(async (req) => {
         false,
         "SAFETY_BLOCKED",
       );
+
       attemptId = undefined;
 
       return errorResponse(
         "SAFETY_BLOCKED",
         "The AI declined this image. Your trial or credit was restored.",
         422,
+        false,
       );
     }
 
-    const parts =
-      candidate &&
-      candidate.content &&
-      candidate.content.parts
-        ? candidate.content.parts
-        : [];
-    const imagePart = parts.find(
-      (part: any) =>
-        part &&
-        part.inlineData &&
-        part.inlineData.data,
-    );
+    const generatedImage = extractGeneratedImage(result);
 
-    if (!imagePart) {
+    if (!generatedImage) {
+      console.error("Gemini returned no generated image:", {
+        finishReason: firstCandidate?.finishReason || null,
+        promptFeedback: result?.promptFeedback || null,
+        candidatesCount: Array.isArray(result?.candidates)
+          ? result.candidates.length
+          : 0,
+        responseKeys: result && typeof result === "object"
+          ? Object.keys(result)
+          : [],
+      });
+
       await finalizeGeneration(
         serviceClient,
         attemptId,
         false,
         "NO_IMAGE",
       );
+
       attemptId = undefined;
 
       return errorResponse(
@@ -432,32 +677,28 @@ Deno.serve(async (req) => {
       attemptId,
       true,
     );
-    attemptId = undefined;
 
-    const mimeType =
-      imagePart.inlineData.mimeType || "image/png";
+    attemptId = undefined;
 
     return jsonResponse({
       result:
-        "data:" +
-        mimeType +
-        ";base64," +
-        imagePart.inlineData.data,
+        `data:${generatedImage.mimeType};base64,${generatedImage.base64Data}`,
     });
   } catch (error) {
-    console.error("generate-sketch error:", error);
+    const timedOut = error instanceof Error && ['AbortError','TimeoutError'].includes(error.name);
+    console.error("generate-sketch failed:", { name: error instanceof Error ? error.name : 'UnknownError', timedOut });
 
     await finalizeGeneration(
       serviceClient,
       attemptId,
       false,
-      "SERVER_ERROR",
+      timedOut ? "PROVIDER_TIMEOUT" : "SERVER_ERROR",
     );
 
     return errorResponse(
-      "SERVER_ERROR",
-      "Server error. Your trial or credit was restored.",
-      500,
+      timedOut ? "PROVIDER_TIMEOUT" : "SERVER_ERROR",
+      timedOut ? "The image provider took too long. Please try again shortly." : "Generation could not be completed. Please try again shortly.",
+      timedOut ? 504 : 500,
       true,
     );
   }

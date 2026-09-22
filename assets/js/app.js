@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js"
 import "/assets/js/referrals.js"
+import { getGenerationSession } from './sketch-request.mjs'
 
 if(!window.supabase || !window.supabase.auth || typeof window.supabase.auth.getUser !== "function"){
   window.supabase = createClient(
@@ -42,15 +43,15 @@ async function updateAuthUI(){
 }
 
 // Expose shared auth promise — tool pages reuse this instead of calling getUser again
-window._authReady = window.supabase.auth.getUser()
+window._authReady = getGenerationSession(window.supabase)
+  .then(session => ({ data: { user: session?.user || null, session }, error: null }))
+  .catch(error => ({ data: { user: null }, error }))
 window._authReady.then(function(result){
   var user = result.data && result.data.user
   if(!user || !window.BeoReferrals) return null
-  return window.supabase.auth.getSession().then(function(sessionResult){
-    var session = sessionResult.data && sessionResult.data.session
-    return session ? window.BeoReferrals.registerCurrentUser(session.access_token) : null
-  })
-})
+  var session = result.data.session
+  return session ? window.BeoReferrals.registerCurrentUser(session.access_token) : null
+}).catch(error => console.warn('Referral registration unavailable:', error.message))
 
 // Header is now inlined — call auth update directly
 updateAuthUI()

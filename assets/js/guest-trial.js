@@ -91,9 +91,12 @@ window._beoGuest = {
 window.initGuestTrial = async function() {
   // Check if logged in via Supabase
   if (window.supabase) {
-    const { data } = await window.supabase.auth.getUser()
+    const authResult = window._authReady || window.supabase.auth.getUser()
+    const { data, error } = await authResult
+    if(error) return // An auth outage must not turn a signed-in user into a guest.
     if (data && data.user) {
       window._beoGuest.isGuest = false
+      window._beoGuest.trialChecked = true
       return // logged in — skip all trial logic
     }
   }
@@ -111,6 +114,7 @@ window.initGuestTrial = async function() {
   // Check if they've already used their free trial
   try {
     const res = await fetch(GUEST_CHECK_URL, {
+      signal: AbortSignal.timeout(8000),
       method: "POST",
       headers: {
         "Content-Type": "application/json",
