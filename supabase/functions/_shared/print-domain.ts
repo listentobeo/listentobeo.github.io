@@ -60,6 +60,7 @@ export function customerOrder(order: any) {
   // Explicit allowlist: costs, provider IDs, private file paths and admin notes never leave the server.
   return { id: order.id, created_at: order.created_at, payment_status: order.payment_status,
     fulfillment_status: order.fulfillment_status, currency: order.currency, customer_total: order.customer_total,
+    payment_currency: order.payment_currency, payment_total: order.payment_total,
     retail_product_price: order.retail_product_price, retail_shipping_price: order.retail_shipping_price,
     product: order.product_snapshot?.name, frame: order.product_snapshot?.frame_style,
     width_mm: order.product_snapshot?.width_mm, height_mm: order.product_snapshot?.height_mm,

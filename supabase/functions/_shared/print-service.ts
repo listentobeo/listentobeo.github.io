@@ -1,5 +1,6 @@
 import { GelatoProvider, summarizeProviderOrders } from './print-provider.ts';
 import { priceQuote } from './print-domain.ts';
+import { getPrintFx, assertFxMargin } from './print-fx.ts';
 
 export function env(name: string) { return Deno.env.get(name) || ''; }
 export function dbResult(result: any) {
@@ -69,6 +70,7 @@ export async function processPrintOrder(db: any, id: string) {
     const shipping = fresh.find(s => s.id === order.shipping_snapshot.id);
     if (!shipping) throw new Error('Selected shipping method is no longer available.');
     const prices = priceQuote(shipping.provider_product_cost, shipping.provider_shipping_cost, order.product_snapshot, order);
+    if (order.currency === 'USD' && order.payment_currency === 'NGN') assertFxMargin(order, prices.provider_total_cost, await getPrintFx());
     await updateOrder(db, id, token, { ...prices, submission_started_at: new Date().toISOString(), submission_uncertain: true });
     submitted = true;
     dbResult(await db.from('print_jobs').update({ status: 'running', updated_at: new Date().toISOString() }).eq('order_id', id));

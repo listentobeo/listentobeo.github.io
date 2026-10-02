@@ -28,7 +28,11 @@ async function catalog(){invalidate();const current=revision;selected=null;$('pr
  }catch(e){if(current===revision)message(e.message);}}
 function showPrice(){const shipping=quote?.options.find(s=>s.id===$('print-shipping').value);if(!shipping)return;
  $('print-delivery').textContent=`Estimated delivery: ${shipping.delivery.min} – ${shipping.delivery.max}`;
- $('print-product-price').textContent=formatMoney(shipping.retail_product_price,quote.currency);$('print-shipping-price').textContent=formatMoney(shipping.retail_shipping_price,quote.currency);$('print-total').textContent=formatMoney(shipping.customer_total,quote.currency);$('print-customs').textContent=shipping.customs||'';}
+ $('print-product-price').textContent=formatMoney(shipping.retail_product_price,quote.currency);$('print-shipping-price').textContent=formatMoney(shipping.retail_shipping_price,quote.currency);$('print-total').textContent=formatMoney(shipping.customer_total,quote.currency);$('print-customs').textContent=shipping.customs||'';
+ $('print-payment-note').textContent=quote.currency==='NGN'?'Your card will be charged in Nigerian naira (NGN). Your bank may convert this into your card currency and apply its own fees.':'';
+ $('print-fx-note').textContent=shipping.base_currency==='USD'?`Converted from ${formatMoney(shipping.base_total,'USD')} at 1 USD = ${Number(shipping.rate).toLocaleString(undefined,{maximumFractionDigits:6})} NGN. Rate updated ${new Date(shipping.rate_updated_at).toLocaleString()}. This amount is locked for this quote.`:'';
+ $('print-fx-source').hidden=shipping.base_currency!=='USD';
+ $('print-checkout').textContent=`Pay ${formatMoney(shipping.customer_total,quote.currency)} by card`;}
 $('print-country').addEventListener('change',catalog);$('print-product').addEventListener('change',frames);$('print-frame').addEventListener('change',sizes);
 $('print-size').addEventListener('change',()=>{invalidate();selected=variants.find(v=>v.id===$('print-size').value);preview();});
 $('print-room').addEventListener('change',preview);$('print-address').addEventListener('input',invalidate);$('print-shipping').addEventListener('change',showPrice);
@@ -45,7 +49,8 @@ $('print-address').addEventListener('submit',async e=>{e.preventDefault();messag
 $('print-checkout').addEventListener('click',async()=>{const button=$('print-checkout');if(!quote)return;button.disabled=true;message('');
  if(!checkoutEnabled){message('Checkout is disabled while the print range is being verified.');return;}
  try{if(Date.parse(quote.expiresAt)<=Date.now()){invalidate();throw new Error('Your quote expired. Check delivery and price again.');}
- const result=await request('checkout',{quoteId:quote.quoteId,shippingId:$('print-shipping').value});
+ const shipping=quote.options.find(s=>s.id===$('print-shipping').value);
+ const result=await request('checkout',{quoteId:quote.quoteId,shippingId:$('print-shipping').value,paymentCurrency:quote.currency,paymentTotal:shipping.customer_total});
  if(result.checkoutUrl){const url=new URL(result.checkoutUrl);if(url.protocol!=='https:'||url.hostname!=='checkout.paystack.com')throw new Error('Unexpected payment destination.');location.href=url.href;}
  else if(result.order)location.href='/print-orders/?order='+encodeURIComponent(result.order.id);
  }catch(e){message(e.message);}finally{button.disabled=false;}});

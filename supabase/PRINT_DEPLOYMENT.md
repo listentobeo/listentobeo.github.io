@@ -1,5 +1,9 @@
 # Physical print deployment and operations
 
+**NGN checkout update:** follow [PRINT_NGN_DEPLOYMENT.md](PRINT_NGN_DEPLOYMENT.md)
+for the current payment rollout. It supersedes the historical USD-checkout gate
+below: provider prices remain USD, but new customer charges are converted to NGN.
+
 This feature is fail-closed. No business prices or provider SKUs are seeded, and all four starter products are inactive. Deploying code alone does not enable ordering.
 
 ## Official API references checked

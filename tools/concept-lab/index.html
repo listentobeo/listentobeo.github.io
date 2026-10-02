@@ -20,6 +20,8 @@
 <script src="/assets/js/concept-transfer.js"></script>
 <link rel="stylesheet" href="/assets/tool-ads.css">
 <script src="/assets/js/tool-ads.js" defer></script>
+<link rel="stylesheet" href="/assets/tool-share.css">
+<script src="/assets/js/tool-share.js" defer></script>
 </head>
 <body>
 <header class="header"><div class="header-inner">
@@ -107,7 +109,7 @@
   document.querySelectorAll(".target-chip").forEach(function(button){button.addEventListener("click",function(){document.querySelectorAll(".target-chip").forEach(function(item){item.classList.remove("active")});button.classList.add("active");document.getElementById("concept-target").value=button.dataset.target})})
 
   function compress(dataUrl){return new Promise(function(resolve){var image=new Image();image.onload=function(){var scale=Math.min(1,1400/image.width),canvas=document.createElement("canvas");canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.86))};image.src=dataUrl})}
-  function loading(on){document.getElementById("analysis-empty").style.display="none";document.getElementById("analysis-results").classList.remove("visible");document.getElementById("analysis-loading").classList.toggle("visible",on);var btn=document.getElementById("analyse-btn");btn.disabled=on;btn.textContent=on?"Building your concept...":"Analyse & build concepts";clearInterval(statusTimer);if(on){var messages=["Reading colour and composition","Separating inspiration from imitation","Finding new creative possibilities","Writing three original directions"];var i=0;statusTimer=setInterval(function(){document.getElementById("analysis-status").textContent=messages[i++%messages.length]},1600)}}
+  function loading(on){document.getElementById("analysis-empty").style.display=on||analysis?"none":"flex";if(on)document.getElementById("analysis-results").classList.remove("visible");document.getElementById("analysis-loading").classList.toggle("visible",on);var btn=document.getElementById("analyse-btn");btn.disabled=on;btn.textContent=on?"Building your concept...":"Analyse & build concepts";clearInterval(statusTimer);if(on){var messages=["Reading colour and composition","Separating inspiration from imitation","Finding new creative possibilities","Writing three original directions"];var i=0;statusTimer=setInterval(function(){document.getElementById("analysis-status").textContent=messages[i++%messages.length]},1600)}}
 
   document.getElementById("analyse-btn").addEventListener("click",async function(){if(!sourceImage){error("Drop an inspiration image first.");return}clearError();loading(true);if(window.BeoAnalytics)window.BeoAnalytics.track("concept_analysis_started",{target:document.getElementById("concept-target").value});try{var image=await compress(sourceImage);transferImage=image;var response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:image,note:document.getElementById("concept-note").value,target:document.getElementById("concept-target").value})});var body=await response.json();if(!response.ok||!body.analysis)throw new Error(body.error||"Concept analysis failed.");analysis=body.analysis;selectedDirection=0;render();if(window.BeoAnalytics)window.BeoAnalytics.track("concept_analysis_success",{route:analysis.recommendedRoute})}catch(e){error(e.message||"Could not analyse this reference.");document.getElementById("analysis-empty").style.display="flex"}finally{loading(false)}})
 

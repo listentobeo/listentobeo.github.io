@@ -1,0 +1,17 @@
+/* One disclosure for every tool; legacy handlers may still change inline display. */
+body.beo-sharing #share-row,body.beo-sharing #share-hint{display:none!important}
+.beo-share{margin:14px 16px;color:#f0ede8;min-width:0}
+.beo-share[hidden],.beo-share [hidden]{display:none!important}
+.beo-share summary{display:inline-flex;align-items:center;gap:10px;cursor:pointer;list-style:none;border:1px solid #66521f;border-radius:8px;padding:11px 17px;background:#211e17;color:#edbd43;font-family:inherit;font-size:13px;font-weight:600;line-height:1.4}
+.beo-share summary::-webkit-details-marker{display:none}
+.beo-share summary::after{content:'＋';font-size:17px}
+.beo-share[open] summary::after{content:'−'}
+.beo-share-panel{margin-top:10px;padding:16px;border:1px solid #35333c;border-radius:10px;background:#18181f}
+.beo-share p{font-size:12px;line-height:1.6;color:#b7b3ab;margin:0 0 12px}
+.beo-share-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.beo-share button,.beo-share a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:9px 12px;border:1px solid #494550;border-radius:7px;background:#222129;color:#f0ede8;text-decoration:none;font:inherit;font-size:12px;cursor:pointer;text-align:center;box-sizing:border-box}
+.beo-share button:hover,.beo-share a:hover{border-color:#d4a017;background:#302919}
+.beo-share :focus-visible{outline:2px solid #edbd43;outline-offset:3px}
+.beo-share .beo-share-status{margin:12px 0 0;color:#edbd43;overflow-wrap:anywhere}
+.beo-share .beo-share-label{margin:16px 0 8px;font-weight:600;color:#eee}
+@media(max-width:420px){.beo-share{margin:12px}.beo-share-panel{padding:12px}.beo-share-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

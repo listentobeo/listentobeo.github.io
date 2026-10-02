@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { addressInput, customerOrder, priceQuote, routeCountry, safeTracking, launchDestination } from '../_shared/print-domain.ts';
 import { decodeArtwork, renderPrintFile } from '../_shared/print-images.ts';
+import { getPrintFx, paymentQuote, confirmPaymentQuote } from '../_shared/print-fx.ts';
 import { env, dbResult, signedFile, audit, lockOrder, unlockOrder, updateOrder, provider,
   syncProviderOrder, acceptPrintPayment, paystackRequest } from '../_shared/print-service.ts';
 
@@ -25,9 +26,8 @@ Deno.serve(async req => {
       const products = dbResult(await db.from('print_products').select('id,name,product_type,slug').eq('active', true).neq('product_type','canvas'));
       const variants = dbResult(await db.from('print_product_variants').select('*').eq('active', true).eq('provider', route));
       const configured = products.map((p: any) => ({ ...p, variants: variants.filter((v: any) => v.product_id === p.id).map(publicVariant) })).filter((p: any) => p.variants.length);
-      const currencyEnabled = route === 'MANUAL_NIGERIA' || env('PRINT_USD_PAYMENTS_ENABLED') === 'true';
-      return reply({ products: configured, checkoutEnabled: env('PRINT_CHECKOUT_ENABLED') === 'true' && currencyEnabled,
-        checkoutUnavailableReason: !currencyEnabled ? 'You can preview prints and check delivery. USD payments are not yet supported by our payment account.' : null });
+      return reply({ products: configured, checkoutEnabled: env('PRINT_CHECKOUT_ENABLED') === 'true', paymentCurrency: 'NGN',
+        checkoutUnavailableReason: null });
     }
     const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
     const auth = await db.auth.getUser(token);
@@ -83,29 +83,31 @@ Deno.serve(async req => {
       }
       options = options.flatMap(s => { try { return [{ ...s, ...priceQuote(s.provider_product_cost, s.provider_shipping_cost, variant) }]; } catch { return []; } });
       if (!options.length) throw new Error('No approved delivery option is available for this address and size.');
+      const fx = variant.currency === 'USD' ? await getPrintFx() : undefined;
+      options = options.map(s => ({ ...s, payment: paymentQuote(s, variant.currency, fx) }));
       const expires = new Date(Date.now() + 15 * 60000).toISOString();
       dbResult(await db.from('print_quotes').insert({ id: quoteId, user_id: user.id, artwork_id: art.id, variant_id: variant.id,
         provider: route, currency: variant.currency, country: address.country, shipping_address: address,
         product_snapshot: { ...variant, name: product.name, product_type: product.product_type }, print_file_path: path, options, expires_at: expires }));
-      return reply({ quoteId, expiresAt: expires, currency: variant.currency, ppi: Math.floor(rendered.ppi), options: options.map(s =>
-        ({ id: s.id, name: s.name, delivery: s.delivery, retail_product_price: s.retail_product_price,
-          retail_shipping_price: s.retail_shipping_price, customer_total: s.customer_total,
+      return reply({ quoteId, expiresAt: expires, currency: 'NGN', ppi: Math.floor(rendered.ppi), options: options.map(s =>
+        ({ id: s.id, name: s.name, delivery: s.delivery, ...s.payment,
           customs: s.incoTerms === 'DDP' ? 'Included where quoted' : route === 'GELATO' ? 'Import charges may be collected on delivery' : null })) });
     }
     if (action === 'checkout') {
       if (env('PRINT_CHECKOUT_ENABLED') !== 'true') throw new Error('Print checkout is not yet open.');
-      const checkoutQuote = dbResult(await db.from('print_quotes').select('currency,country').eq('id', uuid(body.quoteId)).eq('user_id', user.id).single());
+      const checkoutQuote = dbResult(await db.from('print_quotes').select('currency,country,options,expires_at').eq('id', uuid(body.quoteId)).eq('user_id', user.id).single());
       launchDestination(checkoutQuote.country);
-      if (checkoutQuote.currency === 'USD' && env('PRINT_USD_PAYMENTS_ENABLED') !== 'true') throw new Error('USD payments are not yet supported by our payment account.');
+      const chosen = confirmPaymentQuote(checkoutQuote, body);
       const id = dbResult(await db.rpc('print_checkout', { p_quote_id: uuid(body.quoteId), p_user_id: user.id, p_shipping_id: String(body.shippingId || '') }));
       const lock = await lockOrder(db, id);
       try {
         const order = dbResult(await db.from('print_orders').select('*').eq('id', id).single());
         if (order.payment_status !== 'AWAITING_PAYMENT' || order.fulfillment_status === 'CANCELLED') return reply({ order: customerOrder(order) });
+        if (order.payment_currency !== chosen.currency || order.payment_total !== chosen.customer_total || order.shipping_snapshot.id !== body.shippingId)
+          throw new Error('This quote already has a different checkout. Request a fresh quote.');
         if (order.checkout_url) return reply({ checkoutUrl: order.checkout_url, orderId: id });
-        if (order.currency === 'USD' && env('PRINT_USD_PAYMENTS_ENABLED') !== 'true') throw new Error('USD payments have not been enabled.');
-        const result = await paystackRequest('/transaction/initialize', 'POST', { email: user.email, amount: order.customer_total,
-          currency: order.currency, reference: order.payment_reference, channels: ['card'],
+        const result = await paystackRequest('/transaction/initialize', 'POST', { email: user.email, amount: order.payment_total,
+          currency: order.payment_currency, reference: order.payment_reference, channels: ['card'],
           callback_url: 'https://aitools.beoarts.com/print-orders/?order=' + id,
           metadata: { order_type: 'physical_print', print_order_id: id, user_id: user.id } });
         const url = new URL(result.authorization_url);
@@ -134,7 +136,7 @@ Deno.serve(async req => {
         gelatoKeyPresent: Boolean(env('GELATO_API_KEY')), paystackKeyPresent: Boolean(env('PAYSTACK_SECRET_KEY')),
         workerSecretPresent: Boolean(env('PRINT_WORKER_SECRET')), webhookTokenPresent: Boolean(env('GELATO_WEBHOOK_TOKEN')),
         checkoutEnabled: env('PRINT_CHECKOUT_ENABLED') === 'true', liveFulfillmentEnabled: env('PRINT_LIVE_FULFILLMENT_ENABLED') === 'true',
-        usdPaymentsEnabled: env('PRINT_USD_PAYMENTS_ENABLED') === 'true',
+        paymentCurrency: 'NGN', fxSource: 'ExchangeRate-API',
         activeVariants: dbResult(await db.from('print_product_variants').select('id').eq('active',true)).length,
       };
       try { checks.catalogs = await provider().request('product.gelatoapis.com','/v3/catalogs'); checks.gelatoConnected = true; }
@@ -151,13 +153,13 @@ Deno.serve(async req => {
       if (!env('PAYSTACK_SECRET_KEY').startsWith('sk_live_')) return reply({ liveKey: false, usdAccepted: false });
       const response = await fetch('https://api.paystack.co/transaction/initialize', {
         method: 'POST', headers: { Authorization: 'Bearer ' + env('PAYSTACK_SECRET_KEY'), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user.email, amount: 100, currency: 'USD', channels: ['card'], reference: 'beoprobe-' + crypto.randomUUID() }),
+        body: JSON.stringify({ email: user.email, amount: 10000, currency: 'NGN', channels: ['card'], reference: 'beoprobe-' + crypto.randomUUID() }),
         signal: AbortSignal.timeout(25000),
       });
       const result = await response.json();
       const accepted = response.ok && result.status === true;
-      await audit(db, null, 'USD_CHECKOUT_PROBE', { accepted }, user.id);
-      return reply({ liveKey: true, usdAccepted: accepted, message: accepted ? 'USD checkout initialized; no payment made.' : String(result.message || 'USD initialization failed.').slice(0,300) });
+      await audit(db, null, 'NGN_CHECKOUT_PROBE', { accepted }, user.id);
+      return reply({ liveKey: true, currency: 'NGN', ngnAccepted: accepted, message: accepted ? 'NGN checkout initialized; no payment made. This does not verify international card approval.' : String(result.message || 'NGN initialization failed.').slice(0,300) });
     }
     if (action === 'admin_catalog') return reply({ products: dbResult(await db.from('print_products').select('*')),
       variants: dbResult(await db.from('print_product_variants').select('*')) });
@@ -251,8 +253,8 @@ Deno.serve(async req => {
           // Persist before the external call. Unknown outcomes cannot be retried blindly.
           await updateOrder(db, id, lock, { payment_status: 'REFUND_PENDING', refund_error: null });
           try {
-            const refund = await paystackRequest('/refund', 'POST', { transaction: order.payment_reference, amount: order.customer_total,
-              currency: order.currency, merchant_note: notes || 'Cancelled physical print order' });
+            const refund = await paystackRequest('/refund', 'POST', { transaction: order.payment_reference, amount: order.payment_total,
+              currency: order.payment_currency, merchant_note: notes || 'Cancelled physical print order' });
             await updateOrder(db, id, lock, { refund_id: String(refund.id) });
           } catch (e) {
             await updateOrder(db, id, lock, { refund_error: 'Refund submission needs reconciliation in Paystack before any retry.' });
@@ -263,9 +265,9 @@ Deno.serve(async req => {
           const refundId = String(order.refund_id || body.refundId || '');
           if (!/^\d+$/.test(refundId)) throw new Error('Enter the refund ID from Paystack to reconcile an uncertain refund.');
           const refund = await paystackRequest('/refund/' + refundId);
-          if (String(refund.transaction?.id) !== order.payment_transaction_id || Number(refund.amount) !== order.customer_total || refund.currency !== order.currency) throw new Error('Refund does not match this order.');
+          if (String(refund.transaction?.id) !== order.payment_transaction_id || Number(refund.amount) !== order.payment_total || refund.currency !== order.payment_currency) throw new Error('Refund does not match this order.');
           await updateOrder(db, id, lock, { refund_id: refundId, refund_error: null });
-          if (refund.status === 'processed') dbResult(await db.rpc('print_refund_processed', { p_reference: order.payment_reference, p_amount: order.customer_total, p_currency: order.currency }));
+          if (refund.status === 'processed') dbResult(await db.rpc('print_refund_processed', { p_reference: order.payment_reference, p_amount: order.payment_total, p_currency: order.payment_currency }));
           else if (refund.status === 'failed') await updateOrder(db, id, lock, { payment_status: 'PAID', refund_error: 'Provider confirmed the refund failed. It may now be retried.' });
         } else if (['PROCESSING','SHIPPED','DELIVERED','tracking'].includes(op)) {
           if (order.provider !== 'MANUAL_NIGERIA' || order.payment_status !== 'PAID' || order.payment_domain !== 'live') throw new Error('Manual fulfillment requires a verified live Nigerian payment.');
