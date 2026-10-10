@@ -2,7 +2,7 @@
 // BEO AI TOOLS - SERVICE WORKER v17
 // ============================================================
 
-const CACHE_NAME  = "beo-ai-v23"
+const CACHE_NAME  = "beo-ai-v24-maintenance"
 const OFFLINE_URL = "/offline/"
 
 const SHELL_ASSETS = [
@@ -33,6 +33,7 @@ const SHELL_ASSETS = [
   "/tools/concept-lab/",
   "/tools/art-concept-generator/",
   "/assets/js/app.js",
+  "/assets/js/database-maintenance.js",
   "/assets/js/sketch-request.mjs",
   "/assets/js/pwa.js",
   "/assets/js/auth.js",
@@ -85,6 +86,15 @@ self.addEventListener("activate", event => {
 // ── FETCH ──────────────────────────────────────────────────
 self.addEventListener("fetch", event => {
   const url = new URL(event.request.url)
+
+  // Temporary database maintenance. Remove this block when resuming the app.
+  if (url.hostname === "wphqcccliiwdvwdjgrmc.supabase.co") {
+    event.respondWith(Promise.resolve(new Response(
+      JSON.stringify({ error: "Database temporarily under maintenance" }),
+      { status: 503, headers: { "Content-Type": "application/json" } }
+    )))
+    return
+  }
 
   // Never intercept external APIs or CDN resources
   const skipHosts = [
